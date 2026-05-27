@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>25/8</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="entry-gate" id="entryGate">
+      <form class="entry-card" id="entryForm">
+        <p class="eyebrow">Acceso</p>
+        <h2>Antes de entrar</h2>
+        <label>
+          Nombre
+          <input id="entryName" name="entryName" required placeholder="Tu nombre" autocomplete="name" />
+        </label>
+        <label>
+          Telefono
+          <input id="entryPhone" name="entryPhone" placeholder="Opcional para contacto" inputmode="tel" />
+        </label>
+        <label class="consent-row">
+          <input id="locationConsent" name="locationConsent" type="checkbox" required />
+          <span>Acepto compartir mi ubicacion para completar la solicitud.</span>
+        </label>
+        <label class="consent-row">
+          <input id="contactRequest" name="contactRequest" type="checkbox" />
+          <span>Solicito que admin pueda contactarme si hace falta.</span>
+        </label>
+        <button class="primary-button" type="submit">Entrar</button>
+      </form>
+    </div>
+
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Acceso privado</p>
+          <h1>25/8</h1>
+        </div>
+      </header>
+
+      <section>
+        <div class="content-grid">
+          <section class="panel">
+            <div class="section-head">
+              <div>
+                <h3>PRODUCTOS</h3>
+              </div>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
+          </section>
+
+          <aside class="checkout-panel">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">Pedido</p>
+              </div>
+            </div>
+
+            <div class="cart-list" id="cartList"></div>
+
+            <dl class="totals">
+              <div class="grand-total">
+                <dt>Total</dt>
+                <dd id="total">0,00 EUR</dd>
+              </div>
+            </dl>
+
+            <div class="order-status" id="orderStatus"></div>
+
+            <form class="payment-form" id="paymentForm">
+              <label>
+                Nombre
+                <input name="name" required placeholder="Tu nombre" readonly />
+              </label>
+              <label>
+                Punto de entrega
+                <input name="address" required placeholder="Referencia o instrucciones" />
+              </label>
+              <label>
+                Metodo de pago
+                <select name="payment">
+                  <option>Tarjeta</option>
+                  <option>Bizum</option>
+                  <option>Efectivo</option>
+                </select>
+              </label>
+              <button class="primary-button" id="confirmButton" type="submit">Confirmar</button>
+              <button class="primary-button hidden" id="payButton" type="button">Pagar</button>
+            </form>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="config.js"></script>
+    <script src="scripts.js"></script>
+  </body>
+</html>

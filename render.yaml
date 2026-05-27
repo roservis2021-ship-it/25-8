@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: won-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGIN
+        value: "*"

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#070707" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="25/8 R" />
+    <title>25/8 R</title>
+    <link rel="manifest" href="rider.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/rider-180.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="entry-gate" id="riderLoginGate">
+      <form class="entry-card" id="riderLoginForm">
+        <p class="eyebrow">Repartidor</p>
+        <h2>Acceso</h2>
+        <label>
+          Usuario
+          <input id="userNumber" inputmode="numeric" required placeholder="Numero asignado" />
+        </label>
+        <label>
+          Clave
+          <input id="userKey" required type="password" placeholder="Clave asignada" />
+        </label>
+        <button class="primary-button" type="submit">Entrar</button>
+      </form>
+    </div>
+
+    <main class="app-shell rider-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Panel privado</p>
+          <h1>25/8 R</h1>
+        </div>
+        <button class="ghost-button" id="logoutButton" type="button">Cerrar sesion</button>
+      </header>
+
+      <section class="rider-dashboard">
+        <section class="panel">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Jornada</p>
+              <h3 id="riderState">INACTIVO</h3>
+            </div>
+          </div>
+
+          <button class="primary-button rider-toggle" id="activeToggle" type="button">
+            ACTIVAR
+          </button>
+
+          <p class="rider-note" id="riderNote">
+            Activa tu jornada para recibir solicitudes cercanas.
+          </p>
+
+          <div class="rider-earnings" id="riderEarnings">
+            <div>
+              <span>Ganando ahora</span>
+              <strong id="currentEarnings">0,00 EUR</strong>
+            </div>
+            <div>
+              <span>Cobrado</span>
+              <strong id="paidEarnings">0,00 EUR</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Solicitudes</p>
+              <h3>PEDIDOS</h3>
+            </div>
+          </div>
+          <div class="rider-orders" id="riderOrders"></div>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="config.js"></script>
+    <script src="rider.js"></script>
+  </body>
+</html>
