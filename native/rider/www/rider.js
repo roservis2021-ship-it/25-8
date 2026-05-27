@@ -31,7 +31,10 @@ let lastLiveDistance = null;
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/rider-sw.js").catch(() => {});
+    navigator.serviceWorker
+      .register("/rider-sw.js?v=5")
+      .then((registration) => registration.update())
+      .catch(() => {});
   });
 }
 
