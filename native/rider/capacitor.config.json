@@ -1,0 +1,8 @@
+{
+  "appId": "com.won.rider",
+  "appName": "25/8 Rider",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

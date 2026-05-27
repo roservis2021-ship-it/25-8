@@ -1,0 +1,8 @@
+{
+  "appId": "com.won.admin",
+  "appName": "25/8 Admin",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

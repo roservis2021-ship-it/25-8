@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#070707" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="25/8 Admin" />
+    <title>25/8 Admin</title>
+    <link rel="manifest" href="admin.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/admin-180.png" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css?v=6" />
+  </head>
+  <body>
+    <div class="entry-gate" id="adminLoginGate">
+      <form class="entry-card" id="adminLoginForm">
+        <p class="eyebrow">Admin</p>
+        <h2>Control</h2>
+        <label>
+          Usuario
+          <input id="adminUser" required placeholder="Usuario admin" autocomplete="username" />
+        </label>
+        <label>
+          Clave
+          <input id="adminKey" required type="password" placeholder="Clave admin" />
+        </label>
+        <button class="primary-button" type="submit">Entrar</button>
+      </form>
+    </div>
+
+    <main class="app-shell admin-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Canal privado</p>
+          <h1>25/8 Admin</h1>
+        </div>
+      </header>
+
+      <section class="admin-metrics">
+        <article class="metric-card">
+          <span>Clientes activos</span>
+          <strong id="activeClients">0</strong>
+        </article>
+        <article class="metric-card">
+          <span>Riders activos</span>
+          <strong id="activeRiders">0</strong>
+        </article>
+        <article class="metric-card">
+          <span>Bruto negocio</span>
+          <strong id="businessGross">0,00 EUR</strong>
+        </article>
+        <article class="metric-card">
+          <span>Neto negocio</span>
+          <strong id="businessNet">0,00 EUR</strong>
+        </article>
+      </section>
+
+      <nav class="admin-tabs" aria-label="Menu admin">
+        <button class="admin-tab active" type="button" data-admin-view="live">Activos</button>
+        <button class="admin-tab" type="button" data-admin-view="map">Mapa</button>
+        <button class="admin-tab" type="button" data-admin-view="orders">Pedidos</button>
+        <button class="admin-tab" type="button" data-admin-view="earnings">Ganancias</button>
+        <button class="admin-tab" type="button" data-admin-view="activity">Actividad</button>
+        <button class="admin-tab" type="button" data-admin-view="tools">Otras funciones</button>
+      </nav>
+
+      <section class="admin-grid">
+        <section class="panel admin-view" data-admin-panel="live">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Pantalla principal</p>
+              <h3>Clientes activos</h3>
+            </div>
+          </div>
+          <div class="admin-list" id="clientsList"></div>
+        </section>
+
+        <section class="panel admin-view" data-admin-panel="live">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Pantalla principal</p>
+              <h3>Riders</h3>
+            </div>
+          </div>
+          <div class="admin-list" id="ridersList"></div>
+        </section>
+
+        <section class="panel admin-view hidden" data-admin-panel="map">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Ubicaciones</p>
+              <h3>Mapa</h3>
+            </div>
+          </div>
+          <div class="admin-map" id="adminMap">
+            <div class="map-grid"></div>
+            <div class="map-empty" id="mapEmpty">Sin ubicaciones activas.</div>
+          </div>
+          <div class="map-legend">
+            <span><i class="status-dot online"></i>Cliente activo</span>
+            <span><i class="status-dot rider-online"></i>Rider activo</span>
+            <span><i class="status-dot offline"></i>Rider inactivo</span>
+          </div>
+        </section>
+
+        <section class="panel admin-view hidden" data-admin-panel="orders">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Todos los datos</p>
+              <h3>Pedidos</h3>
+            </div>
+          </div>
+          <div class="admin-list" id="ordersList"></div>
+        </section>
+
+        <section class="panel admin-view hidden" data-admin-panel="earnings">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Neta / Bruta</p>
+              <h3>Ganancia riders</h3>
+            </div>
+          </div>
+          <div class="admin-list" id="earningsList"></div>
+        </section>
+
+        <section class="panel admin-view hidden" data-admin-panel="activity">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Tiempo real</p>
+              <h3>Actividad</h3>
+            </div>
+          </div>
+          <div class="admin-list" id="activityList"></div>
+        </section>
+
+        <section class="panel admin-view hidden" data-admin-panel="tools">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Gestion</p>
+              <h3>Otras funciones</h3>
+            </div>
+          </div>
+          <form class="admin-form" id="newRiderForm">
+            <label>
+              Nombre rider
+              <input name="name" required placeholder="Nombre interno" />
+            </label>
+            <label>
+              Usuario
+              <input name="userNumber" required inputmode="numeric" placeholder="Numero asignado" />
+            </label>
+            <label>
+              Clave
+              <input name="key" required placeholder="Clave asignada" />
+            </label>
+            <button class="primary-button" type="submit">Anadir rider</button>
+          </form>
+          <div class="admin-list compact-list" id="riderAccountsList"></div>
+        </section>
+      </section>
+
+      <footer class="admin-footer">
+        <button class="ghost-button" id="adminLogoutButton" type="button">Cerrar sesion</button>
+      </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="config.js"></script>
+    <script src="admin.js?v=7"></script>
+  </body>
+</html>
