@@ -39,15 +39,6 @@
           }
         ]
       }
-    ],
-    "rewrites": [
-      {
-        "source": "/api/**",
-        "function": {
-          "functionId": "api",
-          "region": "europe-west1"
-        }
-      }
     ]
   },
   "firestore": {
