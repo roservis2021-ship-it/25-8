@@ -53,6 +53,10 @@ let customerLocation = null;
 let customerName = "";
 let activeOrderId = null;
 let orderPoll = null;
+let clientHeartbeat = null;
+let clientWatchId = null;
+let lastClientLocationSentAt = 0;
+let lastClientLocationSent = null;
 let customerId = localStorage.getItem("customerId") || "";
 const fallbackLocation = { lat: 28.1235, lng: -15.4366 };
 const apiBase = window.WON_API_BASE || (window.location.protocol === "file:" ? "http://127.0.0.1:8000" : "");
@@ -98,6 +102,53 @@ async function syncClient(active = true) {
       active,
     }),
   });
+}
+
+function distanceMeters(a, b) {
+  if (!a || !b) return Number.POSITIVE_INFINITY;
+  const earthMeters = 6371000;
+  const dLat = ((Number(b.lat) - Number(a.lat)) * Math.PI) / 180;
+  const dLng = ((Number(b.lng) - Number(a.lng)) * Math.PI) / 180;
+  const lat1 = (Number(a.lat) * Math.PI) / 180;
+  const lat2 = (Number(b.lat) * Math.PI) / 180;
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * earthMeters * Math.asin(Math.sqrt(h));
+}
+
+function maybeSyncClientLocation(force = false) {
+  const now = Date.now();
+  const moved = distanceMeters(lastClientLocationSent, customerLocation);
+  if (!force && moved < 8 && now - lastClientLocationSentAt < 5000) return;
+
+  lastClientLocationSent = customerLocation ? { ...customerLocation } : null;
+  lastClientLocationSentAt = now;
+  syncClient(true).catch(() => {});
+}
+
+function startClientHeartbeat() {
+  if (clientHeartbeat) window.clearInterval(clientHeartbeat);
+  clientHeartbeat = window.setInterval(() => {
+    if (!customerName) return;
+    maybeSyncClientLocation(true);
+  }, 15_000);
+}
+
+function startClientLocationWatch() {
+  if (clientWatchId || !navigator.geolocation || !window.isSecureContext) return;
+
+  clientWatchId = navigator.geolocation.watchPosition(
+    (position) => {
+      customerLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      if (customerName) maybeSyncClientLocation();
+    },
+    () => {},
+    { enableHighAccuracy: true, timeout: 8000, maximumAge: 1000 },
+  );
 }
 
 function renderProducts() {
@@ -264,7 +315,9 @@ function enterApp(name) {
   paymentName.value = name;
   if (!customerLocation) customerLocation = fallbackLocation;
   entryGate.classList.add("hidden");
-  syncClient(true).catch(() => {});
+  maybeSyncClientLocation(true);
+  startClientHeartbeat();
+  startClientLocationWatch();
   showToast(`Bienvenido, ${name}.`);
 }
 
@@ -281,6 +334,7 @@ function requestLocation(name) {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       };
+      startClientLocationWatch();
       enterApp(name);
     },
     () => {

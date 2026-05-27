@@ -762,6 +762,22 @@ select:focus {
   background-size: 54px 54px;
 }
 
+.rider-map-panel {
+  grid-column: 1 / -1;
+}
+
+.rider-live-map,
+.rider-live-map.admin-map .leaflet-container,
+.rider-live-map.admin-map.leaflet-container {
+  min-height: 360px;
+}
+
+.map-distance {
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 900;
+}
+
 .admin-map .leaflet-container,
 .admin-map.leaflet-container {
   min-height: 460px;

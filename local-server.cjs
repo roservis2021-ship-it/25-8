@@ -105,6 +105,21 @@ function publicOrder(order) {
   };
 }
 
+function getLiveCustomer(order) {
+  if (!order.customerId) return null;
+  return clients.get(order.customerId) || null;
+}
+
+function riderOrder(order) {
+  const liveCustomer = getLiveCustomer(order);
+  const canTrack = ["paid", "on_route"].includes(order.status);
+  return {
+    ...publicOrder(order),
+    location: canTrack ? liveCustomer?.location || order.location || null : null,
+    customerLocationUpdatedAt: canTrack ? liveCustomer?.updatedAt || null : null,
+  };
+}
+
 function adminOrder(order) {
   return {
     ...publicOrder(order),
@@ -378,6 +393,30 @@ async function handleApi(request, response, pathname) {
       return;
     }
 
+    if (request.method === "POST" && pathname === "/api/rider/location") {
+      const body = await readBody(request);
+      const account = getSessionRider(body);
+      if (!account) {
+        sendJson(response, 401, { error: "not_authenticated" });
+        return;
+      }
+      const current = riders.get(account.userNumber) || {
+        id: account.userNumber,
+        name: account.name,
+        status: "inactive",
+      };
+      const rider = {
+        ...current,
+        id: account.userNumber,
+        name: account.name,
+        location: body.location || current.location || null,
+        updatedAt: Date.now(),
+      };
+      riders.set(rider.id, rider);
+      sendJson(response, 200, { rider });
+      return;
+    }
+
     if (request.method === "GET" && pathname === "/api/rider/orders") {
       const url = new URL(request.url, `http://${request.headers.host}`);
       const account = getSessionRider({}, request.url);
@@ -396,7 +435,7 @@ async function handleApi(request, response, pathname) {
       sendJson(response, 200, {
         rider: rider || { id: riderId, status: "inactive" },
         earnings: getRiderEarningsSummary(riderId),
-        orders: [...availableOrders, ...assignedOrders].map(publicOrder),
+        orders: [...availableOrders.map(publicOrder), ...assignedOrders.map(riderOrder)],
       });
       return;
     }

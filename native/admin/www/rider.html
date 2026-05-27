@@ -13,7 +13,10 @@
     <meta name="apple-mobile-web-app-title" content="25/8 R" />
     <title>25/8 R</title>
     <link rel="manifest" href="rider.webmanifest" />
-    <link rel="apple-touch-icon" href="icons/rider-180.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/rider-tmax-180.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/rider-tmax-192.png" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -80,11 +83,31 @@
           </div>
           <div class="rider-orders" id="riderOrders"></div>
         </section>
+
+        <section class="panel rider-map-panel hidden" id="riderMapPanel">
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Cliente pagado</p>
+              <h3>MAPA</h3>
+            </div>
+            <strong class="map-distance" id="riderMapDistance">--</strong>
+          </div>
+          <div class="admin-map rider-live-map" id="riderMap">
+            <div class="map-grid"></div>
+            <div class="map-empty" id="riderMapEmpty">Esperando ubicacion.</div>
+          </div>
+          <div class="map-legend">
+            <span><i class="status-dot online"></i>Cliente</span>
+            <span><i class="status-dot rider-online"></i>Rider</span>
+            <span id="riderMapTrend">Sin movimiento suficiente.</span>
+          </div>
+        </section>
       </section>
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="config.js"></script>
-    <script src="rider.js?v=2"></script>
+    <script src="rider.js?v=3"></script>
   </body>
 </html>

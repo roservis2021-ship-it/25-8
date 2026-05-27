@@ -1,14 +1,14 @@
-const CACHE_NAME = "rider-shell-v2";
+const CACHE_NAME = "rider-shell-v4";
 const APP_SHELL = [
   "/rider.html",
   "/styles.css",
-  "/rider.js?v=2",
+  "/rider.js?v=3",
   "/rider.webmanifest",
   "/config.js",
-  "/icons/rider-180.png",
-  "/icons/rider-192.png",
-  "/icons/rider-512.png",
-  "/icons/rider-maskable-512.png",
+  "/icons/rider-tmax-180.png",
+  "/icons/rider-tmax-192.png",
+  "/icons/rider-tmax-512.png",
+  "/icons/rider-tmax-maskable-512.png",
 ];
 
 self.addEventListener("install", (event) => {

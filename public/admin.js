@@ -31,6 +31,7 @@ let leafletMap = null;
 let leafletLayer = null;
 let leafletDidInitialFit = false;
 let leafletUserMoved = false;
+let latestLeafletBounds = [];
 
 adminTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
@@ -40,7 +41,11 @@ adminTabs.forEach((tab) => {
       panel.classList.toggle("hidden", panel.dataset.adminPanel !== nextView);
     });
     if (nextView === "map" && leafletMap) {
-      window.setTimeout(() => leafletMap.invalidateSize(), 80);
+      window.setTimeout(() => {
+        const needsInitialFit = !leafletDidInitialFit;
+        leafletMap.invalidateSize({ pan: false });
+        fitLeafletBounds(latestLeafletBounds, needsInitialFit);
+      }, 80);
     }
   });
 });
@@ -48,7 +53,7 @@ adminTabs.forEach((tab) => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/admin-sw.js?v=7")
+      .register("/admin-sw.js?v=8")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -283,10 +288,14 @@ function renderLeafletMap(points) {
       .addTo(leafletLayer);
   });
 
-  if (leafletDidInitialFit || leafletUserMoved) {
-    window.setTimeout(() => leafletMap.invalidateSize(), 80);
-    return;
-  }
+  latestLeafletBounds = bounds;
+  fitLeafletBounds(bounds);
+}
+
+function fitLeafletBounds(bounds, force = false) {
+  if (!leafletMap || !bounds.length || leafletDidInitialFit) return;
+  if (leafletUserMoved && !force) return;
+  if (!adminMap.offsetWidth || !adminMap.offsetHeight) return;
 
   if (bounds.length === 1) {
     leafletMap.setView(bounds[0], 16);

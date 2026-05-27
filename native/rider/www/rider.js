@@ -13,11 +13,21 @@ const riderNote = document.querySelector("#riderNote");
 const riderOrders = document.querySelector("#riderOrders");
 const currentEarnings = document.querySelector("#currentEarnings");
 const paidEarnings = document.querySelector("#paidEarnings");
+const riderMapPanel = document.querySelector("#riderMapPanel");
+const riderMapEl = document.querySelector("#riderMap");
+const riderMapEmpty = document.querySelector("#riderMapEmpty");
+const riderMapDistance = document.querySelector("#riderMapDistance");
+const riderMapTrend = document.querySelector("#riderMapTrend");
 const toast = document.querySelector("#toast");
 
 let active = false;
 let poll = null;
 let sessionToken = sessionStorage.getItem("riderSessionToken") || "";
+let riderLocation = null;
+let riderWatchId = null;
+let riderMap = null;
+let riderMapLayer = null;
+let lastLiveDistance = null;
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -61,6 +71,48 @@ function getLocation() {
       () => resolve(fallbackLocation),
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 },
     );
+  });
+}
+
+function distanceMeters(a, b) {
+  if (!a || !b) return null;
+  const earthMeters = 6371000;
+  const dLat = ((Number(b.lat) - Number(a.lat)) * Math.PI) / 180;
+  const dLng = ((Number(b.lng) - Number(a.lng)) * Math.PI) / 180;
+  const lat1 = (Number(a.lat) * Math.PI) / 180;
+  const lat2 = (Number(b.lat) * Math.PI) / 180;
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * earthMeters * Math.asin(Math.sqrt(h));
+}
+
+function startRiderLocationWatch() {
+  if (riderWatchId || !navigator.geolocation || !window.isSecureContext) return;
+
+  riderWatchId = navigator.geolocation.watchPosition(
+    (position) => {
+      riderLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      };
+      updateRiderLocation().catch(() => {});
+    },
+    () => {},
+    { enableHighAccuracy: true, timeout: 8000, maximumAge: 1000 },
+  );
+}
+
+function stopRiderLocationWatch() {
+  if (riderWatchId && navigator.geolocation) navigator.geolocation.clearWatch(riderWatchId);
+  riderWatchId = null;
+}
+
+async function updateRiderLocation() {
+  if (!sessionToken || !riderLocation) return;
+  await api("/api/rider/location", {
+    method: "POST",
+    body: JSON.stringify(withSession({ location: riderLocation })),
   });
 }
 
@@ -115,8 +167,89 @@ function renderOrders(orders) {
     .join("");
 }
 
+function getLeafletIcon(type) {
+  return L.divIcon({
+    className: `leaflet-status-marker ${type}`,
+    html: "<span></span>",
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+  });
+}
+
+function initRiderMap() {
+  if (riderMap || !window.L || !riderMapEl) return;
+
+  riderMap = L.map(riderMapEl, {
+    zoomControl: true,
+    attributionControl: true,
+    scrollWheelZoom: true,
+  }).setView([28.1235, -15.4366], 15);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap",
+  }).addTo(riderMap);
+
+  riderMapLayer = L.layerGroup().addTo(riderMap);
+}
+
+function renderLiveMap(order, rider = {}) {
+  const customerLocation = order?.location || null;
+  const currentRiderLocation = rider.location || riderLocation;
+  const shouldShow = order && ["paid", "on_route"].includes(order.status);
+
+  riderMapPanel.classList.toggle("hidden", !shouldShow);
+  if (!shouldShow) {
+    lastLiveDistance = null;
+    return;
+  }
+
+  initRiderMap();
+  if (!riderMap || !riderMapLayer) return;
+
+  window.setTimeout(() => riderMap.invalidateSize({ pan: false }), 80);
+  riderMapLayer.clearLayers();
+  const points = [];
+
+  if (customerLocation) {
+    points.push([Number(customerLocation.lat), Number(customerLocation.lng)]);
+    L.marker(points[points.length - 1], { icon: getLeafletIcon("client") })
+      .bindPopup(`<strong>${order.customerName || "Cliente"}</strong>`)
+      .addTo(riderMapLayer);
+  }
+
+  if (currentRiderLocation) {
+    points.push([Number(currentRiderLocation.lat), Number(currentRiderLocation.lng)]);
+    L.marker(points[points.length - 1], { icon: getLeafletIcon("rider-online") })
+      .bindPopup("<strong>Tu posicion</strong>")
+      .addTo(riderMapLayer);
+  }
+
+  riderMapEmpty.classList.toggle("hidden", points.length > 0);
+  if (points.length === 1) riderMap.setView(points[0], 17);
+  if (points.length > 1) riderMap.fitBounds(points, { padding: [36, 36], maxZoom: 17 });
+
+  const distance = distanceMeters(currentRiderLocation, customerLocation);
+  if (distance == null) {
+    riderMapDistance.textContent = "--";
+    riderMapTrend.textContent = "Esperando ubicaciones.";
+    return;
+  }
+
+  riderMapDistance.textContent =
+    distance >= 1000 ? `${(distance / 1000).toFixed(2)} km` : `${Math.round(distance)} m`;
+
+  if (lastLiveDistance == null || Math.abs(lastLiveDistance - distance) < 8) {
+    riderMapTrend.textContent = "Movimiento estable.";
+  } else {
+    riderMapTrend.textContent = distance < lastLiveDistance ? "Te estas acercando." : "Te estas alejando.";
+  }
+  lastLiveDistance = distance;
+}
+
 async function syncStatus(nextActive = active) {
   const location = await getLocation();
+  riderLocation = location;
   const { rider } = await api("/api/rider/status", {
     method: "POST",
     body: JSON.stringify(withSession({ active: nextActive, location })),
@@ -133,6 +266,8 @@ async function loadOrders() {
   renderState(rider.status);
   renderEarnings(earnings);
   renderOrders(orders);
+  const liveOrder = orders.find((order) => ["paid", "on_route"].includes(order.status));
+  renderLiveMap(liveOrder, rider);
 }
 
 function startPolling() {
@@ -148,6 +283,7 @@ function stopPolling() {
 function unlockDashboard() {
   loginGate.classList.add("hidden");
   activeToggle.disabled = false;
+  startRiderLocationWatch();
   syncStatus(false).catch(() => showToast("No se pudo acceder a la ubicacion."));
   loadOrders().catch(() => renderOrders([]));
   startPolling();
@@ -155,6 +291,7 @@ function unlockDashboard() {
 
 function logout() {
   stopPolling();
+  stopRiderLocationWatch();
   sessionToken = "";
   active = false;
   sessionStorage.removeItem("riderSessionToken");
@@ -162,6 +299,7 @@ function logout() {
   renderState("inactive");
   renderEarnings();
   renderOrders([]);
+  renderLiveMap(null);
   loginGate.classList.remove("hidden");
 }
 

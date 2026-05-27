@@ -79,6 +79,16 @@ function publicOrder(order) {
   };
 }
 
+function riderOrder(order, liveClients = new Map()) {
+  const liveCustomer = order.customerId ? liveClients.get(order.customerId) : null;
+  const canTrack = ["paid", "on_route"].includes(order.status);
+  return {
+    ...publicOrder(order),
+    location: canTrack ? liveCustomer?.location || order.location || null : null,
+    customerLocationUpdatedAt: canTrack ? liveCustomer?.updatedAt || null : null,
+  };
+}
+
 function adminOrder(order) {
   return {
     ...publicOrder(order),
@@ -318,6 +328,40 @@ async function handleApi(request, response, pathname) {
     return;
   }
 
+  if (request.method === "POST" && pathname === "/api/rider/location") {
+    const body = getBody(request);
+    const account = await getSessionRider(body);
+    if (!account) {
+      sendJson(response, 401, { error: "not_authenticated" });
+      return;
+    }
+
+    const riderRef = db.collection("riders").doc(account.userNumber);
+    const riderDoc = await riderRef.get();
+    const current = riderDoc.exists ? { id: riderDoc.id, ...riderDoc.data() } : {};
+    const rider = {
+      ...current,
+      id: account.userNumber,
+      name: account.name,
+      status: current.status || "inactive",
+      location: body.location || current.location || null,
+      updatedAt: Date.now(),
+    };
+
+    await riderRef.set(
+      {
+        name: rider.name,
+        status: rider.status,
+        location: rider.location,
+        updatedAt: rider.updatedAt,
+        updatedAtServer: FieldValue.serverTimestamp(),
+      },
+      { merge: true },
+    );
+    sendJson(response, 200, { rider });
+    return;
+  }
+
   if (request.method === "GET" && pathname === "/api/rider/orders") {
     const account = await getSessionRider({}, request.url);
     if (!account) {
@@ -344,11 +388,26 @@ async function handleApi(request, response, pathname) {
         return distanceKm(order.location, rider.location) <= 2;
       });
     const assignedOrders = assignedSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const liveClientIds = [
+      ...new Set(
+        assignedOrders
+          .filter((order) => ["paid", "on_route"].includes(order.status) && order.customerId)
+          .map((order) => order.customerId),
+      ),
+    ];
+    const liveClientDocs = await Promise.all(
+      liveClientIds.map((clientId) => db.collection("clients").doc(clientId).get()),
+    );
+    const liveClients = new Map(
+      liveClientDocs
+        .filter((doc) => doc.exists)
+        .map((doc) => [doc.id, { id: doc.id, ...doc.data() }]),
+    );
 
     sendJson(response, 200, {
       rider: rider || { id: riderId, status: "inactive" },
       earnings: await getRiderEarningsSummary(riderId),
-      orders: [...availableOrders, ...assignedOrders].map(publicOrder),
+      orders: [...availableOrders.map(publicOrder), ...assignedOrders.map((order) => riderOrder(order, liveClients))],
     });
     return;
   }
