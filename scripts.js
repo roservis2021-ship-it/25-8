@@ -47,8 +47,6 @@ const entryGate = document.querySelector("#entryGate");
 const entryForm = document.querySelector("#entryForm");
 const entryName = document.querySelector("#entryName");
 const entryPhone = document.querySelector("#entryPhone");
-const locationConsent = document.querySelector("#locationConsent");
-const contactRequest = document.querySelector("#contactRequest");
 const paymentName = paymentForm.elements.name;
 
 let customerLocation = null;
@@ -95,7 +93,7 @@ async function syncClient(active = true) {
       clientId: customerId,
       name: customerName,
       phone: entryPhone.value.trim(),
-      contactRequested: contactRequest.checked,
+      contactRequested: true,
       location: customerLocation,
       active,
     }),
@@ -272,6 +270,7 @@ function enterApp(name) {
 
 function requestLocation(name) {
   if (!navigator.geolocation || !window.isSecureContext) {
+    showToast("No se pudo pedir ubicacion segura. Usando zona aproximada.");
     enterApp(name);
     return;
   }
@@ -285,6 +284,7 @@ function requestLocation(name) {
       enterApp(name);
     },
     () => {
+      showToast("No se pudo acceder a tu ubicacion. Usando zona aproximada.");
       enterApp(name);
     },
     { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 },
@@ -294,14 +294,15 @@ function requestLocation(name) {
 entryForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const name = entryName.value.trim();
+  const phone = entryPhone.value.trim();
 
   if (!name) {
     showToast("Escribe tu nombre para entrar.");
     return;
   }
 
-  if (!locationConsent.checked) {
-    showToast("Debes aceptar el permiso solicitado.");
+  if (!phone) {
+    showToast("Escribe tu telefono para entrar.");
     return;
   }
 

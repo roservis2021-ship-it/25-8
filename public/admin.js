@@ -48,7 +48,7 @@ adminTabs.forEach((tab) => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/admin-sw.js?v=6")
+      .register("/admin-sw.js?v=7")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -133,11 +133,7 @@ function renderClients(clients) {
             <strong>${client.name || "Cliente"}</strong>
           </div>
           <span>${coord(client.location)}</span>
-          ${
-            client.contactRequested
-              ? `<em>Solicita contacto${client.phone ? `: ${client.phone}` : ""}</em>`
-              : ""
-          }
+          ${client.phone ? `<em>Telefono: ${client.phone}</em>` : ""}
         </article>
       `,
     )

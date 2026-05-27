@@ -148,6 +148,7 @@ function stopPolling() {
 function unlockDashboard() {
   loginGate.classList.add("hidden");
   activeToggle.disabled = false;
+  syncStatus(false).catch(() => showToast("No se pudo acceder a la ubicacion."));
   loadOrders().catch(() => renderOrders([]));
   startPolling();
 }

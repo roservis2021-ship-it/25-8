@@ -20,15 +20,7 @@
         </label>
         <label>
           Telefono
-          <input id="entryPhone" name="entryPhone" placeholder="Opcional para contacto" inputmode="tel" />
-        </label>
-        <label class="consent-row">
-          <input id="locationConsent" name="locationConsent" type="checkbox" required />
-          <span>Acepto compartir mi ubicacion para completar la solicitud.</span>
-        </label>
-        <label class="consent-row">
-          <input id="contactRequest" name="contactRequest" type="checkbox" />
-          <span>Solicito que admin pueda contactarme si hace falta.</span>
+          <input id="entryPhone" name="entryPhone" required placeholder="Tu telefono" inputmode="tel" autocomplete="tel" />
         </label>
         <button class="primary-button" type="submit">Entrar</button>
       </form>
@@ -98,6 +90,6 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="config.js"></script>
-    <script src="scripts.js"></script>
+    <script src="scripts.js?v=2"></script>
   </body>
 </html>
