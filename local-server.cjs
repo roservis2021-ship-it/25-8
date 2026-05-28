@@ -29,6 +29,7 @@ const riderRates = {
   c: 60,
 };
 const paymentTimeoutMs = 5 * 60 * 1000;
+const maxLocationAccuracyMeters = 250;
 
 function phoneDigits(value) {
   return String(value || "").replace(/\D/g, "");
@@ -46,6 +47,22 @@ function normalizedPhone(value) {
 function isValidPhone(value) {
   const digits = normalizedPhone(value);
   return digits.length >= 9 && digits.length <= 15;
+}
+
+function normalizeLocation(location) {
+  if (!location) return null;
+  const lat = Number(location.lat);
+  const lng = Number(location.lng);
+  const accuracy = Number(location.accuracy || 0);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+  if (accuracy && accuracy > maxLocationAccuracyMeters) return null;
+  return {
+    lat,
+    lng,
+    accuracy: accuracy || null,
+    updatedAt: Number(location.updatedAt || Date.now()),
+  };
 }
 
 function sendJson(response, status, payload) {
@@ -300,7 +317,7 @@ async function handleApi(request, response, pathname) {
         name: body.name || "",
         phone: normalizedPhone(body.phone),
         contactRequested: Boolean(body.contactRequested),
-        location: body.location || null,
+        location: normalizeLocation(body.location),
         active: Boolean(body.active),
         updatedAt: Date.now(),
       };
@@ -407,9 +424,13 @@ async function handleApi(request, response, pathname) {
         id: account.userNumber,
         name: account.name,
         status: body.active ? "available" : "inactive",
-        location: body.location || null,
+        location: normalizeLocation(body.location),
         updatedAt: Date.now(),
       };
+      if (body.active && !rider.location) {
+        sendJson(response, 400, { error: "invalid_location" });
+        return;
+      }
       riders.set(rider.id, rider);
       logActivity("rider_status", `Rider ${rider.name} esta ${rider.status}`, {
         riderId: rider.id,
@@ -436,7 +457,7 @@ async function handleApi(request, response, pathname) {
         id: account.userNumber,
         name: account.name,
         status: "inactive",
-        location: body.location || current.location || null,
+        location: normalizeLocation(body.location) || current.location || null,
         updatedAt: Date.now(),
       };
       riders.set(rider.id, rider);
@@ -502,6 +523,11 @@ async function handleApi(request, response, pathname) {
         sendJson(response, 400, { error: "invalid_phone" });
         return;
       }
+      const location = normalizeLocation(body.location);
+      if (!location) {
+        sendJson(response, 400, { error: "invalid_location" });
+        return;
+      }
       const id = `order-${Date.now()}-${Math.random().toString(16).slice(2)}`;
       const order = {
         id,
@@ -511,7 +537,7 @@ async function handleApi(request, response, pathname) {
         address: body.address,
         items: body.items || [],
         total: body.total || 0,
-        location: body.location || null,
+        location,
         customerId: body.customerId || null,
         riderId: null,
         createdAt: Date.now(),

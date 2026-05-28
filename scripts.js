@@ -65,8 +65,11 @@ let clientWatchId = null;
 let lastClientLocationSentAt = 0;
 let lastClientLocationSent = null;
 let customerId = localStorage.getItem("customerId") || "";
-const fallbackLocation = { lat: 28.1235, lng: -15.4366 };
 const apiBase = window.WON_API_BASE || (window.location.protocol === "file:" ? "http://127.0.0.1:8000" : "");
+const MAX_GPS_ACCURACY_METERS = 120;
+const IDEAL_GPS_ACCURACY_METERS = 45;
+const MAX_LOCATION_AGE_MS = 20_000;
+const MAX_JUMP_SPEED_MPS = 45;
 
 function phoneDigits(value) {
   return String(value || "").replace(/\D/g, "");
@@ -142,7 +145,88 @@ function distanceMeters(a, b) {
   return 2 * earthMeters * Math.asin(Math.sqrt(h));
 }
 
+function locationFromPosition(position) {
+  return {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude,
+    accuracy: position.coords.accuracy || null,
+    updatedAt: position.timestamp || Date.now(),
+  };
+}
+
+function isFreshLocation(location) {
+  return location && Date.now() - Number(location.updatedAt || 0) <= MAX_LOCATION_AGE_MS;
+}
+
+function isAccurateLocation(location) {
+  return (
+    location &&
+    Number.isFinite(Number(location.lat)) &&
+    Number.isFinite(Number(location.lng)) &&
+    Number(location.accuracy || Number.POSITIVE_INFINITY) <= MAX_GPS_ACCURACY_METERS
+  );
+}
+
+function isPlausibleLocation(next, previous = customerLocation) {
+  if (!previous || !next) return true;
+  const seconds = Math.max(1, (Number(next.updatedAt || Date.now()) - Number(previous.updatedAt || Date.now())) / 1000);
+  const distance = distanceMeters(previous, next);
+  const tolerance = Math.max(Number(previous.accuracy || 0), Number(next.accuracy || 0), 25);
+  return distance <= tolerance || distance / seconds <= MAX_JUMP_SPEED_MPS;
+}
+
+function acceptCustomerLocation(location) {
+  if (!isFreshLocation(location) || !isAccurateLocation(location) || !isPlausibleLocation(location)) {
+    return false;
+  }
+  customerLocation = location;
+  return true;
+}
+
+function requestAccurateLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation || !window.isSecureContext) {
+      reject(new Error("gps_unavailable"));
+      return;
+    }
+
+    let best = null;
+    let settled = false;
+    let watchId = null;
+    const finish = (location) => {
+      if (settled) return;
+      settled = true;
+      if (watchId != null) navigator.geolocation.clearWatch(watchId);
+      if (acceptCustomerLocation(location)) {
+        resolve(customerLocation);
+      } else {
+        reject(new Error("gps_not_accurate"));
+      }
+    };
+
+    watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const location = locationFromPosition(position);
+        if (!isFreshLocation(location) || !isPlausibleLocation(location, best || customerLocation)) return;
+        if (!best || Number(location.accuracy || Infinity) < Number(best.accuracy || Infinity)) best = location;
+        if (Number(location.accuracy || Infinity) <= IDEAL_GPS_ACCURACY_METERS) finish(location);
+      },
+      () => {},
+      { enableHighAccuracy: true, timeout: 12_000, maximumAge: 0 },
+    );
+
+    window.setTimeout(() => {
+      if (best && Number(best.accuracy || Infinity) <= MAX_GPS_ACCURACY_METERS) {
+        finish(best);
+      } else {
+        finish(null);
+      }
+    }, 10_000);
+  });
+}
+
 function maybeSyncClientLocation(force = false) {
+  if (!customerLocation) return;
   const now = Date.now();
   const moved = distanceMeters(lastClientLocationSent, customerLocation);
   if (!force && moved < 8 && now - lastClientLocationSentAt < 5000) return;
@@ -165,14 +249,12 @@ function startClientLocationWatch() {
 
   clientWatchId = navigator.geolocation.watchPosition(
     (position) => {
-      customerLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
-      if (customerName) maybeSyncClientLocation();
+      if (acceptCustomerLocation(locationFromPosition(position)) && customerName) {
+        maybeSyncClientLocation();
+      }
     },
     () => {},
-    { enableHighAccuracy: true, timeout: 8000, maximumAge: 1000 },
+    { enableHighAccuracy: true, timeout: 12_000, maximumAge: 0 },
   );
 }
 
@@ -395,7 +477,6 @@ function updateQuantity(id, delta) {
 function enterApp(name) {
   customerName = name;
   paymentName.value = name;
-  if (!customerLocation) customerLocation = fallbackLocation;
   entryGate.classList.add("hidden");
   maybeSyncClientLocation(true);
   startClientHeartbeat();
@@ -403,28 +484,14 @@ function enterApp(name) {
   showToast(`Bienvenido, ${name}.`);
 }
 
-function requestLocation(name) {
-  if (!navigator.geolocation || !window.isSecureContext) {
-    showToast("No se pudo pedir ubicacion segura. Usando zona aproximada.");
+async function requestLocation(name) {
+  try {
+    await requestAccurateLocation();
+    startClientLocationWatch();
     enterApp(name);
-    return;
+  } catch {
+    showToast("Activa la ubicacion precisa y espera una senal GPS estable.");
   }
-
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      customerLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
-      startClientLocationWatch();
-      enterApp(name);
-    },
-    () => {
-      showToast("No se pudo acceder a tu ubicacion. Usando zona aproximada.");
-      enterApp(name);
-    },
-    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 },
-  );
 }
 
 entryForm.addEventListener("submit", (event) => {
@@ -481,6 +548,12 @@ paymentForm.addEventListener("submit", (event) => {
   if (!isValidPhone(customerPhone)) {
     setWaitingMode(false);
     showToast("Introduce un telefono real con al menos 9 digitos.");
+    return;
+  }
+
+  if (!customerLocation || !isFreshLocation(customerLocation) || !isAccurateLocation(customerLocation)) {
+    setWaitingMode(false);
+    showToast("Necesitamos una ubicacion GPS precisa para pedir.");
     return;
   }
 

@@ -1,6 +1,9 @@
-const fallbackLocation = { lat: 28.1236, lng: -15.4364 };
 const apiBase = window.WON_API_BASE || (window.location.protocol === "file:" ? "http://127.0.0.1:8000" : "");
 const money = new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" });
+const MAX_GPS_ACCURACY_METERS = 120;
+const IDEAL_GPS_ACCURACY_METERS = 45;
+const MAX_LOCATION_AGE_MS = 20_000;
+const MAX_JUMP_SPEED_MPS = 45;
 
 const loginGate = document.querySelector("#riderLoginGate");
 const loginForm = document.querySelector("#riderLoginForm");
@@ -32,11 +35,12 @@ let riderMapLayer = null;
 let lastLiveDistance = null;
 let liveOrderId = "";
 let riderMapUserMoved = false;
+let lastRiderLocationSentAt = 0;
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/rider-sw.js?v=9")
+      .register("/rider-sw.js?v=10")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -62,25 +66,6 @@ function withSession(body = {}) {
   return { ...body, sessionToken };
 }
 
-function getLocation() {
-  return new Promise((resolve) => {
-    if (!navigator.geolocation || !window.isSecureContext) {
-      resolve(fallbackLocation);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) =>
-        resolve({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }),
-      () => resolve(fallbackLocation),
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 },
-    );
-  });
-}
-
 function distanceMeters(a, b) {
   if (!a || !b) return null;
   const earthMeters = 6371000;
@@ -94,19 +79,97 @@ function distanceMeters(a, b) {
   return 2 * earthMeters * Math.asin(Math.sqrt(h));
 }
 
+function locationFromPosition(position) {
+  return {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude,
+    accuracy: position.coords.accuracy || null,
+    updatedAt: position.timestamp || Date.now(),
+  };
+}
+
+function isFreshLocation(location) {
+  return location && Date.now() - Number(location.updatedAt || 0) <= MAX_LOCATION_AGE_MS;
+}
+
+function isAccurateLocation(location) {
+  return (
+    location &&
+    Number.isFinite(Number(location.lat)) &&
+    Number.isFinite(Number(location.lng)) &&
+    Number(location.accuracy || Number.POSITIVE_INFINITY) <= MAX_GPS_ACCURACY_METERS
+  );
+}
+
+function isPlausibleLocation(next, previous = riderLocation) {
+  if (!previous || !next) return true;
+  const seconds = Math.max(1, (Number(next.updatedAt || Date.now()) - Number(previous.updatedAt || Date.now())) / 1000);
+  const distance = distanceMeters(previous, next) || 0;
+  const tolerance = Math.max(Number(previous.accuracy || 0), Number(next.accuracy || 0), 25);
+  return distance <= tolerance || distance / seconds <= MAX_JUMP_SPEED_MPS;
+}
+
+function acceptRiderLocation(location) {
+  if (!isFreshLocation(location) || !isAccurateLocation(location) || !isPlausibleLocation(location)) {
+    return false;
+  }
+  riderLocation = location;
+  return true;
+}
+
+function requestAccurateLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation || !window.isSecureContext) {
+      reject(new Error("gps_unavailable"));
+      return;
+    }
+
+    let best = null;
+    let settled = false;
+    let watchId = null;
+    const finish = (location) => {
+      if (settled) return;
+      settled = true;
+      if (watchId != null) navigator.geolocation.clearWatch(watchId);
+      if (acceptRiderLocation(location)) {
+        resolve(riderLocation);
+      } else {
+        reject(new Error("gps_not_accurate"));
+      }
+    };
+
+    watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const location = locationFromPosition(position);
+        if (!isFreshLocation(location) || !isPlausibleLocation(location, best || riderLocation)) return;
+        if (!best || Number(location.accuracy || Infinity) < Number(best.accuracy || Infinity)) best = location;
+        if (Number(location.accuracy || Infinity) <= IDEAL_GPS_ACCURACY_METERS) finish(location);
+      },
+      () => {},
+      { enableHighAccuracy: true, timeout: 12_000, maximumAge: 0 },
+    );
+
+    window.setTimeout(() => {
+      if (best && Number(best.accuracy || Infinity) <= MAX_GPS_ACCURACY_METERS) {
+        finish(best);
+      } else {
+        finish(null);
+      }
+    }, 10_000);
+  });
+}
+
 function startRiderLocationWatch() {
   if (riderWatchId || !navigator.geolocation || !window.isSecureContext) return;
 
   riderWatchId = navigator.geolocation.watchPosition(
     (position) => {
-      riderLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
-      updateRiderLocation().catch(() => {});
+      if (acceptRiderLocation(locationFromPosition(position))) {
+        updateRiderLocation().catch(() => {});
+      }
     },
     () => {},
-    { enableHighAccuracy: true, timeout: 8000, maximumAge: 1000 },
+    { enableHighAccuracy: true, timeout: 12_000, maximumAge: 0 },
   );
 }
 
@@ -117,6 +180,9 @@ function stopRiderLocationWatch() {
 
 async function updateRiderLocation() {
   if (!sessionToken || !riderLocation) return;
+  const now = Date.now();
+  if (now - lastRiderLocationSentAt < 2_500) return;
+  lastRiderLocationSentAt = now;
   await api("/api/rider/location", {
     method: "POST",
     body: JSON.stringify(withSession({ location: riderLocation })),
@@ -291,8 +357,7 @@ function renderLiveMap(order, rider = {}) {
 }
 
 async function syncStatus(nextActive = active) {
-  const location = await getLocation();
-  riderLocation = location;
+  const location = nextActive ? await requestAccurateLocation() : riderLocation;
   const { rider } = await api("/api/rider/status", {
     method: "POST",
     body: JSON.stringify(withSession({ active: nextActive, location })),
@@ -344,7 +409,7 @@ function unlockDashboard() {
   loginGate.classList.add("hidden");
   activeToggle.disabled = false;
   startRiderLocationWatch();
-  syncStatus(false).catch(() => showToast("No se pudo acceder a la ubicacion."));
+  syncStatus(false).catch(() => {});
   loadOrders().catch(() => renderOrders([]));
   startPolling();
 }
@@ -384,12 +449,15 @@ loginForm.addEventListener("submit", async (event) => {
 });
 
 activeToggle.addEventListener("click", async () => {
+  activeToggle.disabled = true;
   try {
     await syncStatus(!active);
     await loadOrders();
     startPolling();
-  } catch {
-    showToast("No se pudo cambiar el estado.");
+  } catch (error) {
+    showToast("Activa la ubicacion precisa y espera una senal GPS estable.");
+  } finally {
+    activeToggle.disabled = activeToggle.classList.contains("is-busy") || !sessionToken;
   }
 });
 
