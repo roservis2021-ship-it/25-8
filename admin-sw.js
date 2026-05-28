@@ -1,7 +1,7 @@
 const CACHE_NAME = "admin-shell-v9";
 const APP_SHELL = [
   "/admin.html",
-  "/styles.css?v=10",
+  "/styles.css?v=11",
   "/admin.js?v=9",
   "/admin.webmanifest",
   "/config.js",

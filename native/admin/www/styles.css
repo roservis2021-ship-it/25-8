@@ -955,22 +955,35 @@ select:focus {
 .rider-delivery-mode .rider-live-map.admin-map .leaflet-container,
 .rider-delivery-mode .rider-live-map.admin-map.leaflet-container {
   position: absolute;
-  inset: 0 0 74px;
+  inset: 0 0 132px;
   min-height: 0;
   height: auto;
   border: 0;
   border-radius: 0;
 }
 
-.rider-delivery-mode #deliveryDoneButton {
+.delivery-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.delivery-actions a {
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+}
+
+.rider-delivery-mode .delivery-actions {
   position: fixed;
   right: 14px;
   bottom: 14px;
   left: 14px;
   z-index: 25;
-  width: auto;
-  min-height: 48px;
   margin: 0;
+}
+
+.rider-delivery-mode .delivery-actions .primary-button {
+  min-height: 48px;
 }
 
 .rider-footer {

@@ -72,8 +72,17 @@ function phoneDigits(value) {
   return String(value || "").replace(/\D/g, "");
 }
 
+function normalizedPhone(value) {
+  const raw = String(value || "").trim();
+  const digits = phoneDigits(raw);
+  if (raw.startsWith("+34") && digits.startsWith("34")) return digits.slice(2);
+  if (digits.startsWith("0034")) return digits.slice(4);
+  if (digits.startsWith("34") && digits.length === 11) return digits.slice(2);
+  return digits;
+}
+
 function isValidPhone(value) {
-  const digits = phoneDigits(value);
+  const digits = normalizedPhone(value);
   return digits.length >= 9 && digits.length <= 15;
 }
 
@@ -112,7 +121,7 @@ async function syncClient(active = true) {
     body: JSON.stringify({
       clientId: customerId,
       name: customerName,
-      phone: phoneDigits(entryPhone.value),
+      phone: normalizedPhone(entryPhone.value),
       contactRequested: true,
       location: customerLocation,
       active,
@@ -467,7 +476,7 @@ paymentForm.addEventListener("submit", (event) => {
   }
 
   const formData = new FormData(paymentForm);
-  const customerPhone = phoneDigits(entryPhone.value);
+  const customerPhone = normalizedPhone(entryPhone.value);
 
   if (!isValidPhone(customerPhone)) {
     setWaitingMode(false);

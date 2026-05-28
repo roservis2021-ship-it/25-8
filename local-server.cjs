@@ -34,8 +34,17 @@ function phoneDigits(value) {
   return String(value || "").replace(/\D/g, "");
 }
 
+function normalizedPhone(value) {
+  const raw = String(value || "").trim();
+  const digits = phoneDigits(raw);
+  if (raw.startsWith("+34") && digits.startsWith("34")) return digits.slice(2);
+  if (digits.startsWith("0034")) return digits.slice(4);
+  if (digits.startsWith("34") && digits.length === 11) return digits.slice(2);
+  return digits;
+}
+
 function isValidPhone(value) {
-  const digits = phoneDigits(value);
+  const digits = normalizedPhone(value);
   return digits.length >= 9 && digits.length <= 15;
 }
 
@@ -289,7 +298,7 @@ async function handleApi(request, response, pathname) {
       const client = {
         id: clientId,
         name: body.name || "",
-        phone: phoneDigits(body.phone),
+        phone: normalizedPhone(body.phone),
         contactRequested: Boolean(body.contactRequested),
         location: body.location || null,
         active: Boolean(body.active),
@@ -488,7 +497,7 @@ async function handleApi(request, response, pathname) {
 
     if (request.method === "POST" && pathname === "/api/orders") {
       const body = await readBody(request);
-      const customerPhone = phoneDigits(body.customerPhone);
+      const customerPhone = normalizedPhone(body.customerPhone);
       if (!isValidPhone(customerPhone)) {
         sendJson(response, 400, { error: "invalid_phone" });
         return;

@@ -17,7 +17,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/rider-tmax-180.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="/icons/rider-tmax-192.png" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=10" />
+    <link rel="stylesheet" href="styles.css?v=11" />
   </head>
   <body>
     <div class="entry-gate" id="riderLoginGate">
@@ -105,9 +105,14 @@
             <span><i class="status-dot rider-online"></i>Rider</span>
             <span id="riderMapTrend">Sin movimiento suficiente.</span>
           </div>
-          <button class="primary-button hidden" id="deliveryDoneButton" type="button">
-            CONFIRMAR ENTREGA
-          </button>
+          <div class="delivery-actions">
+            <a class="primary-button hidden" id="contactCustomerButton" href="#">
+              CONTACTAR CLIENTE
+            </a>
+            <button class="primary-button hidden" id="deliveryDoneButton" type="button">
+              CONFIRMAR ENTREGA
+            </button>
+          </div>
         </section>
       </section>
 
@@ -119,6 +124,6 @@
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="config.js"></script>
-    <script src="rider.js?v=7"></script>
+    <script src="rider.js?v=8"></script>
   </body>
 </html>

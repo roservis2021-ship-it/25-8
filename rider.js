@@ -18,6 +18,7 @@ const riderMapEl = document.querySelector("#riderMap");
 const riderMapEmpty = document.querySelector("#riderMapEmpty");
 const riderMapDistance = document.querySelector("#riderMapDistance");
 const riderMapTrend = document.querySelector("#riderMapTrend");
+const contactCustomerButton = document.querySelector("#contactCustomerButton");
 const deliveryDoneButton = document.querySelector("#deliveryDoneButton");
 const toast = document.querySelector("#toast");
 
@@ -35,7 +36,7 @@ let riderMapUserMoved = false;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/rider-sw.js?v=8")
+      .register("/rider-sw.js?v=9")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -219,15 +220,19 @@ function renderLiveMap(order, rider = {}) {
   const shouldShow = order && ["paid", "on_route"].includes(order.status);
   const isDeliveryScreen = order?.status === "on_route";
   const orderChanged = order?.id && order.id !== liveOrderId;
+  const customerPhone = String(order?.customerPhone || "").replace(/\D/g, "");
 
   document.body.classList.toggle("rider-delivery-mode", Boolean(isDeliveryScreen));
   riderMapPanel.classList.toggle("hidden", !shouldShow);
+  contactCustomerButton.classList.toggle("hidden", !isDeliveryScreen || !customerPhone);
+  contactCustomerButton.href = customerPhone ? `tel:${customerPhone}` : "#";
   deliveryDoneButton.classList.toggle("hidden", !isDeliveryScreen);
   deliveryDoneButton.dataset.deliver = isDeliveryScreen ? order.id : "";
   if (!shouldShow) {
     lastLiveDistance = null;
     liveOrderId = "";
     riderMapUserMoved = false;
+    contactCustomerButton.href = "#";
     document.body.classList.remove("rider-delivery-mode");
     return;
   }
