@@ -40,7 +40,7 @@ let lastRiderLocationSentAt = 0;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/rider-sw.js?v=10")
+      .register("/rider-sw.js?v=11")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -58,7 +58,11 @@ async function api(path, options = {}) {
     ...options,
   });
   const payload = await response.json();
-  if (!response.ok) throw new Error(payload.error || "api_error");
+  if (!response.ok) {
+    const error = new Error(payload.error || "api_error");
+    error.status = response.status;
+    throw error;
+  }
   return payload;
 }
 
@@ -397,7 +401,7 @@ async function loadOrders() {
 
 function startPolling() {
   if (poll) window.clearInterval(poll);
-  poll = window.setInterval(loadOrders, 2500);
+  poll = window.setInterval(() => loadOrders().catch(handleRiderError), 2500);
 }
 
 function stopPolling() {
@@ -405,12 +409,33 @@ function stopPolling() {
   poll = null;
 }
 
+function lockDashboardForInvalidSession() {
+  stopPolling();
+  stopRiderLocationWatch();
+  sessionToken = "";
+  active = false;
+  sessionStorage.removeItem("riderSessionToken");
+  renderState("inactive");
+  renderOrders([]);
+  renderLiveMap(null);
+  loginGate.classList.remove("hidden");
+  showToast("Sesion cerrada en este dispositivo.");
+}
+
+function handleRiderError(error) {
+  if (error?.status === 401) {
+    lockDashboardForInvalidSession();
+    return;
+  }
+  throw error;
+}
+
 function unlockDashboard() {
   loginGate.classList.add("hidden");
   activeToggle.disabled = false;
   startRiderLocationWatch();
   syncStatus(false).catch(() => {});
-  loadOrders().catch(() => renderOrders([]));
+  loadOrders().catch(handleRiderError).catch(() => renderOrders([]));
   startPolling();
 }
 

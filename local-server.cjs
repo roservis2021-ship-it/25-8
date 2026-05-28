@@ -4,6 +4,12 @@ const path = require("path");
 
 const root = __dirname;
 const port = Number(process.env.PORT) || 8000;
+const dataDir = path.join(root, ".data");
+const riderAccountsPath = path.join(dataDir, "rider-accounts.json");
+const defaultRiderAccounts = [
+  ["1001", { userNumber: "1001", key: "2580", name: "R1" }],
+  ["1002", { userNumber: "1002", key: "2581", name: "R2" }],
+];
 const types = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -15,10 +21,7 @@ const types = {
 const riders = new Map();
 const orders = new Map();
 const clients = new Map();
-const riderAccounts = new Map([
-  ["1001", { userNumber: "1001", key: "2580", name: "R1" }],
-  ["1002", { userNumber: "1002", key: "2581", name: "R2" }],
-]);
+const riderAccounts = loadRiderAccounts();
 const riderSessions = new Map();
 const adminSessions = new Map();
 const activity = [];
@@ -30,6 +33,26 @@ const riderRates = {
 };
 const paymentTimeoutMs = 5 * 60 * 1000;
 const maxLocationAccuracyMeters = 250;
+const liveLocationTimeoutMs = 10 * 60 * 1000;
+
+function loadRiderAccounts() {
+  try {
+    if (fs.existsSync(riderAccountsPath)) {
+      const stored = JSON.parse(fs.readFileSync(riderAccountsPath, "utf8"));
+      return new Map(stored.map((account) => [String(account.userNumber), account]));
+    }
+  } catch {}
+  return new Map(defaultRiderAccounts);
+}
+
+function persistRiderAccounts() {
+  try {
+    fs.mkdirSync(dataDir, { recursive: true });
+    fs.writeFileSync(riderAccountsPath, JSON.stringify([...riderAccounts.values()], null, 2));
+  } catch (error) {
+    console.error("Could not persist rider accounts", error);
+  }
+}
 
 function phoneDigits(value) {
   return String(value || "").replace(/\D/g, "");
@@ -63,6 +86,25 @@ function normalizeLocation(location) {
     accuracy: accuracy || null,
     updatedAt: Number(location.updatedAt || Date.now()),
   };
+}
+
+function isFreshLiveLocation(entry, now = Date.now()) {
+  return entry?.location && Number(entry.updatedAt || 0) >= now - liveLocationTimeoutMs;
+}
+
+function pruneLiveState() {
+  const now = Date.now();
+  for (const [id, client] of clients.entries()) {
+    if (client.active && !isFreshLiveLocation(client, now)) {
+      clients.set(id, { ...client, active: false, location: null, updatedAt: now });
+    }
+  }
+
+  for (const [id, rider] of riders.entries()) {
+    if (!isFreshLiveLocation(rider, now)) {
+      riders.set(id, { ...rider, status: "inactive", location: null, updatedAt: now });
+    }
+  }
 }
 
 function sendJson(response, status, payload) {
@@ -208,8 +250,15 @@ function hasPaidRiderOrder(riderId) {
 
 function createSession(userNumber) {
   const token = `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  closeExistingRiderSessions(userNumber);
   riderSessions.set(token, userNumber);
   return token;
+}
+
+function closeExistingRiderSessions(userNumber, exceptToken = "") {
+  for (const [token, riderId] of riderSessions.entries()) {
+    if (riderId === userNumber && token !== exceptToken) riderSessions.delete(token);
+  }
 }
 
 function getSessionRider(body = {}, requestUrl = "") {
@@ -273,6 +322,7 @@ function getRiderAdminEarnings() {
 
 async function handleApi(request, response, pathname) {
   try {
+    pruneLiveState();
     expireUnpaidOrders();
 
     if (request.method === "POST" && pathname === "/api/rider/login") {
@@ -339,10 +389,14 @@ async function handleApi(request, response, pathname) {
         return;
       }
 
-      const activeSince = Date.now() - 15 * 60 * 1000;
+      const activeSince = Date.now() - liveLocationTimeoutMs;
       const allOrders = [...orders.values()].sort((a, b) => b.createdAt - a.createdAt);
       const activeClients = [...clients.values()].filter((client) => {
         return client.active && client.location && client.updatedAt >= activeSince;
+      });
+      const liveRiders = [...riders.values()].map((rider) => {
+        if (!isFreshLiveLocation(rider)) return { ...rider, status: "inactive", location: null };
+        return rider;
       });
       const riderAccountsList = [...riderAccounts.values()].map((rider) => ({
         userNumber: rider.userNumber,
@@ -352,7 +406,7 @@ async function handleApi(request, response, pathname) {
 
       sendJson(response, 200, {
         clients: activeClients,
-        riders: [...riders.values()],
+        riders: liveRiders,
         orders: allOrders.map(adminOrder),
         requestedOrders: allOrders
           .filter((order) => order.status === "searching_rider")
@@ -386,6 +440,7 @@ async function handleApi(request, response, pathname) {
 
       const rider = { userNumber, key, name };
       riderAccounts.set(userNumber, rider);
+      persistRiderAccounts();
       logActivity("admin_rider_created", `Admin anadio rider ${name}`, {
         riderId: userNumber,
         riderName: name,
@@ -404,6 +459,7 @@ async function handleApi(request, response, pathname) {
       }
 
       riderAccounts.delete(id);
+      persistRiderAccounts();
       riders.delete(id);
       for (const [token, riderId] of riderSessions.entries()) {
         if (riderId === id) riderSessions.delete(token);
@@ -485,7 +541,7 @@ async function handleApi(request, response, pathname) {
         ...current,
         id: account.userNumber,
         name: account.name,
-        location: body.location || current.location || null,
+        location: normalizeLocation(body.location) || current.location || null,
         updatedAt: Date.now(),
       };
       riders.set(rider.id, rider);

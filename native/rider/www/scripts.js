@@ -62,6 +62,8 @@ let activeOrderId = null;
 let orderPoll = null;
 let clientHeartbeat = null;
 let clientWatchId = null;
+let clientIdleTimer = null;
+let clientActive = false;
 let lastClientLocationSentAt = 0;
 let lastClientLocationSent = null;
 let customerId = localStorage.getItem("customerId") || "";
@@ -126,10 +128,34 @@ async function syncClient(active = true) {
       name: customerName,
       phone: normalizedPhone(entryPhone.value),
       contactRequested: true,
-      location: customerLocation,
+      location: active ? customerLocation : null,
       active,
     }),
   });
+}
+
+function sendClientInactive() {
+  if (!customerId || !clientActive) return;
+  const payload = JSON.stringify({
+    clientId: customerId,
+    name: customerName,
+    phone: normalizedPhone(entryPhone.value),
+    contactRequested: true,
+    location: null,
+    active: false,
+  });
+
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(`${apiBase}/api/clients/status`, new Blob([payload], { type: "application/json" }));
+    return;
+  }
+
+  fetch(`${apiBase}/api/clients/status`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: payload,
+    keepalive: true,
+  }).catch(() => {});
 }
 
 function distanceMeters(a, b) {
@@ -242,6 +268,56 @@ function startClientHeartbeat() {
     if (!customerName) return;
     maybeSyncClientLocation(true);
   }, 15_000);
+}
+
+function stopClientLocationWatch() {
+  if (clientWatchId && navigator.geolocation) navigator.geolocation.clearWatch(clientWatchId);
+  clientWatchId = null;
+}
+
+function clearClientIdleTimer() {
+  if (clientIdleTimer) window.clearTimeout(clientIdleTimer);
+  clientIdleTimer = null;
+}
+
+function scheduleClientIdleLogout() {
+  clearClientIdleTimer();
+  if (!clientActive || activeOrderId) return;
+
+  clientIdleTimer = window.setTimeout(() => {
+    deactivateClient(true);
+  }, 10 * 60 * 1000);
+}
+
+function noteClientActivity() {
+  if (!clientActive || activeOrderId) return;
+  scheduleClientIdleLogout();
+}
+
+function deactivateClient(showGate = false) {
+  clearClientIdleTimer();
+  if (clientHeartbeat) window.clearInterval(clientHeartbeat);
+  clientHeartbeat = null;
+  stopOrderPolling();
+  stopClientLocationWatch();
+  activeOrderId = null;
+  syncClient(false).catch(() => sendClientInactive());
+  clientActive = false;
+
+  if (showGate) {
+    setWaitingMode(false);
+    confirmButton.disabled = false;
+    confirmButton.classList.remove("hidden");
+    payButton.classList.add("hidden");
+    payButton.disabled = false;
+    reorderButton.classList.add("hidden");
+    setOrderStatus("");
+    customerName = "";
+    customerLocation = null;
+    lastClientLocationSent = null;
+    entryGate.classList.remove("hidden");
+    showToast("Sesion cerrada por inactividad.");
+  }
 }
 
 function startClientLocationWatch() {
@@ -439,6 +515,7 @@ function handleOrderState(order) {
     payButton.classList.add("hidden");
     reorderButton.classList.remove("hidden");
     stopOrderPolling();
+    scheduleClientIdleLogout();
   }
 }
 
@@ -476,11 +553,13 @@ function updateQuantity(id, delta) {
 
 function enterApp(name) {
   customerName = name;
+  clientActive = true;
   paymentName.value = name;
   entryGate.classList.add("hidden");
   maybeSyncClientLocation(true);
   startClientHeartbeat();
   startClientLocationWatch();
+  scheduleClientIdleLogout();
   showToast(`Bienvenido, ${name}.`);
 }
 
@@ -583,6 +662,7 @@ paymentForm.addEventListener("submit", (event) => {
   })
     .then(({ order }) => {
       activeOrderId = order.id;
+      clearClientIdleTimer();
       handleOrderState(order);
       startOrderPolling(order.id);
     })
@@ -621,6 +701,7 @@ payButton.addEventListener("click", () => {
 reorderButton.addEventListener("click", () => {
   activeOrderId = null;
   stopOrderPolling();
+  scheduleClientIdleLogout();
   setWaitingMode(false);
   confirmButton.disabled = false;
   confirmButton.classList.remove("hidden");
@@ -633,3 +714,11 @@ reorderButton.addEventListener("click", () => {
 
 renderProducts();
 renderCart();
+
+["click", "touchstart", "keydown", "pointerdown"].forEach((eventName) => {
+  document.addEventListener(eventName, noteClientActivity, { passive: true });
+});
+
+window.addEventListener("pagehide", () => {
+  sendClientInactive();
+});
