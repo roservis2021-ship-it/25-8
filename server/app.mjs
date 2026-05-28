@@ -1,11 +1,14 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 
 const port = Number(process.env.PORT) || 10000;
 const allowedOrigin = process.env.ALLOWED_ORIGIN || "*";
 const dataDir = process.env.DATA_DIR || path.join(process.cwd(), ".data");
 const riderAccountsPath = path.join(dataDir, "rider-accounts.json");
+const serverSecret = process.env.SERVER_SECRET || process.env.ADMIN_KEY || "won-local-development-secret";
+const encryptionKey = crypto.createHash("sha256").update(serverSecret).digest();
 const defaultRiderAccounts = [
   ["1001", { userNumber: "1001", key: "2580", name: "R1" }],
   ["1002", { userNumber: "1002", key: "2581", name: "R2" }],
@@ -31,20 +34,105 @@ const liveLocationTimeoutMs = 10 * 60 * 1000;
 function loadRiderAccounts() {
   try {
     if (fs.existsSync(riderAccountsPath)) {
-      const stored = JSON.parse(fs.readFileSync(riderAccountsPath, "utf8"));
-      return new Map(stored.map((account) => [String(account.userNumber), account]));
+      const stored = readEncryptedJson(riderAccountsPath);
+      return new Map(stored.map((account) => {
+        const secureAccount = secureRiderAccount(account);
+        return [String(secureAccount.userNumber), secureAccount];
+      }));
     }
   } catch {}
-  return new Map(defaultRiderAccounts);
+  return new Map(defaultRiderAccounts.map(([id, account]) => [id, secureRiderAccount(account)]));
 }
 
 function persistRiderAccounts() {
   try {
     fs.mkdirSync(dataDir, { recursive: true });
-    fs.writeFileSync(riderAccountsPath, JSON.stringify([...riderAccounts.values()], null, 2));
+    writeEncryptedJson(riderAccountsPath, [...riderAccounts.values()].map(publicPersistedRiderAccount));
   } catch (error) {
     console.error("Could not persist rider accounts", error);
   }
+}
+
+function readEncryptedJson(filePath) {
+  const content = fs.readFileSync(filePath, "utf8");
+  const parsed = JSON.parse(content);
+  if (Array.isArray(parsed)) return parsed;
+  if (!parsed?.data || !parsed?.iv || !parsed?.tag) return [];
+
+  const decipher = crypto.createDecipheriv("aes-256-gcm", encryptionKey, Buffer.from(parsed.iv, "hex"));
+  decipher.setAuthTag(Buffer.from(parsed.tag, "hex"));
+  const decrypted = Buffer.concat([
+    decipher.update(Buffer.from(parsed.data, "hex")),
+    decipher.final(),
+  ]);
+  return JSON.parse(decrypted.toString("utf8"));
+}
+
+function writeEncryptedJson(filePath, value) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv("aes-256-gcm", encryptionKey, iv);
+  const encrypted = Buffer.concat([
+    cipher.update(JSON.stringify(value), "utf8"),
+    cipher.final(),
+  ]);
+  fs.writeFileSync(
+    filePath,
+    JSON.stringify(
+      {
+        version: 1,
+        algorithm: "aes-256-gcm",
+        iv: iv.toString("hex"),
+        tag: cipher.getAuthTag().toString("hex"),
+        data: encrypted.toString("hex"),
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+function randomToken(prefix) {
+  return `${prefix}-${crypto.randomBytes(32).toString("base64url")}`;
+}
+
+function tokenHash(token) {
+  return crypto.createHash("sha256").update(String(token || "")).digest("hex");
+}
+
+function hashSecret(secret, salt = crypto.randomBytes(16).toString("hex")) {
+  const hash = crypto.pbkdf2Sync(String(secret || ""), salt, 120000, 32, "sha256").toString("hex");
+  return `pbkdf2_sha256$${salt}$${hash}`;
+}
+
+function verifySecret(secret, storedHash) {
+  const [, salt, hash] = String(storedHash || "").split("$");
+  if (!salt || !hash) return false;
+  const nextHash = hashSecret(secret, salt).split("$")[2];
+  if (hash.length !== nextHash.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(nextHash, "hex"));
+}
+
+function secureRiderAccount(account) {
+  const secureAccount = {
+    userNumber: String(account.userNumber || ""),
+    name: String(account.name || ""),
+    keyHash: account.keyHash || hashSecret(account.key || ""),
+  };
+  return secureAccount;
+}
+
+function publicPersistedRiderAccount(account) {
+  return {
+    userNumber: account.userNumber,
+    name: account.name,
+    keyHash: account.keyHash,
+  };
+}
+
+function verifyRiderAccount(account, key) {
+  if (!account) return false;
+  if (account.keyHash) return verifySecret(key, account.keyHash);
+  return account.key === String(key || "");
 }
 
 function phoneDigits(value) {
@@ -101,8 +189,9 @@ function pruneLiveState() {
 }
 
 function closeExistingRiderSessions(userNumber, exceptToken = "") {
+  const exceptHash = exceptToken ? tokenHash(exceptToken) : "";
   for (const [token, riderId] of riderSessions.entries()) {
-    if (riderId === userNumber && token !== exceptToken) riderSessions.delete(token);
+    if (riderId === userNumber && token !== exceptHash) riderSessions.delete(token);
   }
 }
 
@@ -110,6 +199,8 @@ function sendJson(response, status, payload) {
   response.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
@@ -199,7 +290,7 @@ function adminOrder(order) {
 
 function logActivity(type, summary, data = {}) {
   activity.unshift({
-    id: `activity-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    id: randomToken("activity"),
     type,
     summary,
     data,
@@ -218,26 +309,39 @@ function expireUnpaidOrders() {
   }
 }
 
+function pruneDeliveredOrderSensitiveData() {
+  const now = Date.now();
+  for (const order of orders.values()) {
+    if (order.status !== "delivered" || !order.deliveredAt) continue;
+    if (now - order.deliveredAt < liveLocationTimeoutMs) continue;
+    order.customerPhone = "";
+    order.location = null;
+    order.customerId = null;
+    order.address = "";
+  }
+}
+
 function getSessionRider(body = {}, requestUrl = "") {
   const url = new URL(requestUrl || "/", "http://localhost");
   const token = body.sessionToken || url.searchParams.get("sessionToken");
-  const userNumber = riderSessions.get(token);
+  const userNumber = riderSessions.get(tokenHash(token));
   if (!userNumber) return null;
   return riderAccounts.get(userNumber) || null;
 }
 
 function closeRiderSession(body = {}) {
   const token = body.sessionToken || "";
-  const userNumber = riderSessions.get(token);
+  const hashedToken = tokenHash(token);
+  const userNumber = riderSessions.get(hashedToken);
   if (!userNumber) return null;
-  riderSessions.delete(token);
+  riderSessions.delete(hashedToken);
   return riderAccounts.get(userNumber) || null;
 }
 
 function getAdminSession(body = {}, requestUrl = "") {
   const url = new URL(requestUrl || "/", "http://localhost");
   const token = body.adminToken || url.searchParams.get("adminToken");
-  return token ? adminSessions.get(token) || null : null;
+  return token ? adminSessions.get(tokenHash(token)) || null : null;
 }
 
 function getBusinessSummary(allOrders) {
@@ -294,6 +398,7 @@ function hasActiveRiderOrder(riderId, ignoredOrderId = "") {
 async function handleApi(request, response, pathname) {
   pruneLiveState();
   expireUnpaidOrders();
+  pruneDeliveredOrderSensitiveData();
 
   if (request.method === "GET" && pathname === "/api/health") {
     sendJson(response, 200, { ok: true, service: "won-render-api" });
@@ -306,8 +411,8 @@ async function handleApi(request, response, pathname) {
       sendJson(response, 401, { error: "invalid_credentials" });
       return;
     }
-    const adminToken = `admin-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    adminSessions.set(adminToken, { user: adminAccount.user, createdAt: Date.now() });
+    const adminToken = randomToken("admin");
+    adminSessions.set(tokenHash(adminToken), { user: adminAccount.user, createdAt: Date.now() });
     logActivity("admin_login", "Admin ha entrado");
     sendJson(response, 200, { adminToken });
     return;
@@ -362,7 +467,7 @@ async function handleApi(request, response, pathname) {
       sendJson(response, 400, { error: "missing_fields" });
       return;
     }
-    riderAccounts.set(userNumber, { userNumber, key, name });
+    riderAccounts.set(userNumber, secureRiderAccount({ userNumber, key, name }));
     persistRiderAccounts();
     logActivity("admin_rider_created", `Admin anadio rider ${name}`, { riderId: userNumber });
     sendJson(response, 201, { rider: { userNumber, name, active: true } });
@@ -390,6 +495,11 @@ async function handleApi(request, response, pathname) {
   if (request.method === "POST" && pathname === "/api/clients/status") {
     const body = await readBody(request);
     const clientId = String(body.clientId || `client-${Date.now()}`);
+    if (!body.active) {
+      clients.delete(clientId);
+      sendJson(response, 200, { client: { id: clientId, active: false, location: null } });
+      return;
+    }
     const client = {
       id: clientId,
       name: body.name || "",
@@ -412,13 +522,13 @@ async function handleApi(request, response, pathname) {
   if (request.method === "POST" && pathname === "/api/rider/login") {
     const body = await readBody(request);
     const account = riderAccounts.get(String(body.userNumber || ""));
-    if (!account || account.key !== String(body.key || "")) {
+    if (!verifyRiderAccount(account, body.key)) {
       sendJson(response, 401, { error: "invalid_credentials" });
       return;
     }
-    const sessionToken = `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const sessionToken = randomToken("session");
     closeExistingRiderSessions(account.userNumber);
-    riderSessions.set(sessionToken, account.userNumber);
+    riderSessions.set(tokenHash(sessionToken), account.userNumber);
     logActivity("rider_login", `Rider ${account.name} ha entrado`, { riderId: account.userNumber });
     sendJson(response, 200, {
       sessionToken,
@@ -438,7 +548,7 @@ async function handleApi(request, response, pathname) {
       id: account.userNumber,
       name: account.name,
       status: body.active ? "available" : "inactive",
-      location: normalizeLocation(body.location),
+      location: body.active ? normalizeLocation(body.location) : null,
       updatedAt: Date.now(),
     };
     if (body.active && !rider.location) {
@@ -470,7 +580,7 @@ async function handleApi(request, response, pathname) {
       id: account.userNumber,
       name: account.name,
       status: "inactive",
-      location: normalizeLocation(body.location) || current.location || null,
+      location: null,
       updatedAt: Date.now(),
     };
     riders.set(rider.id, rider);
@@ -496,7 +606,7 @@ async function handleApi(request, response, pathname) {
       ...current,
       id: account.userNumber,
       name: account.name,
-      location: normalizeLocation(body.location) || current.location || null,
+      location: current.status === "inactive" ? null : normalizeLocation(body.location) || current.location || null,
       updatedAt: Date.now(),
     };
     riders.set(rider.id, rider);
@@ -535,7 +645,7 @@ async function handleApi(request, response, pathname) {
       sendJson(response, 400, { error: "invalid_location" });
       return;
     }
-    const id = `order-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const id = randomToken("order");
     const order = {
       id,
       status: "searching_rider",
@@ -672,7 +782,8 @@ const server = http.createServer((request, response) => {
 
   if (pathname.startsWith("/api/")) {
     handleApi(request, response, pathname).catch((error) => {
-      sendJson(response, 500, { error: "server_error", message: error.message });
+      console.error("API error", error);
+      sendJson(response, 500, { error: "server_error" });
     });
     return;
   }

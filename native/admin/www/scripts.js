@@ -134,8 +134,8 @@ async function syncClient(active = true) {
   });
 }
 
-function sendClientInactive() {
-  if (!customerId || !clientActive) return;
+function sendClientInactive(force = false) {
+  if (!customerId || (!clientActive && !force)) return;
   const payload = JSON.stringify({
     clientId: customerId,
     name: customerName,
@@ -301,7 +301,7 @@ function deactivateClient(showGate = false) {
   stopOrderPolling();
   stopClientLocationWatch();
   activeOrderId = null;
-  syncClient(false).catch(() => sendClientInactive());
+  syncClient(false).catch(() => sendClientInactive(true));
   clientActive = false;
 
   if (showGate) {
