@@ -35,7 +35,7 @@ let riderMapUserMoved = false;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/rider-sw.js?v=6")
+      .register("/rider-sw.js?v=7")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -236,6 +236,9 @@ function renderLiveMap(order, rider = {}) {
   if (!riderMap || !riderMapLayer) return;
 
   window.setTimeout(() => riderMap.invalidateSize({ pan: false }), 80);
+  if (isDeliveryScreen) {
+    window.setTimeout(() => riderMap.invalidateSize({ pan: false }), 300);
+  }
   riderMapLayer.clearLayers();
   const points = [];
 

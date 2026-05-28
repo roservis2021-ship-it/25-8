@@ -907,6 +907,7 @@ select:focus {
 .rider-delivery-mode .rider-shell {
   width: 100%;
   max-width: none;
+  height: 100dvh;
   min-height: 100vh;
   padding: 0;
 }
@@ -923,12 +924,15 @@ select:focus {
 }
 
 .rider-delivery-mode .rider-map-panel {
-  display: grid;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  display: block;
+  min-height: 100dvh;
   border: 0;
   border-radius: 0;
   padding: 0;
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  background: #151515;
 }
 
 .rider-delivery-mode .rider-map-panel .section-head,
@@ -939,15 +943,23 @@ select:focus {
 .rider-delivery-mode .rider-live-map,
 .rider-delivery-mode .rider-live-map.admin-map .leaflet-container,
 .rider-delivery-mode .rider-live-map.admin-map.leaflet-container {
+  position: absolute;
+  inset: 0 0 74px;
   min-height: 0;
-  height: 100%;
-  border-right: 0;
-  border-left: 0;
+  height: auto;
+  border: 0;
   border-radius: 0;
 }
 
 .rider-delivery-mode #deliveryDoneButton {
-  margin: 12px 14px 16px;
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  z-index: 25;
+  width: auto;
+  min-height: 48px;
+  margin: 0;
 }
 
 .rider-footer {
