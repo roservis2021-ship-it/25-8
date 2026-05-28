@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>25/8</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=8" />
   </head>
   <body>
     <div class="entry-gate" id="entryGate">
@@ -36,7 +36,7 @@
 
       <section>
         <div class="content-grid">
-          <section class="panel">
+          <section class="panel" id="productsPanel">
             <div class="section-head">
               <div>
                 <h3>PRODUCTOS</h3>
@@ -52,14 +52,16 @@
               </div>
             </div>
 
-            <div class="cart-list" id="cartList"></div>
+            <div id="checkoutBody">
+              <div class="cart-list" id="cartList"></div>
 
-            <dl class="totals">
-              <div class="grand-total">
-                <dt>Total</dt>
-                <dd id="total">0,00 EUR</dd>
-              </div>
-            </dl>
+              <dl class="totals">
+                <div class="grand-total">
+                  <dt>Total</dt>
+                  <dd id="total">0,00 EUR</dd>
+                </div>
+              </dl>
+            </div>
 
             <div class="order-status" id="orderStatus"></div>
 
@@ -81,8 +83,25 @@
                 </select>
               </label>
               <button class="primary-button" id="confirmButton" type="submit">Confirmar</button>
-              <button class="primary-button hidden" id="payButton" type="button">Pagar</button>
             </form>
+
+            <section class="customer-wait hidden" id="customerWaitScreen" aria-live="polite">
+              <div class="wait-pulse" aria-hidden="true"></div>
+              <p class="eyebrow">Estado del pedido</p>
+              <h2 id="waitTitle">Esperando rider</h2>
+              <p id="waitDetail">Estamos buscando un rider cercano para aceptar tu pedido.</p>
+              <div class="wait-steps" id="waitSteps">
+                <span data-wait-step="searching_rider">Rider</span>
+                <span data-wait-step="pending_payment">Pago</span>
+                <span data-wait-step="paid">Preparando</span>
+                <span data-wait-step="on_route">En camino</span>
+                <span data-wait-step="delivered">Entregado</span>
+              </div>
+              <div class="wait-actions">
+                <button class="primary-button hidden" id="payButton" type="button">Pagar</button>
+                <button class="ghost-button hidden" id="reorderButton" type="button">Volver a pedir</button>
+              </div>
+            </section>
           </aside>
         </div>
       </section>
@@ -90,6 +109,6 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="config.js"></script>
-    <script src="scripts.js?v=3"></script>
+    <script src="scripts.js?v=5"></script>
   </body>
 </html>

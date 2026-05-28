@@ -36,12 +36,19 @@ const money = new Intl.NumberFormat("es-ES", {
 });
 
 const productGrid = document.querySelector("#productGrid");
+const productsPanel = document.querySelector("#productsPanel");
 const cartList = document.querySelector("#cartList");
 const totalEl = document.querySelector("#total");
+const checkoutBody = document.querySelector("#checkoutBody");
 const paymentForm = document.querySelector("#paymentForm");
 const orderStatus = document.querySelector("#orderStatus");
 const confirmButton = document.querySelector("#confirmButton");
 const payButton = document.querySelector("#payButton");
+const reorderButton = document.querySelector("#reorderButton");
+const customerWaitScreen = document.querySelector("#customerWaitScreen");
+const waitTitle = document.querySelector("#waitTitle");
+const waitDetail = document.querySelector("#waitDetail");
+const waitSteps = document.querySelector("#waitSteps");
 const toast = document.querySelector("#toast");
 const entryGate = document.querySelector("#entryGate");
 const entryForm = document.querySelector("#entryForm");
@@ -232,6 +239,50 @@ function setOrderStatus(message) {
   orderStatus.textContent = message || "";
 }
 
+function setWaitingMode(waiting) {
+  document.body.classList.toggle("customer-wait-mode", waiting);
+  productsPanel.classList.toggle("hidden", waiting);
+  checkoutBody.classList.toggle("hidden", waiting);
+  paymentForm.classList.toggle("hidden", waiting);
+  customerWaitScreen.classList.toggle("hidden", !waiting);
+}
+
+function updateWaitScreen(status) {
+  const copy = {
+    searching_rider: {
+      title: "Buscando rider",
+      detail: "Estamos avisando a los riders cercanos. Mantente en esta pantalla.",
+    },
+    pending_payment: {
+      title: "Rider encontrado",
+      detail: "Tu pedido fue aceptado. Confirma el pago para que el rider empiece.",
+    },
+    paid: {
+      title: "Pago confirmado",
+      detail: "El rider ya tiene el pedido asignado y esta preparando la salida.",
+    },
+    on_route: {
+      title: "Rider en camino",
+      detail: "La entrega esta en trayecto. Tu ubicacion sigue compartida para guiar al rider.",
+    },
+    delivered: {
+      title: "Pedido entregado",
+      detail: "Entrega completada. Puedes repetir el pedido cuando quieras.",
+    },
+  };
+  const state = copy[status] || copy.searching_rider;
+  const order = ["searching_rider", "pending_payment", "paid", "on_route", "delivered"];
+  const currentIndex = order.indexOf(status);
+
+  waitTitle.textContent = state.title;
+  waitDetail.textContent = state.detail;
+  waitSteps.querySelectorAll("[data-wait-step]").forEach((step) => {
+    const index = order.indexOf(step.dataset.waitStep);
+    step.classList.toggle("active", index <= currentIndex);
+    step.classList.toggle("current", index === currentIndex);
+  });
+}
+
 function stopOrderPolling() {
   if (orderPoll) window.clearInterval(orderPoll);
   orderPoll = null;
@@ -239,25 +290,32 @@ function stopOrderPolling() {
 
 function resetExpiredOrder() {
   activeOrderId = null;
+  setWaitingMode(false);
   confirmButton.disabled = false;
   confirmButton.classList.remove("hidden");
   payButton.classList.add("hidden");
+  reorderButton.classList.add("hidden");
   payButton.disabled = false;
   setOrderStatus("Solicitud caducada por falta de pago. Puedes confirmar otra vez.");
   stopOrderPolling();
 }
 
 function handleOrderState(order) {
+  setWaitingMode(true);
+  updateWaitScreen(order.status);
+
   if (order.status === "searching_rider") {
     setOrderStatus("Buscando activo cercano...");
     confirmButton.disabled = true;
     payButton.classList.add("hidden");
+    reorderButton.classList.add("hidden");
   }
 
   if (order.status === "pending_payment") {
     setOrderStatus("Aceptado. Pago disponible.");
     confirmButton.classList.add("hidden");
     payButton.classList.remove("hidden");
+    reorderButton.classList.add("hidden");
     showToast("Solicitud aceptada. Ya puedes pagar.");
     stopOrderPolling();
   }
@@ -265,15 +323,21 @@ function handleOrderState(order) {
   if (order.status === "paid") {
     setOrderStatus("Pago confirmado. Esperando inicio.");
     payButton.classList.add("hidden");
+    reorderButton.classList.add("hidden");
   }
 
   if (order.status === "on_route") {
     setOrderStatus("Entrega iniciada.");
-    stopOrderPolling();
+    payButton.classList.add("hidden");
+    reorderButton.classList.add("hidden");
   }
 
   if (order.status === "delivered") {
     setOrderStatus("Pedido entregado.");
+    activeOrderId = null;
+    confirmButton.classList.add("hidden");
+    payButton.classList.add("hidden");
+    reorderButton.classList.remove("hidden");
     stopOrderPolling();
   }
 }
@@ -404,6 +468,8 @@ paymentForm.addEventListener("submit", (event) => {
   };
 
   confirmButton.disabled = true;
+  setWaitingMode(true);
+  updateWaitScreen("searching_rider");
   setOrderStatus("Creando solicitud...");
 
   api("/api/orders", {
@@ -416,6 +482,7 @@ paymentForm.addEventListener("submit", (event) => {
       startOrderPolling(order.id);
     })
     .catch(() => {
+      setWaitingMode(false);
       confirmButton.disabled = false;
       setOrderStatus("No se pudo crear la solicitud.");
     });
@@ -444,6 +511,19 @@ payButton.addEventListener("click", () => {
       payButton.disabled = false;
       setOrderStatus("No se pudo confirmar el pago.");
     });
+});
+
+reorderButton.addEventListener("click", () => {
+  activeOrderId = null;
+  stopOrderPolling();
+  setWaitingMode(false);
+  confirmButton.disabled = false;
+  confirmButton.classList.remove("hidden");
+  payButton.classList.add("hidden");
+  payButton.disabled = false;
+  reorderButton.classList.add("hidden");
+  setOrderStatus("");
+  showToast("Puedes hacer otro pedido.");
 });
 
 renderProducts();

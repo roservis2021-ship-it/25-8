@@ -1,8 +1,8 @@
-const CACHE_NAME = "rider-shell-v5";
+const CACHE_NAME = "rider-shell-v6";
 const APP_SHELL = [
   "/rider.html",
-  "/styles.css",
-  "/rider.js?v=4",
+  "/styles.css?v=7",
+  "/rider.js?v=5",
   "/rider.webmanifest",
   "/config.js",
   "/icons/rider-tmax-180.png",

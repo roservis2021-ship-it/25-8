@@ -53,7 +53,7 @@ adminTabs.forEach((tab) => {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/admin-sw.js?v=8")
+      .register("/admin-sw.js?v=9")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -153,15 +153,21 @@ function renderRiders(riders) {
 
   ridersList.innerHTML = riders
     .map(
-      (rider) => `
+      (rider) => {
+        const statusClass =
+          rider.status === "available" ? "rider-online" : rider.status === "busy" ? "busy" : "offline";
+        const statusLabel =
+          rider.status === "available" ? "activo" : rider.status === "busy" ? "ocupado" : "inactivo";
+        return `
         <article class="admin-row live-row">
           <div class="live-title">
-            <i class="status-dot ${rider.status === "available" ? "rider-online" : "offline"}"></i>
+            <i class="status-dot ${statusClass}"></i>
             <strong>${rider.name || rider.id}</strong>
           </div>
-          <span>${rider.status || "inactive"} - ${coord(rider.location)}</span>
+          <span>${statusLabel} - ${coord(rider.location)}</span>
         </article>
-      `,
+      `;
+      },
     )
     .join("");
 }
@@ -209,7 +215,7 @@ function renderMap(clients, riders) {
   const riderPoints = riders
     .filter((rider) => rider.location)
     .map((rider) => ({
-      type: rider.status === "available" ? "rider-online" : "offline",
+      type: rider.status === "available" ? "rider-online" : rider.status === "busy" ? "busy" : "offline",
       label: rider.name || rider.id,
       location: rider.location,
     }));
@@ -349,7 +355,7 @@ function renderAccounts(accounts) {
 
 function renderDashboard(data) {
   activeClients.textContent = data.clients.length;
-  activeRiders.textContent = data.riders.filter((rider) => rider.status === "available").length;
+  activeRiders.textContent = data.riders.filter((rider) => ["available", "busy"].includes(rider.status)).length;
   businessGross.textContent = money.format(data.business.gross || 0);
   businessNet.textContent = money.format(data.business.net || 0);
   renderActivity(data.activity);

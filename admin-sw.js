@@ -1,8 +1,8 @@
-const CACHE_NAME = "admin-shell-v8";
+const CACHE_NAME = "admin-shell-v9";
 const APP_SHELL = [
   "/admin.html",
-  "/styles.css?v=6",
-  "/admin.js?v=8",
+  "/styles.css?v=7",
+  "/admin.js?v=9",
   "/admin.webmanifest",
   "/config.js",
   "/icons/admin-180.png",

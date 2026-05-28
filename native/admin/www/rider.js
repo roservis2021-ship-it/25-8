@@ -18,6 +18,7 @@ const riderMapEl = document.querySelector("#riderMap");
 const riderMapEmpty = document.querySelector("#riderMapEmpty");
 const riderMapDistance = document.querySelector("#riderMapDistance");
 const riderMapTrend = document.querySelector("#riderMapTrend");
+const deliveryDoneButton = document.querySelector("#deliveryDoneButton");
 const toast = document.querySelector("#toast");
 
 let active = false;
@@ -28,11 +29,13 @@ let riderWatchId = null;
 let riderMap = null;
 let riderMapLayer = null;
 let lastLiveDistance = null;
+let liveOrderId = "";
+let riderMapUserMoved = false;
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/rider-sw.js?v=5")
+      .register("/rider-sw.js?v=6")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -124,7 +127,13 @@ function renderState(status) {
   const isBusy = status === "busy";
   active = isAvailable || isBusy;
   riderState.textContent = isBusy ? "OCUPADO" : isAvailable ? "ACTIVO" : "INACTIVO";
-  activeToggle.textContent = isAvailable ? "DESACTIVAR" : "ACTIVAR";
+  activeToggle.classList.toggle("is-active", isAvailable);
+  activeToggle.classList.toggle("is-busy", isBusy);
+  activeToggle.setAttribute(
+    "aria-label",
+    isBusy ? "Rider ocupado" : isAvailable ? "Desactivar jornada" : "Activar jornada",
+  );
+  activeToggle.title = isBusy ? "Ocupado" : isAvailable ? "Desactivar" : "Activar";
   activeToggle.disabled = isBusy || !sessionToken;
   riderNote.textContent = isBusy
     ? "Pedido pagado asignado. Completa la entrega para volver a estar activo."
@@ -194,17 +203,33 @@ function initRiderMap() {
   }).addTo(riderMap);
 
   riderMapLayer = L.layerGroup().addTo(riderMap);
+  riderMap.on("zoomstart movestart", () => {
+    riderMapUserMoved = true;
+  });
 }
 
 function renderLiveMap(order, rider = {}) {
   const customerLocation = order?.location || null;
   const currentRiderLocation = rider.location || riderLocation;
   const shouldShow = order && ["paid", "on_route"].includes(order.status);
+  const isDeliveryScreen = order?.status === "on_route";
+  const orderChanged = order?.id && order.id !== liveOrderId;
 
+  document.body.classList.toggle("rider-delivery-mode", Boolean(isDeliveryScreen));
   riderMapPanel.classList.toggle("hidden", !shouldShow);
+  deliveryDoneButton.classList.toggle("hidden", !isDeliveryScreen);
+  deliveryDoneButton.dataset.deliver = isDeliveryScreen ? order.id : "";
   if (!shouldShow) {
     lastLiveDistance = null;
+    liveOrderId = "";
+    riderMapUserMoved = false;
+    document.body.classList.remove("rider-delivery-mode");
     return;
+  }
+
+  if (orderChanged) {
+    liveOrderId = order.id;
+    riderMapUserMoved = false;
   }
 
   initRiderMap();
@@ -229,8 +254,10 @@ function renderLiveMap(order, rider = {}) {
   }
 
   riderMapEmpty.classList.toggle("hidden", points.length > 0);
-  if (points.length === 1) riderMap.setView(points[0], 17);
-  if (points.length > 1) riderMap.fitBounds(points, { padding: [36, 36], maxZoom: 17 });
+  if (!riderMapUserMoved) {
+    if (points.length === 1) riderMap.setView(points[0], 17);
+    if (points.length > 1) riderMap.fitBounds(points, { padding: [36, 36], maxZoom: 17 });
+  }
 
   const distance = distanceMeters(currentRiderLocation, customerLocation);
   if (distance == null) {
@@ -259,6 +286,23 @@ async function syncStatus(nextActive = active) {
   });
   renderState(rider.status);
   return rider;
+}
+
+async function setInactiveBeforeLogout() {
+  if (!sessionToken) return;
+  try {
+    await api("/api/rider/logout", {
+      method: "POST",
+      body: JSON.stringify(withSession({ location: riderLocation })),
+    });
+  } catch {
+    try {
+      await api("/api/rider/status", {
+        method: "POST",
+        body: JSON.stringify(withSession({ active: false, location: riderLocation })),
+      });
+    } catch {}
+  }
 }
 
 async function loadOrders() {
@@ -292,7 +336,8 @@ function unlockDashboard() {
   startPolling();
 }
 
-function logout() {
+async function logout() {
+  await setInactiveBeforeLogout();
   stopPolling();
   stopRiderLocationWatch();
   sessionToken = "";
@@ -336,6 +381,22 @@ activeToggle.addEventListener("click", async () => {
 });
 
 logoutButton.addEventListener("click", logout);
+
+deliveryDoneButton.addEventListener("click", async () => {
+  if (!deliveryDoneButton.dataset.deliver) return;
+
+  try {
+    await api(`/api/orders/${deliveryDoneButton.dataset.deliver}/deliver`, {
+      method: "POST",
+      body: JSON.stringify(withSession()),
+    });
+    document.body.classList.remove("rider-delivery-mode");
+    showToast("Entrega confirmada.");
+    await loadOrders();
+  } catch {
+    showToast("La accion no esta disponible.");
+  }
+});
 
 riderOrders.addEventListener("click", async (event) => {
   const accept = event.target.closest("[data-accept]");

@@ -491,6 +491,97 @@ select:focus {
   font-weight: 900;
 }
 
+.customer-wait-mode .content-grid {
+  display: block;
+  width: min(560px, 100%);
+  margin: 0 auto;
+}
+
+.customer-wait-mode .checkout-panel {
+  position: static;
+}
+
+.customer-wait {
+  display: grid;
+  gap: 14px;
+  min-height: 460px;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.customer-wait h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.customer-wait p {
+  max-width: 390px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.wait-pulse {
+  width: 74px;
+  height: 74px;
+  border: 2px solid rgba(21, 148, 71, 0.35);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--green) 0 16px, rgba(21, 148, 71, 0.16) 17px 100%);
+  box-shadow: 0 0 0 0 rgba(21, 148, 71, 0.25);
+  animation: waitPulse 1.6s ease-out infinite;
+}
+
+.wait-steps {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.wait-steps span {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.wait-steps span.active {
+  border-color: rgba(21, 148, 71, 0.55);
+  color: var(--ink);
+}
+
+.wait-steps span.current {
+  background: var(--green);
+  color: #080808;
+}
+
+.wait-actions {
+  display: grid;
+  width: min(260px, 100%);
+  gap: 10px;
+  margin-top: 4px;
+}
+
+@keyframes waitPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(21, 148, 71, 0.28);
+  }
+
+  100% {
+    box-shadow: 0 0 0 22px rgba(21, 148, 71, 0);
+  }
+}
+
 .rider-shell {
   max-width: 980px;
 }
@@ -513,6 +604,44 @@ select:focus {
 
 .rider-toggle {
   width: 100%;
+}
+
+.rider-status-panel .section-head {
+  align-items: center;
+}
+
+.rider-status-toggle {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #101010;
+  cursor: pointer;
+}
+
+.rider-status-toggle span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #a23a3a;
+  box-shadow: 0 0 0 5px rgba(162, 58, 58, 0.16);
+}
+
+.rider-status-toggle.is-active span {
+  background: var(--green);
+  box-shadow: 0 0 0 5px rgba(21, 148, 71, 0.18);
+}
+
+.rider-status-toggle.is-busy span {
+  background: #e08a2e;
+  box-shadow: 0 0 0 5px rgba(224, 138, 46, 0.2);
+}
+
+.rider-status-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 .rider-note {
@@ -749,6 +878,11 @@ select:focus {
   background: #a23a3a;
 }
 
+.status-dot.busy {
+  background: #e08a2e;
+  box-shadow: 0 0 0 4px rgba(224, 138, 46, 0.2);
+}
+
 .admin-map {
   position: relative;
   min-height: 460px;
@@ -764,6 +898,62 @@ select:focus {
 
 .rider-map-panel {
   grid-column: 1 / -1;
+}
+
+.rider-delivery-mode {
+  overflow: hidden;
+}
+
+.rider-delivery-mode .rider-shell {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  padding: 0;
+}
+
+.rider-delivery-mode .topbar,
+.rider-delivery-mode .rider-status-panel,
+.rider-delivery-mode .rider-orders,
+.rider-delivery-mode .rider-footer {
+  display: none;
+}
+
+.rider-delivery-mode .rider-dashboard {
+  display: block;
+}
+
+.rider-delivery-mode .rider-map-panel {
+  display: grid;
+  min-height: 100vh;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.rider-delivery-mode .rider-map-panel .section-head,
+.rider-delivery-mode .rider-map-panel .map-legend {
+  display: none;
+}
+
+.rider-delivery-mode .rider-live-map,
+.rider-delivery-mode .rider-live-map.admin-map .leaflet-container,
+.rider-delivery-mode .rider-live-map.admin-map.leaflet-container {
+  min-height: 0;
+  height: 100%;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+}
+
+.rider-delivery-mode #deliveryDoneButton {
+  margin: 12px 14px 16px;
+}
+
+.rider-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
 }
 
 .rider-live-map,
@@ -835,6 +1025,11 @@ select:focus {
   background: var(--green);
 }
 
+.leaflet-status-marker.busy {
+  background: #e08a2e;
+  box-shadow: 0 0 0 6px rgba(224, 138, 46, 0.22);
+}
+
 .leaflet-status-marker.offline {
   background: #a23a3a;
   box-shadow: 0 0 0 6px rgba(162, 58, 58, 0.22);
@@ -891,6 +1086,11 @@ select:focus {
 
 .map-pin.rider-online {
   background: var(--green);
+}
+
+.map-pin.busy {
+  background: #e08a2e;
+  box-shadow: 0 0 0 5px rgba(224, 138, 46, 0.2);
 }
 
 .map-pin.offline {

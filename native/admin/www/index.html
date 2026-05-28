@@ -2,12 +2,113 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=admin.html" />
-    <title>25/8 Admin</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>25/8</title>
+    <link rel="stylesheet" href="styles.css?v=8" />
   </head>
   <body>
-    <script>
-      window.location.replace("admin.html");
-    </script>
+    <div class="entry-gate" id="entryGate">
+      <form class="entry-card" id="entryForm">
+        <p class="eyebrow">Acceso</p>
+        <h2>Antes de entrar</h2>
+        <label>
+          Nombre
+          <input id="entryName" name="entryName" required placeholder="Tu nombre" autocomplete="name" />
+        </label>
+        <label>
+          Telefono
+          <input id="entryPhone" name="entryPhone" required placeholder="Tu telefono" inputmode="tel" autocomplete="tel" />
+        </label>
+        <button class="primary-button" type="submit">Entrar</button>
+      </form>
+    </div>
+
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Acceso privado</p>
+          <h1>25/8</h1>
+        </div>
+      </header>
+
+      <section>
+        <div class="content-grid">
+          <section class="panel" id="productsPanel">
+            <div class="section-head">
+              <div>
+                <h3>PRODUCTOS</h3>
+              </div>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
+          </section>
+
+          <aside class="checkout-panel">
+            <div class="section-head compact">
+              <div>
+                <p class="eyebrow">Pedido</p>
+              </div>
+            </div>
+
+            <div id="checkoutBody">
+              <div class="cart-list" id="cartList"></div>
+
+              <dl class="totals">
+                <div class="grand-total">
+                  <dt>Total</dt>
+                  <dd id="total">0,00 EUR</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="order-status" id="orderStatus"></div>
+
+            <form class="payment-form" id="paymentForm">
+              <label>
+                Nombre
+                <input name="name" required placeholder="Tu nombre" readonly />
+              </label>
+              <label>
+                Punto de entrega
+                <input name="address" required placeholder="Referencia o instrucciones" />
+              </label>
+              <label>
+                Metodo de pago
+                <select name="payment">
+                  <option>Tarjeta</option>
+                  <option>Bizum</option>
+                  <option>Efectivo</option>
+                </select>
+              </label>
+              <button class="primary-button" id="confirmButton" type="submit">Confirmar</button>
+            </form>
+
+            <section class="customer-wait hidden" id="customerWaitScreen" aria-live="polite">
+              <div class="wait-pulse" aria-hidden="true"></div>
+              <p class="eyebrow">Estado del pedido</p>
+              <h2 id="waitTitle">Esperando rider</h2>
+              <p id="waitDetail">Estamos buscando un rider cercano para aceptar tu pedido.</p>
+              <div class="wait-steps" id="waitSteps">
+                <span data-wait-step="searching_rider">Rider</span>
+                <span data-wait-step="pending_payment">Pago</span>
+                <span data-wait-step="paid">Preparando</span>
+                <span data-wait-step="on_route">En camino</span>
+                <span data-wait-step="delivered">Entregado</span>
+              </div>
+              <div class="wait-actions">
+                <button class="primary-button hidden" id="payButton" type="button">Pagar</button>
+                <button class="ghost-button hidden" id="reorderButton" type="button">Volver a pedir</button>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="config.js"></script>
+    <script src="scripts.js?v=5"></script>
   </body>
 </html>

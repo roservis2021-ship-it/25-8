@@ -17,7 +17,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/icons/rider-tmax-180.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="/icons/rider-tmax-192.png" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=7" />
   </head>
   <body>
     <div class="entry-gate" id="riderLoginGate">
@@ -42,21 +42,25 @@
           <p class="eyebrow">Panel privado</p>
           <h1>25/8 R</h1>
         </div>
-        <button class="ghost-button" id="logoutButton" type="button">Cerrar sesion</button>
       </header>
 
       <section class="rider-dashboard">
-        <section class="panel">
+        <section class="panel rider-status-panel">
           <div class="section-head compact">
             <div>
               <p class="eyebrow">Jornada</p>
               <h3 id="riderState">INACTIVO</h3>
             </div>
+            <button
+              class="rider-status-toggle"
+              id="activeToggle"
+              type="button"
+              aria-label="Cambiar estado"
+              title="Cambiar estado"
+            >
+              <span></span>
+            </button>
           </div>
-
-          <button class="primary-button rider-toggle" id="activeToggle" type="button">
-            ACTIVAR
-          </button>
 
           <p class="rider-note" id="riderNote">
             Activa tu jornada para recibir solicitudes cercanas.
@@ -101,13 +105,20 @@
             <span><i class="status-dot rider-online"></i>Rider</span>
             <span id="riderMapTrend">Sin movimiento suficiente.</span>
           </div>
+          <button class="primary-button hidden" id="deliveryDoneButton" type="button">
+            CONFIRMAR ENTREGA
+          </button>
         </section>
       </section>
+
+      <footer class="rider-footer">
+        <button class="ghost-button" id="logoutButton" type="button">Cerrar sesion</button>
+      </footer>
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="config.js"></script>
-    <script src="rider.js?v=4"></script>
+    <script src="rider.js?v=5"></script>
   </body>
 </html>

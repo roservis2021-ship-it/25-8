@@ -184,6 +184,14 @@ function getSessionRider(body = {}, requestUrl = "") {
   return riderAccounts.get(userNumber) || null;
 }
 
+function closeRiderSession(body = {}) {
+  const token = body.sessionToken || "";
+  const userNumber = riderSessions.get(token);
+  if (!userNumber) return null;
+  riderSessions.delete(token);
+  return riderAccounts.get(userNumber) || null;
+}
+
 function getAdminSession(body = {}, requestUrl = "") {
   const url = new URL(requestUrl, "http://localhost");
   const token = body.adminToken || url.searchParams.get("adminToken");
@@ -388,6 +396,34 @@ async function handleApi(request, response, pathname) {
         riderId: rider.id,
         status: rider.status,
         location: rider.location,
+      });
+      sendJson(response, 200, { rider });
+      return;
+    }
+
+    if (request.method === "POST" && pathname === "/api/rider/logout") {
+      const body = await readBody(request);
+      const account = closeRiderSession(body);
+      if (!account) {
+        sendJson(response, 200, { ok: true });
+        return;
+      }
+      const current = riders.get(account.userNumber) || {
+        id: account.userNumber,
+        name: account.name,
+      };
+      const rider = {
+        ...current,
+        id: account.userNumber,
+        name: account.name,
+        status: "inactive",
+        location: body.location || current.location || null,
+        updatedAt: Date.now(),
+      };
+      riders.set(rider.id, rider);
+      logActivity("rider_logout", `Rider ${rider.name} ha salido`, {
+        riderId: rider.id,
+        status: rider.status,
       });
       sendJson(response, 200, { rider });
       return;
