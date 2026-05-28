@@ -35,7 +35,7 @@ let riderMapUserMoved = false;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/rider-sw.js?v=7")
+      .register("/rider-sw.js?v=8")
       .then((registration) => registration.update())
       .catch(() => {});
   });
@@ -156,6 +156,10 @@ function renderOrders(orders) {
   riderOrders.innerHTML = orders
     .map((order) => {
       const items = order.items.map((item) => `${item.quantity} gr ${item.name}`).join(" / ");
+      const phone = String(order.customerPhone || "").replace(/\D/g, "");
+      const phoneLine = phone
+        ? `<a class="rider-phone-link" href="tel:${phone}">Llamar cliente: ${phone}</a>`
+        : "";
       const actions = {
         searching_rider: `<button type="button" data-accept="${order.id}">ACEPTAR</button>`,
         pending_payment: `<span class="order-badge">ESPERANDO PAGO</span>`,
@@ -170,6 +174,7 @@ function renderOrders(orders) {
             <strong>${money.format(order.total)}</strong>
             <span>${items}</span>
             <small>${order.address || "Sin referencia"}</small>
+            ${phoneLine}
             <em>Ganas: ${money.format(order.riderEarnings || 0)}</em>
           </div>
           ${actions[order.status] || ""}

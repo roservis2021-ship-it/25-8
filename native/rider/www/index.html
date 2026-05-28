@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>25/8</title>
-    <link rel="stylesheet" href="styles.css?v=9" />
+    <link rel="stylesheet" href="styles.css?v=10" />
   </head>
   <body>
     <div class="entry-gate" id="entryGate">
@@ -20,7 +20,16 @@
         </label>
         <label>
           Telefono
-          <input id="entryPhone" name="entryPhone" required placeholder="Tu telefono" inputmode="tel" autocomplete="tel" />
+          <input
+            id="entryPhone"
+            name="entryPhone"
+            required
+            placeholder="Tu telefono"
+            inputmode="tel"
+            autocomplete="tel"
+            pattern="[\d\s()+.-]{9,}"
+            title="Introduce un telefono real con al menos 9 digitos"
+          />
         </label>
         <button class="primary-button" type="submit">Entrar</button>
       </form>
@@ -109,6 +118,6 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="config.js"></script>
-    <script src="scripts.js?v=5"></script>
+    <script src="scripts.js?v=6"></script>
   </body>
 </html>

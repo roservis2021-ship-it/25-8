@@ -68,6 +68,15 @@ let customerId = localStorage.getItem("customerId") || "";
 const fallbackLocation = { lat: 28.1235, lng: -15.4366 };
 const apiBase = window.WON_API_BASE || (window.location.protocol === "file:" ? "http://127.0.0.1:8000" : "");
 
+function phoneDigits(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+function isValidPhone(value) {
+  const digits = phoneDigits(value);
+  return digits.length >= 9 && digits.length <= 15;
+}
+
 function formatMoney(value) {
   return money.format(value);
 }
@@ -103,7 +112,7 @@ async function syncClient(active = true) {
     body: JSON.stringify({
       clientId: customerId,
       name: customerName,
-      phone: entryPhone.value.trim(),
+      phone: phoneDigits(entryPhone.value),
       contactRequested: true,
       location: customerLocation,
       active,
@@ -424,6 +433,11 @@ entryForm.addEventListener("submit", (event) => {
     return;
   }
 
+  if (!isValidPhone(phone)) {
+    showToast("Introduce un telefono real con al menos 9 digitos.");
+    return;
+  }
+
   requestLocation(name);
 });
 
@@ -453,8 +467,17 @@ paymentForm.addEventListener("submit", (event) => {
   }
 
   const formData = new FormData(paymentForm);
+  const customerPhone = phoneDigits(entryPhone.value);
+
+  if (!isValidPhone(customerPhone)) {
+    setWaitingMode(false);
+    showToast("Introduce un telefono real con al menos 9 digitos.");
+    return;
+  }
+
   const orderPayload = {
     customerName,
+    customerPhone,
     customerId,
     address: formData.get("address"),
     items: summary.items.map((item) => ({

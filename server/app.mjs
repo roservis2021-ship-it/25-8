@@ -21,6 +21,15 @@ const adminAccount = {
 const riderRates = { m: 5, p: 3, c: 60 };
 const paymentTimeoutMs = 5 * 60 * 1000;
 
+function phoneDigits(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+function isValidPhone(value) {
+  const digits = phoneDigits(value);
+  return digits.length >= 9 && digits.length <= 15;
+}
+
 function sendJson(response, status, payload) {
   response.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
@@ -94,6 +103,7 @@ function riderOrder(order) {
   const canTrack = ["paid", "on_route"].includes(order.status);
   return {
     ...publicOrder(order),
+    customerPhone: liveCustomer?.phone || order.customerPhone || "",
     location: canTrack ? liveCustomer?.location || order.location || null : null,
     customerLocationUpdatedAt: canTrack ? liveCustomer?.updatedAt || null : null,
   };
@@ -300,7 +310,7 @@ async function handleApi(request, response, pathname) {
     const client = {
       id: clientId,
       name: body.name || "",
-      phone: body.phone || "",
+      phone: phoneDigits(body.phone),
       contactRequested: Boolean(body.contactRequested),
       location: body.location || null,
       active: Boolean(body.active),
@@ -427,11 +437,17 @@ async function handleApi(request, response, pathname) {
 
   if (request.method === "POST" && pathname === "/api/orders") {
     const body = await readBody(request);
+    const customerPhone = phoneDigits(body.customerPhone);
+    if (!isValidPhone(customerPhone)) {
+      sendJson(response, 400, { error: "invalid_phone" });
+      return;
+    }
     const id = `order-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const order = {
       id,
       status: "searching_rider",
       customerName: body.customerName,
+      customerPhone,
       address: body.address,
       items: body.items || [],
       total: body.total || 0,

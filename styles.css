@@ -714,6 +714,17 @@ select:focus {
   font-weight: 900;
 }
 
+.rider-phone-link {
+  display: inline-block;
+  width: fit-content;
+  margin-top: 8px;
+  border-bottom: 1px solid rgba(21, 148, 71, 0.65);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
 .rider-order-card button {
   min-height: 40px;
   border: 0;
