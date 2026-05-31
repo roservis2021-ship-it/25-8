@@ -9,5 +9,7 @@
   "scripts": {
     "start": "node server/app.mjs"
   },
-  "dependencies": {}
+  "dependencies": {
+    "playwright": "1.45"
+  }
 }
