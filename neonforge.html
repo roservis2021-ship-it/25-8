@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeonForge Customs — Transforma tu coche en una máquina única</title>
+<!-- GSAP + ScrollTrigger desde CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   VARIABLES — CAMBIA COLORES AQUÍ
+   ============================================================ */
+:root {
+  --neon-red:    #ff1744;
+  --neon-blue:   #00d4ff;
+  --neon-purple: #aa00ff;
+  --chrome:      #c0c8d8;
+  --gold:        #ffd740;
+  --bg:          #080a0e;
+  --bg2:         #0d1017;
+  --bg3:         #111520;
+  --card:        #12161f;
+  --border:      rgba(0,212,255,.15);
+  --text:        #e8eaf0;
+  --muted:       #6b7280;
+  --font-display: 'Orbitron', sans-serif;
+  --font-body:    'Rajdhani', sans-serif;
+  --font-light:   'Inter', sans-serif;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--neon-red); border-radius: 3px; }
+
+/* ============================================================
+   PARTICLE CANVAS (fondo global)
+   ============================================================ */
+#particle-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .35;
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  background: linear-gradient(180deg, rgba(8,10,14,.95) 0%, transparent 100%);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,212,255,.08);
+  transition: background .3s;
+}
+nav.scrolled { background: rgba(8,10,14,.97); }
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-logo span { color: var(--neon-red); -webkit-text-fill-color: var(--neon-red); }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: .875rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .25s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--neon-red);
+  transition: width .3s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  padding: .5rem 1.5rem;
+  border: 1px solid var(--neon-red);
+  color: var(--neon-red) !important;
+  border-radius: 2px;
+  font-weight: 700 !important;
+  letter-spacing: .1em;
+  transition: background .25s, box-shadow .25s !important;
+}
+.nav-cta:hover {
+  background: var(--neon-red) !important;
+  color: #fff !important;
+  box-shadow: 0 0 20px rgba(255,23,68,.5) !important;
+  -webkit-text-fill-color: #fff !important;
+}
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-hamburger span {
+  width: 24px; height: 2px;
+  background: var(--text);
+  transition: all .3s;
+  display: block;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+  padding: 6rem 1.5rem 3rem;
+}
+.hero-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0;
+}
+.hero-glow-red {
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(255,23,68,.18) 0%, transparent 70%);
+  top: 20%; left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-glow-blue {
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(0,212,255,.12) 0%, transparent 70%);
+  bottom: 10%; right: 10%;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: var(--font-body);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--neon-red);
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -.01em;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  max-width: 900px;
+}
+.hero-title .accent { color: var(--neon-red); }
+.hero-title .accent2 {
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-family: var(--font-light);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--muted);
+  margin-top: 1.5rem;
+  max-width: 600px;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+}
+.hero-buttons {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  position: relative;
+  z-index: 2;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .85rem 2.2rem;
+  background: var(--neon-red);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: box-shadow .3s, transform .2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+  transform: translateX(-100%);
+  transition: transform .5s;
+}
+.btn-primary:hover { box-shadow: 0 0 30px rgba(255,23,68,.6); transform: translateY(-2px); }
+.btn-primary:hover::before { transform: translateX(100%); }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .85rem 2.2rem;
+  background: transparent;
+  color: var(--neon-blue);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border: 1px solid var(--neon-blue);
+  cursor: pointer;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: background .3s, box-shadow .3s, transform .2s;
+}
+.btn-outline:hover {
+  background: rgba(0,212,255,.1);
+  box-shadow: 0 0 25px rgba(0,212,255,.3);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   CAR ANIMATION STAGE
+   ============================================================ */
+.car-stage {
+  position: relative;
+  z-index: 2;
+  width: min(820px, 92vw);
+  margin: 3rem auto 0;
+  opacity: 0;
+}
+.car-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2.1 / 1;
+}
+/* Suelo / showroom reflection */
+.car-floor {
+  position: absolute;
+  bottom: 0; left: 5%; right: 5%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-red), var(--neon-blue), transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 40px 10px rgba(0,212,255,.25);
+}
+.car-reflection {
+  position: absolute;
+  bottom: 0; left: 10%; right: 10%;
+  height: 30px;
+  background: linear-gradient(180deg, rgba(0,212,255,.07), transparent);
+  filter: blur(6px);
+}
+/* Smoke particles */
+.car-smoke {
+  position: absolute;
+  bottom: 12%;
+  right: 5%;
+  width: 80px; height: 60px;
+  pointer-events: none;
+}
+.smoke-puff {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(200,210,240,.07);
+  animation: smokeRise 2.5s ease-out infinite;
+}
+.smoke-puff:nth-child(1) { width:30px;height:30px;bottom:0;right:20px;animation-delay:0s; }
+.smoke-puff:nth-child(2) { width:22px;height:22px;bottom:5px;right:35px;animation-delay:.6s; }
+.smoke-puff:nth-child(3) { width:18px;height:18px;bottom:2px;right:10px;animation-delay:1.2s; }
+@keyframes smokeRise {
+  0%   { opacity:.6; transform: translate(0,0) scale(1); }
+  100% { opacity:0;  transform: translate(-20px,-40px) scale(2.5); }
+}
+/* HUD ring */
+.hud-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 110%; aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(0,212,255,.1);
+  pointer-events: none;
+}
+.hud-ring::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,23,68,.08);
+}
+.hud-arc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--neon-blue);
+  animation: spinArc 4s linear infinite;
+  opacity: .5;
+}
+.hud-arc2 {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-bottom-color: var(--neon-red);
+  animation: spinArc 6s linear infinite reverse;
+  opacity: .4;
+}
+@keyframes spinArc { to { transform: rotate(360deg); } }
+
+/* SVG CAR */
+.car-svg-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.car-svg-wrapper svg { width: 92%; height: auto; }
+
+/* Car parts shown/hidden during animation */
+.part-base       { opacity: 1; }
+.part-wheels     { opacity: 0; transition: opacity .6s; }
+.part-aero       { opacity: 0; transition: opacity .6s; }
+.part-wing       { opacity: 0; transition: opacity .6s; }
+.part-leds       { opacity: 0; transition: opacity .6s; }
+.part-vinyl      { opacity: 0; transition: opacity .6s; }
+.part-neon-under { opacity: 0; transition: opacity .6s; }
+.part-lowered    { opacity: 0; transition: opacity .6s; }
+
+/* Neon underglow pulse */
+.neon-glow-anim { animation: neonPulse 1.8s ease-in-out infinite; }
+@keyframes neonPulse {
+  0%,100% { opacity: .7; filter: blur(4px) brightness(1); }
+  50%     { opacity: 1;  filter: blur(6px) brightness(1.6); }
+}
+
+/* Scroll indicator */
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  z-index: 3;
+  opacity: .5;
+  animation: bounceDown 2s ease-in-out infinite;
+}
+.scroll-hint span {
+  font-size: .65rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: var(--font-body);
+}
+.scroll-mouse {
+  width: 22px; height: 36px;
+  border: 1.5px solid var(--muted);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+}
+.scroll-mouse::after {
+  content: '';
+  width: 3px; height: 6px;
+  background: var(--neon-blue);
+  border-radius: 2px;
+  animation: scrollDot 1.5s ease-in-out infinite;
+}
+@keyframes scrollDot {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(8px); opacity: 0; }
+}
+@keyframes bounceDown {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%     { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ============================================================
+   SECTION SHARED STYLES
+   ============================================================ */
+section { position: relative; z-index: 1; }
+.section-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.section-tag {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--neon-red);
+  margin-bottom: .75rem;
+}
+.section-tag::before {
+  content: '// ';
+  color: var(--neon-blue);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+.section-sub {
+  font-family: var(--font-light);
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 580px;
+}
+.divider {
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, var(--neon-red), var(--neon-blue));
+  margin: 1.25rem 0;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   BEFORE / AFTER
+   ============================================================ */
+#before-after {
+  padding: 7rem 0;
+  background: var(--bg2);
+}
+.ba-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+  gap: 2rem;
+  margin-top: 3.5rem;
+}
+.ba-card {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--card);
+  transition: border-color .3s, transform .3s;
+}
+.ba-card:hover { border-color: var(--neon-red); transform: translateY(-6px); }
+.ba-img-area {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+}
+.ba-before, .ba-after {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: .1em;
+}
+.ba-before {
+  background: linear-gradient(135deg, #1a1c22, #0d0f14);
+  color: var(--muted);
+  transition: opacity .5s, transform .5s;
+}
+.ba-after {
+  background: linear-gradient(135deg, #0d1830, #150a20);
+  color: var(--neon-blue);
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity .5s, transform .5s;
+}
+.ba-card:hover .ba-before { opacity: 0; transform: scale(.95); }
+.ba-card:hover .ba-after  { opacity: 1; transform: scale(1); }
+/* Car silhouette placeholder inside before/after */
+.car-placeholder {
+  width: 80%;
+  height: 55%;
+  position: relative;
+}
+.ba-label {
+  display: inline-block;
+  padding: .2rem .7rem;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  position: absolute;
+  top: 12px; left: 12px;
+  z-index: 2;
+}
+.ba-label-before { background: rgba(255,255,255,.08); color: var(--muted); }
+.ba-label-after  { background: var(--neon-red); color: #fff; opacity: 0; transition: opacity .5s; }
+.ba-card:hover .ba-label-after { opacity: 1; }
+.ba-info { padding: 1.25rem 1.5rem; }
+.ba-info h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: .3rem;
+}
+.ba-info p { font-size: .85rem; color: var(--muted); }
+.ba-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px solid var(--border);
+}
+.ba-stat span:first-child {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--neon-red);
+  font-weight: 700;
+}
+.ba-stat span:last-child {
+  font-size: .72rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+#gallery {
+  padding: 7rem 0;
+  background: var(--bg);
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
+  gap: 1rem;
+  margin-top: 3.5rem;
+}
+.gallery-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+.gallery-item:first-child { grid-column: span 2; aspect-ratio: 16/7; }
+.gallery-item:nth-child(4){ grid-column: span 2; aspect-ratio: 16/7; }
+.gallery-bg {
+  width: 100%; height: 100%;
+  transition: transform .6s cubic-bezier(.25,.46,.45,.94);
+}
+.gallery-item:hover .gallery-bg { transform: scale(1.08); }
+.gallery-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(8,10,14,.9) 100%);
+  opacity: 0;
+  transition: opacity .4s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: .2rem;
+}
+.gallery-overlay p { font-size: .75rem; color: var(--muted); }
+.gallery-neon-border {
+  position: absolute;
+  inset: 0;
+  border: 2px solid transparent;
+  transition: border-color .4s, box-shadow .4s;
+  pointer-events: none;
+  border-radius: 3px;
+}
+.gallery-item:hover .gallery-neon-border {
+  border-color: var(--neon-red);
+  box-shadow: inset 0 0 20px rgba(255,23,68,.15), 0 0 20px rgba(255,23,68,.2);
+}
+
+/* ============================================================
+   SERVICES
+   ============================================================ */
+#services {
+  padding: 7rem 0;
+  background: var(--bg3);
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+.service-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem 1.75rem;
+  cursor: pointer;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+  position: relative;
+  overflow: hidden;
+}
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--neon-red);
+  transform: scaleY(0);
+  transition: transform .3s;
+  transform-origin: bottom;
+}
+.service-card:hover { border-color: rgba(255,23,68,.4); transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+.service-card:hover::before { transform: scaleY(1); }
+.service-icon {
+  width: 52px; height: 52px;
+  border-radius: 4px;
+  background: rgba(255,23,68,.1);
+  border: 1px solid rgba(255,23,68,.2);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.25rem;
+  font-size: 1.5rem;
+  transition: background .3s, box-shadow .3s;
+}
+.service-card:hover .service-icon {
+  background: rgba(255,23,68,.2);
+  box-shadow: 0 0 20px rgba(255,23,68,.3);
+}
+.service-card h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: .5rem;
+  letter-spacing: .04em;
+}
+.service-card p { font-size: .875rem; color: var(--muted); line-height: 1.55; }
+.service-tag {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: .65rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--neon-blue);
+  font-weight: 700;
+}
+
+/* ============================================================
+   PROCESS
+   ============================================================ */
+#process {
+  padding: 7rem 0;
+  background: var(--bg2);
+  overflow: hidden;
+}
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+  position: relative;
+}
+.process-steps::before {
+  content: '';
+  position: absolute;
+  top: 36px; left: 12.5%;
+  width: 75%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--neon-red), var(--neon-blue), var(--neon-red));
+  opacity: .3;
+}
+.process-step {
+  text-align: center;
+  position: relative;
+}
+.step-num {
+  width: 72px; height: 72px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--neon-red);
+  transition: border-color .3s, box-shadow .3s;
+  position: relative;
+  z-index: 1;
+}
+.process-step:hover .step-num {
+  border-color: var(--neon-red);
+  box-shadow: 0 0 25px rgba(255,23,68,.4);
+}
+.process-step h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+.process-step p { font-size: .85rem; color: var(--muted); }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+#testimonials {
+  padding: 7rem 0;
+  background: var(--bg);
+}
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+}
+.testi-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  position: relative;
+  transition: border-color .3s, transform .3s;
+}
+.testi-card:hover { border-color: var(--neon-blue); transform: translateY(-4px); }
+.testi-quote {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--neon-red);
+  opacity: .3;
+  margin-bottom: .5rem;
+}
+.testi-text {
+  font-family: var(--font-light);
+  font-size: .95rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+.testi-author { display: flex; align-items: center; gap: 1rem; }
+.testi-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon-red), var(--neon-blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .9rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.testi-name { font-weight: 700; font-size: .95rem; }
+.testi-car  { font-size: .75rem; color: var(--neon-red); letter-spacing: .08em; }
+.stars { color: var(--gold); font-size: .8rem; margin-bottom: .5rem; }
+
+/* ============================================================
+   STATS BAND
+   ============================================================ */
+#stats {
+  padding: 4rem 0;
+  background: linear-gradient(90deg, rgba(255,23,68,.06), rgba(0,212,255,.06));
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 2rem;
+  text-align: center;
+}
+.stat-item .num {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--neon-red), var(--neon-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.stat-item .label {
+  font-size: .75rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: .4rem;
+}
+
+/* ============================================================
+   CONTACT FORM
+   ============================================================ */
+#contact {
+  padding: 7rem 0 8rem;
+  background: var(--bg3);
+}
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: start;
+  margin-top: 3.5rem;
+}
+.contact-info p {
+  font-family: var(--font-light);
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+.contact-detail {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  font-size: .9rem;
+}
+.contact-detail-icon {
+  width: 38px; height: 38px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  background: var(--card);
+}
+.contact-detail span { color: var(--text); }
+.contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.form-field { display: flex; flex-direction: column; gap: .4rem; }
+.form-field label {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.form-field input,
+.form-field select,
+.form-field textarea {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: .8rem 1rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .3s, box-shadow .3s;
+  width: 100%;
+  appearance: none;
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--neon-red);
+  box-shadow: 0 0 15px rgba(255,23,68,.15);
+}
+.form-field textarea { resize: vertical; min-height: 120px; }
+.form-field select option { background: var(--bg2); }
+.form-submit {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(90deg, var(--neon-red), #ff4d6a);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  transition: box-shadow .3s, transform .2s;
+  align-self: flex-start;
+}
+.form-submit:hover { box-shadow: 0 0 35px rgba(255,23,68,.5); transform: translateY(-2px); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 3rem 2rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.footer-brand p {
+  font-family: var(--font-light);
+  font-size: .875rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 1rem;
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: .75rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .65rem; }
+.footer-col ul a {
+  font-size: .875rem;
+  color: var(--muted);
+  transition: color .2s;
+}
+.footer-col ul a:hover { color: var(--neon-red); }
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-copy { font-size: .75rem; color: var(--muted); }
+.footer-socials { display: flex; gap: 1rem; }
+.social-btn {
+  width: 34px; height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem;
+  color: var(--muted);
+  transition: border-color .25s, color .25s, box-shadow .25s;
+}
+.social-btn:hover { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 12px rgba(255,23,68,.3); }
+
+/* ============================================================
+   NEON LINE DIVIDERS
+   ============================================================ */
+.neon-line {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-red), var(--neon-blue), transparent);
+  opacity: .25;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   ANIMATE-ON-SCROLL (initial state)
+   ============================================================ */
+.reveal { opacity: 0; transform: translateY(30px); }
+
+/* ============================================================
+   MOBILE NAV MENU
+   ============================================================ */
+.nav-mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8,10,14,.97);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-menu a {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.nav-mobile-menu a:hover { color: var(--neon-red); }
+.close-menu {
+  position: absolute;
+  top: 1.5rem; right: 2rem;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+/* ============================================================
+   GALLERY ITEMS — color coded backgrounds (placeholder)
+   ============================================================ */
+.gallery-bg.g1 { background: linear-gradient(135deg,#0a0a12 0%,#1a0520 50%,#0a0512 100%); }
+.gallery-bg.g2 { background: linear-gradient(135deg,#060c18 0%,#0a1a30 100%); }
+.gallery-bg.g3 { background: linear-gradient(135deg,#130a06 0%,#2a1200 100%); }
+.gallery-bg.g4 { background: linear-gradient(135deg,#060c18 0%,#1a0530 100%); }
+.gallery-bg.g5 { background: linear-gradient(135deg,#0a1210 0%,#002a1a 100%); }
+.gallery-bg.g6 { background: linear-gradient(135deg,#120810 0%,#280030 100%); }
+
+/* Inline car silhouettes in gallery (SVG) */
+.gallery-car-svg {
+  position: absolute;
+  bottom: 15%; left: 50%;
+  transform: translateX(-50%);
+  width: 72%; opacity: .9;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1024px) {
+  .process-steps { grid-template-columns: repeat(2,1fr); }
+  .process-steps::before { display: none; }
+  .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width:768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
+  .gallery-item:first-child, .gallery-item:nth-child(4) { grid-column: span 2; }
+  .form-row { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .process-steps { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+}
+@media (max-width:480px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+  .gallery-item:first-child, .gallery-item:nth-child(4) { grid-column: span 1; }
+  .services-grid { grid-template-columns: 1fr; }
+  .ba-grid { grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: 1fr; }
+  .stats-row { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     PARTICLE CANVAS
+     ============================================================ -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- ============================================================
+     MOBILE NAV MENU
+     ============================================================ -->
+<div class="nav-mobile-menu" id="mobileMenu">
+  <span class="close-menu" id="closeMenu">&times;</span>
+  <a href="#hero"         onclick="closeMobileMenu()">Inicio</a>
+  <a href="#before-after" onclick="closeMobileMenu()">Antes &amp; Después</a>
+  <a href="#gallery"      onclick="closeMobileMenu()">Galería</a>
+  <a href="#services"     onclick="closeMobileMenu()">Servicios</a>
+  <a href="#process"      onclick="closeMobileMenu()">Proceso</a>
+  <a href="#contact"      onclick="closeMobileMenu()">Contacto</a>
+</div>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo">NEON<span>FORGE</span></a>
+  <ul class="nav-links">
+    <li><a href="#before-after">Antes &amp; Después</a></li>
+    <li><a href="#gallery">Galería</a></li>
+    <li><a href="#services">Servicios</a></li>
+    <li><a href="#process">Proceso</a></li>
+    <li><a href="#testimonials">Clientes</a></li>
+    <li><a href="#contact" class="nav-cta">Pedir Presupuesto</a></li>
+  </ul>
+  <div class="nav-hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section id="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow-red"></div>
+  <div class="hero-glow-blue"></div>
+
+  <p class="hero-eyebrow" id="heroEyebrow">NeonForge Customs — Est. 2018</p>
+  <h1 class="hero-title" id="heroTitle">
+    Transforma tu coche<br/>
+    en una <span class="accent">máquina</span> <span class="accent2">única</span>
+  </h1>
+  <p class="hero-sub" id="heroSub">
+    Diseño, potencia y estilo llevados al siguiente nivel.
+    Cada proyecto es una obra de ingeniería y arte.
+  </p>
+  <div class="hero-buttons" id="heroButtons">
+    <a href="#gallery" class="btn-primary">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Ver transformaciones
+    </a>
+    <a href="#contact" class="btn-outline">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="3" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M1 5L7 8.5L13 5" stroke="currentColor" stroke-width="1.5"/></svg>
+      Crear mi proyecto
+    </a>
+  </div>
+
+  <!-- CAR ANIMATION STAGE -->
+  <div class="car-stage" id="carStage">
+    <div class="car-wrap">
+      <!-- HUD futurista -->
+      <div class="hud-ring">
+        <div class="hud-arc"></div>
+        <div class="hud-arc2"></div>
+      </div>
+
+      <!-- Car SVG inline (silueta vectorial de coche deportivo) -->
+      <!-- REEMPLAZA ESTE SVG con un modelo 3D usando Three.js / React Three Fiber -->
+      <div class="car-svg-wrapper">
+        <svg id="carSVG" viewBox="0 0 820 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Sombra / reflection en el suelo -->
+          <ellipse cx="410" cy="295" rx="320" ry="18" fill="url(#shadowGrad)" opacity=".5"/>
+
+          <!-- PARTE BASE: carrocería -->
+          <g class="part-base">
+            <!-- Carrocería inferior -->
+            <path d="M120 220 L160 200 L240 195 L320 185 L420 178 L520 180 L600 188 L660 200 L700 220 L700 250 L120 250 Z" fill="#1a1e2a" stroke="#2a2e3a" stroke-width="1"/>
+            <!-- Carrocería principal (techo) -->
+            <path d="M200 200 L280 155 L360 135 L440 130 L520 133 L590 145 L640 168 L660 200Z" fill="#1e2330" stroke="#2e3345" stroke-width="1"/>
+            <!-- Capó -->
+            <path d="M160 200 L200 200 L200 210 L160 215Z" fill="#1a1e2a" stroke="#2a2e3a" stroke-width=".5"/>
+            <!-- Parabrisas -->
+            <path d="M280 155 L295 200 L480 200 L490 143Z" fill="rgba(0,212,255,0.06)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+            <!-- Ventana trasera -->
+            <path d="M490 143 L580 148 L620 190 L510 200Z" fill="rgba(0,212,255,0.04)" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+            <!-- Detalle línea carrocería -->
+            <path d="M165 215 L640 215" stroke="#2e3445" stroke-width="1.5"/>
+            <!-- Luz delantera base -->
+            <path d="M128 215 L160 208 L160 225 L130 225Z" fill="#0a0c12" stroke="#1e2230" stroke-width="1"/>
+            <!-- Luz trasera base -->
+            <path d="M660 200 L700 205 L700 230 L658 228Z" fill="#0a0c12" stroke="#1e2230" stroke-width="1"/>
+            <!-- Puerta delantera -->
+            <path d="M305 200 L303 182 L350 175 L430 174 L430 200Z" fill="#1c2030" stroke="#2a2e40" stroke-width=".8"/>
+            <!-- Puerta trasera -->
+            <path d="M430 200 L430 174 L520 176 L565 188 L563 200Z" fill="#1a1e2c" stroke="#282c3c" stroke-width=".8"/>
+            <!-- Tirador puerta -->
+            <rect x="375" y="185" width="20" height="5" rx="2" fill="#2a3040" stroke="#3a4050" stroke-width=".5"/>
+            <rect x="485" y="186" width="20" height="5" rx="2" fill="#2a3040" stroke="#3a4050" stroke-width=".5"/>
+          </g>
+
+          <!-- PARTE WHEELS: llantas deportivas -->
+          <g class="part-wheels">
+            <!-- Llanta trasera -->
+            <circle cx="580" cy="252" r="42" fill="#0d0f15" stroke="#1e2230" stroke-width="2"/>
+            <circle cx="580" cy="252" r="32" fill="#080a0e" stroke="#2a2e3c" stroke-width="1.5"/>
+            <!-- Radios -->
+            <line x1="580" y1="220" x2="580" y2="284" stroke="#3a4050" stroke-width="2.5"/>
+            <line x1="548" y1="252" x2="612" y2="252" stroke="#3a4050" stroke-width="2.5"/>
+            <line x1="557" y1="229" x2="603" y2="275" stroke="#3a4050" stroke-width="2"/>
+            <line x1="603" y1="229" x2="557" y2="275" stroke="#3a4050" stroke-width="2"/>
+            <line x1="569" y1="222" x2="591" y2="282" stroke="#2e3445" stroke-width="1.5"/>
+            <line x1="591" y1="222" x2="569" y2="282" stroke="#2e3445" stroke-width="1.5"/>
+            <!-- Centro llanta -->
+            <circle cx="580" cy="252" r="9" fill="#1a1e2a" stroke="var(--neon-red)" stroke-width="1.5"/>
+            <circle cx="580" cy="252" r="4" fill="var(--neon-red)" opacity=".6"/>
+            <!-- Llanta delantera -->
+            <circle cx="220" cy="252" r="42" fill="#0d0f15" stroke="#1e2230" stroke-width="2"/>
+            <circle cx="220" cy="252" r="32" fill="#080a0e" stroke="#2a2e3c" stroke-width="1.5"/>
+            <line x1="220" y1="220" x2="220" y2="284" stroke="#3a4050" stroke-width="2.5"/>
+            <line x1="188" y1="252" x2="252" y2="252" stroke="#3a4050" stroke-width="2.5"/>
+            <line x1="197" y1="229" x2="243" y2="275" stroke="#3a4050" stroke-width="2"/>
+            <line x1="243" y1="229" x2="197" y2="275" stroke="#3a4050" stroke-width="2"/>
+            <line x1="209" y1="222" x2="231" y2="282" stroke="#2e3445" stroke-width="1.5"/>
+            <line x1="231" y1="222" x2="209" y2="282" stroke="#2e3445" stroke-width="1.5"/>
+            <circle cx="220" cy="252" r="9" fill="#1a1e2a" stroke="var(--neon-red)" stroke-width="1.5"/>
+            <circle cx="220" cy="252" r="4" fill="var(--neon-red)" opacity=".6"/>
+          </g>
+
+          <!-- PARTE AERO: kit aerodinámico frontal/lateral -->
+          <g class="part-aero">
+            <!-- Splitter delantero -->
+            <path d="M112 228 L160 222 L162 232 L110 238Z" fill="#0a0c12" stroke="var(--neon-red)" stroke-width="1.2"/>
+            <!-- Falda lateral -->
+            <path d="M162 235 L640 235 L640 248 L162 248Z" fill="#0c0e16" stroke="#1e2230" stroke-width="1"/>
+            <!-- Salidas de aire capó -->
+            <rect x="220" y="192" width="30" height="6" rx="1" fill="#0a0c12" stroke="rgba(0,212,255,.4)" stroke-width="1"/>
+            <rect x="258" y="192" width="30" height="6" rx="1" fill="#0a0c12" stroke="rgba(0,212,255,.4)" stroke-width="1"/>
+          </g>
+
+          <!-- PARTE WING: alerón trasero -->
+          <g class="part-wing">
+            <!-- Alerón -->
+            <rect x="620" y="155" width="90" height="8" rx="2" fill="#0f1220" stroke="rgba(0,212,255,.5)" stroke-width="1.5"/>
+            <rect x="635" y="155" width="4" height="28" rx="1" fill="#0f1220" stroke="#2a2e3a" stroke-width=".8"/>
+            <rect x="691" y="155" width="4" height="28" rx="1" fill="#0f1220" stroke="#2a2e3a" stroke-width=".8"/>
+            <!-- Detalle neon alerón -->
+            <line x1="622" y1="162" x2="708" y2="162" stroke="var(--neon-blue)" stroke-width="1.5" opacity=".7"/>
+          </g>
+
+          <!-- PARTE LEDS: luces LED -->
+          <g class="part-leds">
+            <!-- Faro delantero LED DRL -->
+            <path d="M128 215 L160 208 L160 225 L130 225Z" fill="#0a1020" stroke="rgba(0,212,255,.5)" stroke-width="1"/>
+            <line x1="132" y1="217" x2="158" y2="211" stroke="var(--neon-blue)" stroke-width="2" opacity=".9"/>
+            <line x1="133" y1="220" x2="158" y2="215" stroke="var(--neon-blue)" stroke-width="1" opacity=".6"/>
+            <!-- Piloto trasero LED -->
+            <path d="M660 200 L700 205 L700 230 L658 228Z" fill="#150008" stroke="rgba(255,23,68,.5)" stroke-width="1"/>
+            <line x1="662" y1="205" x2="697" y2="208" stroke="var(--neon-red)" stroke-width="2.5" opacity=".9"/>
+            <line x1="663" y1="210" x2="697" y2="213" stroke="var(--neon-red)" stroke-width="1.5" opacity=".7"/>
+            <line x1="664" y1="215" x2="697" y2="218" stroke="var(--neon-red)" stroke-width="1" opacity=".5"/>
+            <!-- Proyección luz delantera -->
+            <path d="M120 210 L60 185 L60 230 L120 225Z" fill="url(#lightBeam)" opacity=".15"/>
+          </g>
+
+          <!-- PARTE VINYL: vinilo personalizado -->
+          <g class="part-vinyl">
+            <!-- Línea vinilo lateral -->
+            <path d="M185 215 L580 215" stroke="var(--neon-red)" stroke-width="2.5" stroke-dasharray="8 4" opacity=".8"/>
+            <!-- Detalle vinilo puerta -->
+            <path d="M310 175 L440 172 L440 200 L310 200Z" fill="url(#vinylGrad)" opacity=".3"/>
+            <!-- Logo ficticio -->
+            <text x="360" y="193" font-family="Arial" font-size="8" fill="rgba(255,23,68,.6)" text-anchor="middle" letter-spacing="3">NFC</text>
+          </g>
+
+          <!-- PARTE LOWERED: suspensión baja -->
+          <g class="part-lowered">
+            <!-- Arco rueda más bajo -->
+            <path d="M175 238 Q220 245 265 238" stroke="#2a2e3a" stroke-width="2" fill="none"/>
+            <path d="M535 238 Q580 245 625 238" stroke="#2a2e3a" stroke-width="2" fill="none"/>
+          </g>
+
+          <!-- PARTE NEON UNDER: efecto underglow neón -->
+          <g class="part-neon-under neon-glow-anim">
+            <path d="M162 248 L638 248" stroke="var(--neon-blue)" stroke-width="3" opacity=".8" filter="url(#neonBlur)"/>
+            <path d="M162 248 L638 248" stroke="var(--neon-blue)" stroke-width="8" opacity=".3" filter="url(#neonBlur2)"/>
+            <!-- Efecto lateral izquierdo -->
+            <path d="M162 235 L162 248" stroke="var(--neon-blue)" stroke-width="2" opacity=".6" filter="url(#neonBlur)"/>
+            <!-- Efecto lateral derecho -->
+            <path d="M638 235 L638 248" stroke="var(--neon-blue)" stroke-width="2" opacity=".6" filter="url(#neonBlur)"/>
+          </g>
+
+          <!-- DEFS: gradientes y filtros -->
+          <defs>
+            <radialGradient id="shadowGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(0,0,0,0.6)"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+            <linearGradient id="vinylGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="var(--neon-red)" stop-opacity=".8"/>
+              <stop offset="100%" stop-color="var(--neon-blue)" stop-opacity=".8"/>
+            </linearGradient>
+            <linearGradient id="lightBeam" x1="100%" y1="0%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="var(--neon-blue)" stop-opacity=".8"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </linearGradient>
+            <filter id="neonBlur" x="-20%" y="-200%" width="140%" height="500%">
+              <feGaussianBlur stdDeviation="3"/>
+            </filter>
+            <filter id="neonBlur2" x="-20%" y="-200%" width="140%" height="500%">
+              <feGaussianBlur stdDeviation="8"/>
+            </filter>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- Humo -->
+      <div class="car-smoke" id="carSmoke" style="opacity:0">
+        <div class="smoke-puff"></div>
+        <div class="smoke-puff"></div>
+        <div class="smoke-puff"></div>
+      </div>
+
+      <!-- Suelo reflejo -->
+      <div class="car-floor"></div>
+      <div class="car-reflection"></div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint">
+    <div class="scroll-mouse"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<div class="neon-line"></div>
+
+<!-- ============================================================
+     STATS
+     ============================================================ -->
+<section id="stats">
+  <div class="section-inner">
+    <div class="stats-row">
+      <div class="stat-item reveal">
+        <div class="num" data-count="800">0</div>
+        <div class="label">Coches transformados</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="num" data-count="12">0</div>
+        <div class="label">Años de experiencia</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="num" data-count="98">0</div>
+        <div class="label">% satisfacción</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="num" data-count="24">0</div>
+        <div class="label">Premios de tuning</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="neon-line"></div>
+
+<!-- ============================================================
+     BEFORE / AFTER
+     ============================================================ -->
+<section id="before-after">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">Transformaciones</span>
+      <h2 class="section-title">Antes &amp; Después</h2>
+      <div class="divider"></div>
+      <p class="section-sub">Pasa el cursor sobre cada tarjeta para ver la transformación completa. Cada proyecto es único.</p>
+    </div>
+    <div class="ba-grid">
+
+      <div class="ba-card reveal">
+        <div class="ba-img-area">
+          <div class="ba-before">
+            <!-- REEMPLAZA con imagen real: <img src="antes-bmw.jpg" alt="BMW M3 antes"> -->
+            <span class="ba-label ba-label-before">Antes</span>
+            <div class="car-placeholder">
+              <svg viewBox="0 0 300 130" fill="none" style="width:100%;opacity:.4">
+                <path d="M40 80 L70 55 L120 45 L180 43 L230 46 L265 58 L280 80 L280 95 L40 95Z" fill="#2a2e3a"/>
+                <circle cx="90" cy="96" r="20" fill="#1a1e28" stroke="#2a2e3a" stroke-width="1.5"/>
+                <circle cx="210" cy="96" r="20" fill="#1a1e28" stroke="#2a2e3a" stroke-width="1.5"/>
+              </svg>
+            </div>
+          </div>
+          <div class="ba-after">
+            <span class="ba-label ba-label-after">Después</span>
+            <div class="car-placeholder">
+              <svg viewBox="0 0 300 130" fill="none" style="width:100%">
+                <path d="M40 80 L70 55 L120 45 L180 43 L230 46 L265 58 L280 80 L280 95 L40 95Z" fill="#1e2235" stroke="rgba(255,23,68,.3)" stroke-width="1"/>
+                <path d="M40 88 L280 88" stroke="var(--neon-blue)" stroke-width="1.5" opacity=".6"/>
+                <circle cx="90" cy="96" r="20" fill="#0d0f18" stroke="var(--neon-red)" stroke-width="1.5"/>
+                <circle cx="90" cy="96" r="12" fill="#080a10" stroke="#2a2e3a" stroke-width="1"/>
+                <line x1="90" y1="76" x2="90" y2="116" stroke="#3a4050" stroke-width="2"/>
+                <line x1="70" y1="96" x2="110" y2="96" stroke="#3a4050" stroke-width="2"/>
+                <circle cx="210" cy="96" r="20" fill="#0d0f18" stroke="var(--neon-red)" stroke-width="1.5"/>
+                <circle cx="210" cy="96" r="12" fill="#080a10" stroke="#2a2e3a" stroke-width="1"/>
+                <line x1="210" y1="76" x2="210" y2="116" stroke="#3a4050" stroke-width="2"/>
+                <line x1="190" y1="96" x2="230" y2="96" stroke="#3a4050" stroke-width="2"/>
+                <rect x="10" y="86" width="30" height="6" rx="1" fill="#0a1020" stroke="rgba(0,212,255,.6)" stroke-width="1"/>
+                <rect x="258" y="82" width="32" height="12" rx="1" fill="#150008" stroke="rgba(255,23,68,.6)" stroke-width="1"/>
+                <path d="M40 88 L280 88" stroke="var(--neon-blue)" stroke-width="3" opacity=".4" filter="url(#nb)"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="ba-info">
+          <h3>BMW M3 Competition</h3>
+          <p>Full body kit, llantas HRE, wrap negro mate + detalles rojo</p>
+          <div class="ba-stats">
+            <div class="ba-stat"><span>+120cv</span><span>Potencia extra</span></div>
+            <div class="ba-stat"><span>18 días</span><span>Tiempo obra</span></div>
+            <div class="ba-stat"><span>€18.500</span><span>Inversión</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ba-card reveal">
+        <div class="ba-img-area">
+          <div class="ba-before">
+            <span class="ba-label ba-label-before">Antes</span>
+            <div class="car-placeholder">
+              <svg viewBox="0 0 300 130" fill="none" style="width:100%;opacity:.4">
+                <path d="M35 78 L65 52 L115 40 L185 38 L235 42 L270 55 L285 78 L285 93 L35 93Z" fill="#2a2e3a"/>
+                <circle cx="85" cy="94" r="22" fill="#1a1e28" stroke="#2a2e3a" stroke-width="1.5"/>
+                <circle cx="215" cy="94" r="22" fill="#1a1e28" stroke="#2a2e3a" stroke-width="1.5"/>
+              </svg>
+            </div>
+          </div>
+          <div class="ba-after">
+            <span class="ba-label ba-label-after">Después</span>
+            <div class="car-placeholder">
+              <svg viewBox="0 0 300 130" fill="none" style="width:100%">
+                <path d="M35 78 L65 52 L115 40 L185 38 L235 42 L270 55 L285 78 L285 93 L35 93Z" fill="#1e2235"/>
+                <path d="M35 85 L285 85" stroke="var(--neon-blue)" stroke-width="2" opacity=".7"/>
+                <rect x="270" y="58" width="20" height="5" rx="1" fill="#080a10" stroke="rgba(0,212,255,.5)" stroke-width="1"/>
+                <circle cx="85" cy="94" r="22" fill="#0d0f18" stroke="var(--neon-blue)" stroke-width="1.5"/>
+                <circle cx="215" cy="94" r="22" fill="#0d0f18" stroke="var(--neon-blue)" stroke-width="1.5"/>
+                <path d="M35 86 L285 86" stroke="var(--neon-blue)" stroke-width="4" opacity=".3"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="ba-info">
+          <h3>Audi RS6 Avant</h3>
+          <p>Wide body Mansory, llantas Vossen, sistema de escape Akrapovic</p>
+          <div class="ba-stats">
+            <div class="ba-stat"><span>+200cv</span><span>Potencia extra</span></div>
+            <div class="ba-stat"><span>25 días</span><span>Tiempo obra</span></div>
+            <div class="ba-stat"><span>€32.000</span><span>Inversión</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ba-card reveal">
+        <div class="ba-img-area">
+          <div class="ba-before">
+            <span class="ba-label ba-label-before">Antes</span>
+            <div class="car-placeholder">
+              <svg viewBox="0 0 300 130" fill="none" style="width:100%;opacity:.4">
+                <path d="M50 82 L80 58 L130 48 L175 45 L225 48 L260 62 L275 82 L275 96 L50 96Z" fill="#2a2e3a"/>
+                <circle cx="95" cy="97" r="19" fill="#1a1e28"/>
+                <circle cx="215" cy="97" r="19" fill="#1a1e28"/>
+              </svg>
+            </div>
+          </div>
+          <div class="ba-after">
+            <span class="ba-label ba-label-after">Después</span>
+            <div class="car-placeholder">
+              <svg viewBox="0 0 300 130" fill="none" style="width:100%">
+                <path d="M50 82 L80 58 L130 48 L175 45 L225 48 L260 62 L275 82 L275 96 L50 96Z" fill="#1e2235"/>
+                <path d="M50 88 L275 88" stroke="var(--neon-red)" stroke-width="2" opacity=".8"/>
+                <circle cx="95" cy="97" r="19" fill="#0d0f18" stroke="var(--neon-red)" stroke-width="1.5"/>
+                <circle cx="215" cy="97" r="19" fill="#0d0f18" stroke="var(--neon-red)" stroke-width="1.5"/>
+                <path d="M50 89 L275 89" stroke="var(--neon-red)" stroke-width="5" opacity=".25"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="ba-info">
+          <h3>Porsche 911 GT3</h3>
+          <p>Alerón GT3 RS, roll cage, Michelin Cup2, pintura Lizard Green</p>
+          <div class="ba-stats">
+            <div class="ba-stat"><span>Track</span><span>Uso pista</span></div>
+            <div class="ba-stat"><span>30 días</span><span>Tiempo obra</span></div>
+            <div class="ba-stat"><span>€45.000</span><span>Inversión</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="neon-line"></div>
+
+<!-- ============================================================
+     GALLERY
+     ============================================================ -->
+<section id="gallery">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">Portfolio</span>
+      <h2 class="section-title">Galería <span style="color:var(--neon-red)">Exclusiva</span></h2>
+      <div class="divider"></div>
+      <p class="section-sub">Cada coche que sale de nuestro taller es un statement. Hover para descubrir los detalles.</p>
+    </div>
+    <!-- REEMPLAZA las clases .g1-g6 con imágenes reales: style="background-image:url('foto.jpg');background-size:cover" -->
+    <div class="gallery-grid">
+
+      <div class="gallery-item reveal">
+        <div class="gallery-bg g1" style="height:100%">
+          <!-- Car silhouette placeholder -->
+          <svg class="gallery-car-svg" viewBox="0 0 400 160" fill="none">
+            <path d="M20 100 L60 68 L130 52 L220 48 L300 52 L350 68 L375 100 L375 115 L20 115Z" fill="rgba(255,23,68,0.15)" stroke="rgba(255,23,68,0.3)" stroke-width="1.5"/>
+            <circle cx="80" cy="116" r="24" fill="rgba(255,23,68,0.1)" stroke="rgba(255,23,68,0.4)" stroke-width="1.5"/>
+            <circle cx="305" cy="116" r="24" fill="rgba(255,23,68,0.1)" stroke="rgba(255,23,68,0.4)" stroke-width="1.5"/>
+            <path d="M20 108 L375 108" stroke="rgba(255,23,68,0.4)" stroke-width="1.5"/>
+            <path d="M20 109 L375 109" stroke="rgba(255,23,68,0.2)" stroke-width="4"/>
+          </svg>
+        </div>
+        <div class="gallery-overlay">
+          <h3>Lamborghini Huracán</h3>
+          <p>Full Novitec kit · Forgiato 22" · Verde Ophion wrap</p>
+        </div>
+        <div class="gallery-neon-border"></div>
+      </div>
+
+      <div class="gallery-item reveal">
+        <div class="gallery-bg g2" style="height:100%">
+          <svg class="gallery-car-svg" viewBox="0 0 400 160" fill="none">
+            <path d="M30 102 L70 70 L140 55 L210 50 L290 54 L345 72 L370 102 L370 116 L30 116Z" fill="rgba(0,212,255,0.12)" stroke="rgba(0,212,255,0.3)" stroke-width="1.5"/>
+            <circle cx="88" cy="117" r="22" fill="rgba(0,212,255,0.08)" stroke="rgba(0,212,255,0.4)" stroke-width="1.5"/>
+            <circle cx="295" cy="117" r="22" fill="rgba(0,212,255,0.08)" stroke="rgba(0,212,255,0.4)" stroke-width="1.5"/>
+            <path d="M30 108 L370 108" stroke="rgba(0,212,255,0.35)" stroke-width="1.5"/>
+            <path d="M330 60" stroke="rgba(0,212,255,0.5)"/>
+            <rect x="330" y="62" width="45" height="6" rx="1" fill="none" stroke="rgba(0,212,255,0.5)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="gallery-overlay">
+          <h3>Nissan GT-R R35</h3>
+          <p>Liberty Walk · VR38 1200hp · Blue Carbon wrap</p>
+        </div>
+        <div class="gallery-neon-border"></div>
+      </div>
+
+      <div class="gallery-item reveal">
+        <div class="gallery-bg g3" style="height:100%">
+          <svg class="gallery-car-svg" viewBox="0 0 400 160" fill="none">
+            <path d="M25 98 L65 65 L140 48 L215 45 L295 49 L355 68 L378 98 L378 114 L25 114Z" fill="rgba(255,170,0,0.1)" stroke="rgba(255,170,0,0.25)" stroke-width="1.5"/>
+            <circle cx="82" cy="115" r="23" fill="rgba(255,170,0,0.08)" stroke="rgba(255,170,0,0.35)" stroke-width="1.5"/>
+            <circle cx="308" cy="115" r="23" fill="rgba(255,170,0,0.08)" stroke="rgba(255,170,0,0.35)" stroke-width="1.5"/>
+            <path d="M25 106 L378 106" stroke="rgba(255,170,0,0.3)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="gallery-overlay">
+          <h3>Ferrari 488 Pista</h3>
+          <p>Capristo exhaust · HRE P101 · Oro Abramo full wrap</p>
+        </div>
+        <div class="gallery-neon-border"></div>
+      </div>
+
+      <div class="gallery-item reveal">
+        <div class="gallery-bg g4" style="height:100%">
+          <svg class="gallery-car-svg" viewBox="0 0 400 160" fill="none">
+            <path d="M28 100 L68 66 L138 50 L218 46 L298 50 L352 70 L372 100 L372 115 L28 115Z" fill="rgba(170,0,255,0.1)" stroke="rgba(170,0,255,0.25)" stroke-width="1.5"/>
+            <circle cx="86" cy="116" r="22" fill="rgba(170,0,255,0.08)" stroke="rgba(170,0,255,0.4)" stroke-width="1.5"/>
+            <circle cx="300" cy="116" r="22" fill="rgba(170,0,255,0.08)" stroke="rgba(170,0,255,0.4)" stroke-width="1.5"/>
+            <path d="M28 107 L372 107" stroke="rgba(170,0,255,0.4)" stroke-width="1.5"/>
+            <rect x="355" y="54" width="18" height="5" rx="1" fill="none" stroke="rgba(170,0,255,0.5)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="gallery-overlay">
+          <h3>Mercedes-AMG GT Black Series</h3>
+          <p>Brabus Stage 4 · Brixton CM5 · Purple Chrome vinyl</p>
+        </div>
+        <div class="gallery-neon-border"></div>
+      </div>
+
+      <div class="gallery-item reveal">
+        <div class="gallery-bg g5" style="height:100%">
+          <svg class="gallery-car-svg" viewBox="0 0 400 160" fill="none">
+            <path d="M30 99 L66 67 L136 51 L212 47 L292 51 L350 69 L373 99 L373 114 L30 114Z" fill="rgba(0,255,128,0.08)" stroke="rgba(0,255,128,0.2)" stroke-width="1.5"/>
+            <circle cx="84" cy="115" r="22" fill="rgba(0,255,128,0.06)" stroke="rgba(0,255,128,0.35)" stroke-width="1.5"/>
+            <circle cx="301" cy="115" r="22" fill="rgba(0,255,128,0.06)" stroke="rgba(0,255,128,0.35)" stroke-width="1.5"/>
+            <path d="M30 106 L373 106" stroke="rgba(0,255,128,0.3)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="gallery-overlay">
+          <h3>McLaren 720S</h3>
+          <p>MSO carbon kit · Öhlins suspension · Gloss Racing Green</p>
+        </div>
+        <div class="gallery-neon-border"></div>
+      </div>
+
+      <div class="gallery-item reveal">
+        <div class="gallery-bg g6" style="height:100%">
+          <svg class="gallery-car-svg" viewBox="0 0 400 160" fill="none">
+            <path d="M22 97 L62 63 L132 47 L210 43 L290 47 L348 65 L376 97 L376 112 L22 112Z" fill="rgba(255,23,68,0.08)" stroke="rgba(255,23,68,0.2)" stroke-width="1.5"/>
+            <circle cx="80" cy="113" r="23" fill="rgba(255,23,68,0.06)" stroke="rgba(255,23,68,0.35)" stroke-width="1.5"/>
+            <circle cx="303" cy="113" r="23" fill="rgba(255,23,68,0.06)" stroke="rgba(255,23,68,0.35)" stroke-width="1.5"/>
+            <path d="M22 104 L376 104" stroke="rgba(255,23,68,0.3)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="gallery-overlay">
+          <h3>Bugatti Chiron Pur Sport</h3>
+          <p>Custom interior · Nocturne Black full repaint · Diamond cut</p>
+        </div>
+        <div class="gallery-neon-border"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="neon-line"></div>
+
+<!-- ============================================================
+     SERVICES
+     ============================================================ -->
+<section id="services">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">Lo que hacemos</span>
+      <h2 class="section-title">Servicios <span style="color:var(--neon-blue)">Premium</span></h2>
+      <div class="divider"></div>
+      <p class="section-sub">Cada servicio está diseñado para llevar tu vehículo al límite de lo posible.</p>
+    </div>
+    <div class="services-grid">
+
+      <div class="service-card reveal">
+        <div class="service-icon">🏎️</div>
+        <h3>Kits de Carrocería</h3>
+        <p>Wide body, lip kits, difusores, splitters y extensiones personalizadas en fibra de carbono o poliuretano.</p>
+        <span class="service-tag">Fibra de carbono · Kevlar</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🎨</div>
+        <h3>Pintura &amp; Wraps</h3>
+        <p>Pintura líquida, vinilos premium 3M y Avery, acabados cromo, mate, satinado, saten y efectos especiales.</p>
+        <span class="service-tag">3M · Avery Dennison</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">⚙️</div>
+        <h3>Llantas &amp; Neumáticos</h3>
+        <p>Llantas forjadas HRE, Vossen, Brixton, Forgeline en todos los diámetros. Montaje y equilibrado.</p>
+        <span class="service-tag">HRE · Vossen · Brixton</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">💡</div>
+        <h3>Iluminación LED</h3>
+        <p>DRL LED, faros de xenón, kit underglow RGB, iluminación interior de ambiente y tiras LED en carrocería.</p>
+        <span class="service-tag">RGB · Osram · Philips</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🔊</div>
+        <h3>Escapes Deportivos</h3>
+        <p>Sistemas de escape completos Akrapovic, Capristo, Milltek. Sonido, potencia y diseño en uno.</p>
+        <span class="service-tag">Akrapovic · Capristo</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🪑</div>
+        <h3>Interiores Custom</h3>
+        <p>Tapicería en piel Nappa, Alcántara, carbono en salpicadero, iluminación ambiente y sistemas multimedia.</p>
+        <span class="service-tag">Nappa · Alcántara</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">📐</div>
+        <h3>Suspensión &amp; Chassis</h3>
+        <p>Coilovers Öhlins, KW, BC Racing. Ajuste de caída, vía y geometría para máximo rendimiento.</p>
+        <span class="service-tag">Öhlins · KW · BC</span>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">🚀</div>
+        <h3>Preparación Motor</h3>
+        <p>Stage 1-3, remapeo ECU, turbos sport, intercoolers, inyectores y sistemas de inducción de alto caudal.</p>
+        <span class="service-tag">Stage 1·2·3 · ECU</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="neon-line"></div>
+
+<!-- ============================================================
+     PROCESS
+     ============================================================ -->
+<section id="process">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto;">
+      <span class="section-tag">Metodología</span>
+      <h2 class="section-title">Nuestro <span style="color:var(--neon-red)">Proceso</span></h2>
+      <div class="divider" style="margin:1.25rem auto;"></div>
+      <p class="section-sub" style="margin:0 auto;">De la idea al asfalto. Cada paso está ejecutado con precisión milimétrica.</p>
+    </div>
+    <div class="process-steps">
+
+      <div class="process-step reveal">
+        <div class="step-num">01</div>
+        <h3>Diseño 3D</h3>
+        <p>Renderizado fotorrealista de tu coche con todas las modificaciones antes de tocar ninguna pieza.</p>
+      </div>
+
+      <div class="process-step reveal">
+        <div class="step-num">02</div>
+        <h3>Ingeniería</h3>
+        <p>Selección de componentes, cálculo de estructuras y planificación técnica de cada modificación.</p>
+      </div>
+
+      <div class="process-step reveal">
+        <div class="step-num">03</div>
+        <h3>Montaje</h3>
+        <p>Instalación por técnicos certificados con más de 10 años de experiencia en tuning de alto nivel.</p>
+      </div>
+
+      <div class="process-step reveal">
+        <div class="step-num">04</div>
+        <h3>Entrega</h3>
+        <p>Inspección final, detailing completo y presentación en showroom. Tu coche, perfectamente acabado.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="neon-line"></div>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-tag">Clientes</span>
+      <h2 class="section-title">Lo que dicen</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="testi-grid">
+
+      <div class="testi-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">NeonForge transformó mi M3 en algo completamente fuera de serie. El nivel de detalle y la calidad de los materiales son impresionantes. Cada vez que aparco, la gente no puede dejar de mirar.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AV</div>
+          <div>
+            <div class="testi-name">Alejandro V.</div>
+            <div class="testi-car">BMW M3 Competition · Madrid</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">El proceso de diseño 3D me convenció desde el primer momento. Ver el coche terminado exactamente como lo había imaginado fue una experiencia increíble. Profesionalismo total.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">SR</div>
+          <div>
+            <div class="testi-name">Sara R.</div>
+            <div class="testi-car">Audi RS6 Avant · Barcelona</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">Llevé mi 911 para un build de pista completo y el resultado superó todas las expectativas. El equipo conoce cada detalle técnico y los plazos se cumplen religiosamente.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">MC</div>
+          <div>
+            <div class="testi-name">Miguel C.</div>
+            <div class="testi-car">Porsche 911 GT3 · Valencia</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="neon-line"></div>
+
+<!-- ============================================================
+     CONTACT
+     ============================================================ -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-layout">
+      <div class="reveal">
+        <span class="section-tag">Empieza tu proyecto</span>
+        <h2 class="section-title">Crea tu<br/><span style="color:var(--neon-red)">máquina</span></h2>
+        <div class="divider"></div>
+        <p>Cuéntanos tu visión. Nuestro equipo de diseñadores y técnicos te preparará un presupuesto detallado y un render 3D completamente gratuito.</p>
+
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📍</div>
+          <!-- CAMBIA la dirección aquí -->
+          <span>Polígono Industrial Norte, Nave 14 · Madrid, España</span>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📞</div>
+          <!-- CAMBIA el teléfono aquí -->
+          <span>+34 900 123 456</span>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">✉️</div>
+          <!-- CAMBIA el email aquí -->
+          <span>info@neonforge.es</span>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">🕐</div>
+          <span>Lunes – Viernes: 9:00 – 19:00 · Sábados: 10:00 – 14:00</span>
+        </div>
+      </div>
+
+      <form class="contact-form reveal" id="contactForm">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Nombre</label>
+            <input type="text" placeholder="Tu nombre" required/>
+          </div>
+          <div class="form-field">
+            <label>Teléfono</label>
+            <input type="tel" placeholder="+34 600 000 000"/>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" placeholder="tu@email.com" required/>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Coche</label>
+            <input type="text" placeholder="Marca, modelo y año"/>
+          </div>
+          <div class="form-field">
+            <label>Presupuesto</label>
+            <select>
+              <option value="">Seleccionar rango</option>
+              <option>€5.000 – €10.000</option>
+              <option>€10.000 – €20.000</option>
+              <option>€20.000 – €50.000</option>
+              <option>€50.000+</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Servicios de interés</label>
+          <select>
+            <option value="">¿Qué necesitas?</option>
+            <option>Kit de carrocería completo</option>
+            <option>Wrap / Pintura</option>
+            <option>Llantas &amp; Suspensión</option>
+            <option>Iluminación LED</option>
+            <option>Motor &amp; ECU</option>
+            <option>Interior custom</option>
+            <option>Proyecto completo</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Descripción del proyecto</label>
+          <textarea placeholder="Cuéntanos tu visión: estilo, colores, referencias, modificaciones deseadas..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Solicitar presupuesto gratuito
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:1.4rem">NEON<span style="color:var(--neon-red);-webkit-text-fill-color:var(--neon-red)">FORGE</span></div>
+      <!-- CAMBIA la descripción del footer aquí -->
+      <p>El taller de tuning más exclusivo de España. Transformamos coches en obras de arte sobre ruedas desde 2018.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#services">Kits de carrocería</a></li>
+        <li><a href="#services">Pintura &amp; Wraps</a></li>
+        <li><a href="#services">Llantas</a></li>
+        <li><a href="#services">Iluminación LED</a></li>
+        <li><a href="#services">Escapes deportivos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Empresa</h4>
+      <ul>
+        <li><a href="#">Sobre nosotros</a></li>
+        <li><a href="#gallery">Portfolio</a></li>
+        <li><a href="#testimonials">Clientes</a></li>
+        <li><a href="#process">Proceso</a></li>
+        <li><a href="#contact">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Aviso legal</a></li>
+        <li><a href="#">Política de privacidad</a></li>
+        <li><a href="#">Cookies</a></li>
+        <li><a href="#">Términos y condiciones</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom" style="max-width:1280px;margin:0 auto;padding:0 2rem;">
+    <p class="footer-copy">© 2024 NeonForge Customs. Todos los derechos reservados.</p>
+    <div class="footer-socials">
+      <!-- AÑADE links reales a redes sociales -->
+      <a href="#" class="social-btn" title="Instagram">IG</a>
+      <a href="#" class="social-btn" title="YouTube">YT</a>
+      <a href="#" class="social-btn" title="TikTok">TK</a>
+      <a href="#" class="social-btn" title="Facebook">FB</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ============================================================
+// PARTICLE SYSTEM (fondo animado)
+// ============================================================
+(function() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], animId;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function Particle() {
+    this.reset();
+  }
+  Particle.prototype.reset = function() {
+    this.x  = Math.random() * W;
+    this.y  = Math.random() * H;
+    this.r  = Math.random() * 1.4 + .3;
+    this.vx = (Math.random() - .5) * .4;
+    this.vy = (Math.random() - .5) * .4;
+    this.life = Math.random();
+    this.maxLife = Math.random() * .6 + .4;
+    // Color: rojo, azul o blanco
+    const c = Math.random();
+    if      (c < .35) this.color = '255,23,68';
+    else if (c < .65) this.color = '0,212,255';
+    else              this.color = '200,210,240';
+  };
+  Particle.prototype.update = function() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life += .003;
+    if (this.life > this.maxLife || this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+  };
+  Particle.prototype.draw = function() {
+    const alpha = Math.sin(this.life / this.maxLife * Math.PI) * .7;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color},${alpha})`;
+    ctx.fill();
+  };
+
+  function init() {
+    resize();
+    particles = Array.from({length: 180}, () => new Particle());
+    // random start positions
+    particles.forEach(p => p.y = Math.random() * H);
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    // Draw connection lines between nearby particles
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,212,255,${.08 * (1 - d/100)})`;
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+      particles[i].update();
+      particles[i].draw();
+    }
+    animId = requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', () => { resize(); });
+  init();
+  loop();
+})();
+
+// ============================================================
+// NAV scroll behavior
+// ============================================================
+const mainNav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  mainNav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Hamburger mobile
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.add('open');
+});
+document.getElementById('closeMenu').addEventListener('click', closeMobileMenu);
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ============================================================
+// GSAP HERO ENTRANCE
+// ============================================================
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.to('#heroEyebrow', { opacity:1, y:0, duration:.8, delay:.2, ease:'power3.out' });
+gsap.to('#heroTitle',   { opacity:1, y:0, duration:1,  delay:.5, ease:'power3.out' });
+gsap.to('#heroSub',     { opacity:1, y:0, duration:.8, delay:.9, ease:'power3.out' });
+gsap.to('#heroButtons', { opacity:1, y:0, duration:.8, delay:1.1, ease:'power3.out' });
+gsap.to('#carStage',    { opacity:1, y:0, duration:1,  delay:1.3, ease:'power3.out' });
+
+// ============================================================
+// CAR BUILD ANIMATION (secuencial al hacer scroll)
+// ============================================================
+const carParts = [
+  '.part-wheels',
+  '.part-aero',
+  '.part-wing',
+  '.part-leds',
+  '.part-vinyl',
+  '.part-lowered',
+  '.part-neon-under',
+];
+
+// Trigger al llegar a la sección de stats
+ScrollTrigger.create({
+  trigger: '#stats',
+  start: 'top 85%',
+  once: true,
+  onEnter: () => {
+    // Activar humo
+    gsap.to('#carSmoke', { opacity:1, duration:.5 });
+    // Ir añadiendo partes una a una
+    carParts.forEach((part, i) => {
+      gsap.to(part, {
+        opacity: 1,
+        duration: .6,
+        delay: i * .55,
+        ease: 'power2.out',
+      });
+    });
+  }
+});
+
+// ============================================================
+// SCROLL REVEAL (genérico)
+// ============================================================
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, y: 40 },
+    {
+      opacity: 1, y: 0,
+      duration: .85,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        once: true,
+      }
+    }
+  );
+});
+
+// ============================================================
+// COUNTER ANIMATION (stats)
+// ============================================================
+document.querySelectorAll('[data-count]').forEach(el => {
+  const target = parseInt(el.dataset.count);
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 85%',
+    once: true,
+    onEnter: () => {
+      gsap.to({ val: 0 }, {
+        val: target,
+        duration: 2,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.textContent = Math.round(this.targets()[0].val) + (el.closest('.stat-item').querySelector('.label').textContent.includes('%') ? '%' : '+');
+        }
+      });
+    }
+  });
+});
+
+// ============================================================
+// PARALLAX hero glows
+// ============================================================
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  const red  = document.querySelector('.hero-glow-red');
+  const blue = document.querySelector('.hero-glow-blue');
+  if (red)  red.style.transform  = `translateX(-50%) translateY(${sy * .2}px)`;
+  if (blue) blue.style.transform = `translateY(${sy * .15}px)`;
+});
+
+// ============================================================
+// FORM submit (placeholder)
+// ============================================================
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('.form-submit');
+  btn.textContent = '✓  Solicitud enviada — te contactamos pronto';
+  btn.style.background = 'linear-gradient(90deg,#00c853,#00e676)';
+  btn.style.clipPath = 'none';
+  btn.style.borderRadius = '3px';
+  // Aquí conecta con tu backend / Firebase / EmailJS
+});
+</script>
+</body>
+</html>
