@@ -825,17 +825,9 @@ footer {
 .foot-copy { font-size: 0.72rem; }
 
 /* ── REVEAL ── */
-.rv { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
-.rv.in { opacity: 1; transform: translateY(0); }
-.d1 { transition-delay: .1s; }
-.d2 { transition-delay: .18s; }
-.d3 { transition-delay: .26s; }
-.d4 { transition-delay: .34s; }
-.d5 { transition-delay: .42s; }
-/* Fallback: never leave content invisible */
-@media (prefers-reduced-motion: reduce) {
-  .rv { opacity: 1; transform: none; transition: none; }
-}
+.rv { opacity: 1; transform: none; }
+.rv.in { opacity: 1; transform: none; }
+.d1,.d2,.d3,.d4,.d5 {}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 1024px) {
