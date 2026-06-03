@@ -788,6 +788,21 @@ const server = http.createServer((request, response) => {
     return;
   }
 
+  if (request.method === "GET" && (pathname === "/lumiera" || pathname === "/lumiera-eyelift")) {
+    try {
+      const htmlPath = path.join(process.cwd(), "lumiera-eyelift.html");
+      const html = fs.readFileSync(htmlPath, "utf8");
+      response.writeHead(200, {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "public, max-age=3600",
+      });
+      response.end(html);
+    } catch {
+      sendJson(response, 500, { error: "page_not_found" });
+    }
+    return;
+  }
+
   sendJson(response, 200, { ok: true, service: "won-render-api" });
 });
 
