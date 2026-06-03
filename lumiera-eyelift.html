@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumiera EyeLift — The 5-Minute Eye Ritual</title>
+<meta name="description" content="Red light therapy and intelligent massage technology designed to visibly refresh tired-looking eyes from home. 30-Day Guarantee. Free Shipping."/>
+<meta property="og:title" content="Lumiera EyeLift — The 5-Minute Eye Ritual"/>
+<meta property="og:description" content="Visibly refresh tired-looking eyes in just 5 minutes a day."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:           #FAF8F4;
+  --bg-white:     #FFFFFF;
+  --accent:       #D4B06A;
+  --accent-dk:    #B8945A;
+  --accent-lt:    #EDD898;
+  --text:         #111111;
+  --text-mid:     #333333;
+  --sub:          #666666;
+  --border:       rgba(0,0,0,0.07);
+  --border-warm:  #E8E0D0;
+  --radius:       18px;
+  --radius-sm:    10px;
+  --radius-lg:    28px;
+  --shadow:       0 4px 32px rgba(0,0,0,0.07);
+  --shadow-lg:    0 12px 64px rgba(0,0,0,0.11);
+  --font-d:       'Cormorant Garamond', Georgia, serif;
+  --font-b:       'DM Sans', system-ui, sans-serif;
+  --mw:           1160px;
+  --sp:           96px 24px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; border: none; outline: none; background: none; font-family: var(--font-b); }
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+.wrap { max-width: var(--mw); margin: 0 auto; padding: 0 24px; }
+.sec  { padding: var(--sp); }
+
+/* ── TYPE ── */
+.d-xl {
+  font-family: var(--font-d);
+  font-size: clamp(2.8rem, 5.2vw, 4.6rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+.d-lg {
+  font-family: var(--font-d);
+  font-size: clamp(2.1rem, 3.8vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.d-md {
+  font-family: var(--font-d);
+  font-size: clamp(1.7rem, 2.8vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.2;
+}
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 14px;
+}
+.lead { font-size: 1.0625rem; color: var(--sub); line-height: 1.72; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-b);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 16px 34px;
+  border-radius: 100px;
+  transition: all 0.22s ease;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn-dark {
+  background: var(--text);
+  color: #fff;
+}
+.btn-dark:hover { background: #2c2c2c; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
+.btn-gold {
+  background: linear-gradient(135deg, #D4B06A 0%, #B8945A 100%);
+  color: #fff;
+}
+.btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(212,176,106,0.38); }
+.btn-ghost {
+  border: 1.5px solid var(--border-warm);
+  color: var(--text);
+}
+.btn-ghost:hover { border-color: var(--text); background: rgba(0,0,0,0.03); }
+.btn-lg { padding: 20px 44px; font-size: 1rem; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ── ANNOUNCE BAR ── */
+#bar {
+  background: var(--text);
+  color: rgba(255,255,255,0.82);
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 0.79rem;
+  letter-spacing: 0.045em;
+  position: relative;
+  z-index: 200;
+}
+#bar strong { color: var(--accent-lt); }
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 190;
+  background: rgba(250,248,244,0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
+.nav-in {
+  max-width: var(--mw);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: var(--font-d);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.logo em { font-style: italic; color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 18px; }
+.nav-price {
+  font-size: 0.85rem;
+  color: var(--sub);
+}
+.nav-price s { color: #bbb; }
+.nav-price strong { color: var(--text); font-weight: 600; margin-left: 4px; }
+.nav-btn {
+  background: var(--text);
+  color: #fff;
+  padding: 9px 22px;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.nav-btn:hover { background: #333; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  padding: 56px 24px 72px;
+}
+.hero-g {
+  max-width: var(--mw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+  width: 100%;
+}
+.hero-hl {
+  font-family: var(--font-d);
+  font-size: clamp(2.6rem, 4.4vw, 4.1rem);
+  font-weight: 400;
+  line-height: 1.07;
+  letter-spacing: -0.025em;
+  margin-bottom: 22px;
+}
+.hero-hl em { font-style: italic; color: var(--accent); }
+.hero-sub { font-size: 1.05rem; line-height: 1.72; color: var(--sub); max-width: 440px; margin-bottom: 38px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-bottom: 36px; }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 14px; }
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.79rem;
+  color: var(--sub);
+}
+.bdot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+/* Product Stage */
+.hero-vis { display: flex; justify-content: center; align-items: center; }
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stage-glow {
+  position: absolute;
+  width: 68%;
+  height: 68%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,176,106,0.16) 0%, transparent 70%);
+  animation: gPulse 4.5s ease-in-out infinite;
+}
+@keyframes gPulse {
+  0%,100% { transform: scale(1); opacity: .55; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+.stage-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(212,176,106,0.18);
+}
+.stage-ring.r1 { width: 80%; height: 80%; animation: spin 22s linear infinite; }
+.stage-ring.r2 { width: 90%; height: 90%; animation: spin 34s linear infinite reverse; }
+.stage-ring.r1::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(212,176,106,0.6);
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.device-wrap {
+  position: relative;
+  z-index: 2;
+  width: 66%;
+  animation: dFloat 6.5s ease-in-out infinite;
+}
+@keyframes dFloat {
+  0%,100% { transform: translateY(0px) rotate(-1.5deg); }
+  50% { transform: translateY(-20px) rotate(1.5deg); }
+}
+.dev-shadow {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 54%;
+  height: 14px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.14) 0%, transparent 70%);
+  animation: sPulse 6.5s ease-in-out infinite;
+  z-index: 1;
+}
+@keyframes sPulse {
+  0%,100% { transform: translateX(-50%) scaleX(1); opacity: .5; }
+  50% { transform: translateX(-50%) scaleX(.72); opacity: .25; }
+}
+.led-dot {
+  position: absolute;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #FF3B5C;
+  box-shadow: 0 0 8px #FF3B5C, 0 0 20px rgba(255,59,92,0.35);
+  animation: ledBlink 2.8s ease-in-out infinite;
+}
+@keyframes ledBlink {
+  0%,100% { opacity: .35; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.6); }
+}
+
+/* ── SECTION HEADER ── */
+.sh { text-align: center; max-width: 660px; margin: 0 auto 60px; }
+.sh p.lead { margin-top: 14px; }
+.divider {
+  width: 42px; height: 1.5px;
+  background: var(--accent);
+  border-radius: 1px;
+  margin: 20px auto 0;
+}
+.divider-l { margin-left: 0; }
+
+/* ── PROBLEM ── */
+#problem { background: var(--bg-white); }
+.prob-g {
+  max-width: var(--mw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 68px;
+  align-items: center;
+}
+.prob-list { margin-top: 30px; display: flex; flex-direction: column; gap: 13px; }
+.prob-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 15px 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color .2s;
+}
+.prob-item:hover { border-color: rgba(212,176,106,0.4); }
+.prob-ico {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: rgba(212,176,106,0.1);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.prob-txt h4 { font-size: 0.88rem; font-weight: 500; margin-bottom: 2px; }
+.prob-txt p  { font-size: 0.8rem; color: var(--sub); }
+
+/* BA Card */
+.ba-card {
+  background: var(--bg);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+}
+.ba-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ba-col { text-align: center; }
+.ba-face {
+  border-radius: var(--radius);
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ba-face.before { background: linear-gradient(155deg,#E4DDD6 0%,#CCC5BC 100%); }
+.ba-face.after  { background: linear-gradient(155deg,#F4EDE4 0%,#E8DDC8 100%); }
+.ba-lbl { font-size: 0.72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); font-weight: 500; }
+.ba-res { font-size: 0.82rem; color: var(--text); margin-top: 3px; }
+
+/* ── SOLUTION ── */
+#solution { background: var(--bg); }
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+  max-width: var(--mw);
+  margin: 0 auto;
+}
+.tech-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-lg);
+  padding: 38px 30px;
+  transition: all .28s ease;
+}
+.tech-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: rgba(212,176,106,0.5); }
+.tech-ico {
+  width: 54px; height: 54px;
+  border-radius: 13px;
+  background: linear-gradient(135deg,rgba(212,176,106,.13) 0%,rgba(212,176,106,.04) 100%);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 22px;
+}
+.tech-card h3 {
+  font-family: var(--font-d);
+  font-size: 1.45rem;
+  font-weight: 500;
+  margin-bottom: 11px;
+}
+.tech-card p { font-size: 0.92rem; color: var(--sub); line-height: 1.65; }
+.tech-tag {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--accent-dk);
+  letter-spacing: 0.04em;
+}
+
+/* ── BENEFITS ── */
+#benefits { background: var(--bg-white); }
+.ben-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 18px;
+  max-width: var(--mw);
+  margin: 0 auto;
+}
+.ben-card {
+  background: var(--bg);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius);
+  padding: 30px 26px;
+  transition: all .25s ease;
+}
+.ben-card:hover { border-color: var(--accent); box-shadow: 0 4px 22px rgba(212,176,106,.11); }
+.ben-n {
+  font-family: var(--font-d);
+  font-size: 1.9rem;
+  font-weight: 300;
+  color: var(--accent);
+  opacity: .55;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+.ben-card h4 { font-size: 1.02rem; font-weight: 500; margin-bottom: 7px; }
+.ben-card p  { font-size: 0.855rem; color: var(--sub); line-height: 1.62; }
+
+/* ── STATS ── */
+#stats {
+  background: var(--text);
+  padding: 72px 24px;
+}
+.stats-g {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr;
+  gap: 0;
+  text-align: center;
+  align-items: center;
+}
+.stat-div { background: rgba(255,255,255,0.1); align-self: stretch; }
+.stat-n {
+  font-family: var(--font-d);
+  font-size: clamp(3rem, 5.5vw, 4.8rem);
+  font-weight: 300;
+  color: var(--accent-lt);
+  line-height: 1;
+  margin-bottom: 9px;
+}
+.stat-l {
+  font-size: 0.78rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+}
+.stat-cell { padding: 0 32px; }
+
+/* ── TIMELINE ── */
+#timeline { background: var(--bg); }
+.tl-wrap {
+  max-width: 840px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  position: relative;
+}
+.tl-wrap::before {
+  content: '';
+  position: absolute;
+  top: 35px;
+  left: 16.6%; right: 16.6%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dk));
+}
+.tl-item { text-align: center; padding: 0 18px; }
+.tl-dot {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dk) 100%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 22px;
+  position: relative; z-index: 2;
+  font-family: var(--font-d);
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #fff;
+  box-shadow: 0 0 0 8px rgba(212,176,106,0.11);
+}
+.tl-period { font-size: 0.72rem; letter-spacing: .13em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 7px; }
+.tl-result { font-family: var(--font-d); font-size: 1.28rem; font-weight: 400; color: var(--text); line-height: 1.28; }
+.tl-body   { font-size: 0.845rem; color: var(--sub); margin-top: 7px; line-height: 1.6; }
+
+/* ── STEPS ── */
+#steps { background: var(--bg-white); }
+.steps-g {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 28px;
+  max-width: var(--mw);
+  margin: 0 auto;
+}
+.step { text-align: center; }
+.step-n {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-warm);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+  font-family: var(--font-d);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--accent);
+  transition: all .25s;
+}
+.step:hover .step-n { background: var(--accent); color: #fff; border-color: var(--accent); }
+.step h4 { font-size: 0.94rem; font-weight: 500; margin-bottom: 7px; }
+.step p   { font-size: 0.855rem; color: var(--sub); line-height: 1.62; }
+
+/* ── COMPARISON ── */
+#compare { background: var(--bg); }
+.tbl-wrap {
+  max-width: 840px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-warm);
+  box-shadow: var(--shadow);
+}
+.cmp-tbl { width: 100%; border-collapse: collapse; }
+.cmp-tbl thead th {
+  padding: 19px 22px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-align: center;
+  background: var(--text);
+  color: rgba(255,255,255,.7);
+}
+.cmp-tbl thead th:first-child { text-align: left; background: #0c0c0c; }
+.cmp-tbl thead th.col-l { background: var(--accent); color: #fff; }
+.cmp-tbl tbody tr { border-bottom: 1px solid var(--border); background: var(--bg-white); }
+.cmp-tbl tbody tr:last-child { border-bottom: none; }
+.cmp-tbl tbody tr:hover { background: #FDFCFA; }
+.cmp-tbl tbody td {
+  padding: 16px 22px;
+  font-size: 0.88rem;
+  text-align: center;
+  color: var(--text-mid);
+}
+.cmp-tbl tbody td:first-child { text-align: left; font-weight: 500; color: var(--text); }
+.ck { color: #22C55E; font-size: 1.1rem; }
+.cx { color: #D1D5DB; font-size: 1rem; }
+
+/* ── REVIEWS ── */
+#reviews { background: var(--bg-white); }
+.rev-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--accent);
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+}
+.rev-bar span { font-size: 0.95rem; color: var(--text); font-weight: 500; font-family: var(--font-b); }
+.rev-grid {
+  max-width: var(--mw);
+  margin: 0 auto;
+  columns: 4;
+  column-gap: 18px;
+}
+.rev-card {
+  background: var(--bg);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 18px;
+  break-inside: avoid;
+  transition: all .25s ease;
+}
+.rev-card:hover { border-color: rgba(212,176,106,.5); box-shadow: 0 4px 20px rgba(212,176,106,.09); }
+.rev-hd { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.rev-av {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.rev-nm { font-size: 0.845rem; font-weight: 500; }
+.rev-vf { font-size: 0.72rem; color: #22C55E; margin-top: 1px; }
+.rev-stars { color: var(--accent); font-size: 0.78rem; letter-spacing: 1px; margin-bottom: 9px; }
+.rev-title { font-size: 0.875rem; font-weight: 600; margin-bottom: 7px; }
+.rev-body  { font-size: 0.845rem; color: var(--sub); line-height: 1.65; }
+.rev-date  { font-size: 0.72rem; color: #C8C0B5; margin-top: 10px; }
+
+/* ── OFFER ── */
+#offer { background: var(--bg); }
+.offer-box {
+  max-width: 660px;
+  margin: 0 auto;
+  background: var(--bg-white);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-lg);
+  padding: 52px 52px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+.off-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(212,176,106,0.1);
+  border: 1px solid rgba(212,176,106,0.28);
+  border-radius: 100px;
+  padding: 6px 18px;
+  font-size: 0.77rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent-dk);
+  margin-bottom: 26px;
+}
+.off-prices {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 6px;
+}
+.off-old { font-family: var(--font-d); font-size: 1.45rem; font-weight: 300; color: #BBB; text-decoration: line-through; }
+.off-new { font-family: var(--font-d); font-size: 4rem; font-weight: 300; line-height: 1; color: var(--text); }
+.off-new sup { font-size: 2rem; }
+.off-save { font-size: 0.855rem; color: #22C55E; font-weight: 500; margin-bottom: 30px; }
+
+.cd-wrap { margin-bottom: 28px; }
+.cd-lbl { font-size: 0.72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--sub); margin-bottom: 11px; }
+.cd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+}
+.cd-u { text-align: center; }
+.cd-n {
+  width: 56px; height: 56px;
+  background: var(--text);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d);
+  font-size: 1.7rem;
+  font-weight: 300;
+  transition: transform .15s;
+}
+.cd-n.flip { transform: scaleY(.92); }
+.cd-ul { font-size: 0.62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); margin-top: 5px; }
+.cd-sep { font-family: var(--font-d); font-size: 1.7rem; color: var(--sub); margin-bottom: 18px; }
+
+.stk {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 0.845rem;
+  color: var(--sub);
+  margin-bottom: 28px;
+}
+.stk-bar { width: 108px; height: 3.5px; background: #EBEBEB; border-radius: 2px; overflow: hidden; }
+.stk-fill { height: 100%; width: 22%; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dk) 100%); border-radius: 2px; }
+.stk em { color: #E53935; font-style: normal; font-weight: 500; }
+
+.off-cta { margin-bottom: 22px; }
+.off-sec {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.sec-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--sub);
+}
+
+/* ── FAQ ── */
+#faq { background: var(--bg-white); }
+.faq-list { max-width: 700px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border-warm); }
+.faq-q {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 0;
+  font-size: 1.03rem;
+  font-weight: 500;
+  color: var(--text);
+  text-align: left;
+  transition: color .2s;
+  gap: 16px;
+}
+.faq-q:hover { color: var(--accent-dk); }
+.faq-ico {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-warm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  color: var(--sub);
+  line-height: 1;
+  transition: all .28s ease;
+}
+.faq-item.open .faq-ico { background: var(--text); border-color: var(--text); color: #fff; transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .38s ease; }
+.faq-item.open .faq-a { max-height: 250px; }
+.faq-a-in { padding-bottom: 22px; font-size: 0.925rem; color: var(--sub); line-height: 1.72; }
+
+/* ── GUARANTEE ── */
+#guarantee { background: var(--bg); padding: 72px 24px; }
+.guar-wrap { max-width: 640px; margin: 0 auto; text-align: center; }
+.guar-ico {
+  width: 76px; height: 76px;
+  border-radius: 50%;
+  background: rgba(212,176,106,0.1);
+  border: 1.5px solid rgba(212,176,106,0.28);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+}
+.guar-wrap h2 { margin-bottom: 14px; }
+.guar-wrap p { color: var(--sub); font-size: 1.03rem; line-height: 1.72; max-width: 500px; margin: 0 auto; }
+
+/* ── FINAL CTA ── */
+#final {
+  background: var(--text);
+  color: #fff;
+  padding: 96px 24px;
+  text-align: center;
+}
+.final-in { max-width: 600px; margin: 0 auto; }
+#final .eyebrow { color: rgba(212,176,106,0.75); }
+#final h2 {
+  font-family: var(--font-d);
+  font-size: clamp(2.3rem, 3.8vw, 3.4rem);
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+#final h2 em { color: var(--accent-lt); font-style: italic; }
+#final p { color: rgba(255,255,255,.55); font-size: 1.03rem; margin-bottom: 38px; }
+
+/* ── STICKY BAR ── */
+#sticky {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 980;
+  background: rgba(14,14,14,0.97);
+  backdrop-filter: blur(16px);
+  padding: 14px 24px;
+  transform: translateY(100%);
+  transition: transform .38s cubic-bezier(.16,1,.3,1);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+#sticky.on { transform: translateY(0); }
+.sticky-in {
+  max-width: var(--mw);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.sticky-prod { display: flex; align-items: center; gap: 13px; }
+.sticky-ico {
+  width: 42px; height: 42px;
+  border-radius: 9px;
+  background: rgba(212,176,106,0.12);
+  border: 1px solid rgba(212,176,106,0.25);
+  display: flex; align-items: center; justify-content: center;
+}
+.sticky-nm { font-size: 0.845rem; font-weight: 500; color: #fff; }
+.sticky-pr { display: flex; align-items: baseline; gap: 7px; }
+.sticky-new { font-family: var(--font-d); font-size: 1.45rem; font-weight: 300; color: var(--accent-lt); }
+.sticky-old { font-size: 0.82rem; color: rgba(255,255,255,.35); text-decoration: line-through; }
+
+/* ── FOOTER ── */
+footer {
+  background: #0c0c0c;
+  color: rgba(255,255,255,.35);
+  padding: 40px 24px;
+}
+.foot-in {
+  max-width: var(--mw);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.foot-logo { font-family: var(--font-d); font-size: 1.1rem; color: rgba(255,255,255,.6); }
+.foot-logo em { font-style: italic; color: rgba(212,176,106,.6); }
+.foot-links { display: flex; gap: 22px; font-size: 0.79rem; }
+.foot-links a:hover { color: rgba(255,255,255,.6); }
+.foot-disc { font-size: 0.69rem; max-width: 580px; line-height: 1.65; }
+.foot-copy { font-size: 0.72rem; }
+
+/* ── REVEAL ── */
+.rv { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+.rv.in { opacity: 1; transform: translateY(0); }
+.d1 { transition-delay: .08s; }
+.d2 { transition-delay: .16s; }
+.d3 { transition-delay: .24s; }
+.d4 { transition-delay: .32s; }
+.d5 { transition-delay: .40s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .rev-grid { columns: 3; }
+}
+@media (max-width: 860px) {
+  .tech-grid { grid-template-columns: 1fr; gap: 14px; }
+  .tech-grid { grid-template-columns: repeat(3,1fr); }
+  .rev-grid { columns: 2; }
+  .steps-g { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 768px) {
+  :root { --sp: 64px 20px; }
+  .hero-g { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+  .hero-sub { max-width: 100%; }
+  .hero-actions, .hero-badges { justify-content: center; }
+  .hero-vis { order: -1; }
+  .stage { max-width: 300px; margin: 0 auto; }
+  .prob-g { grid-template-columns: 1fr; gap: 40px; }
+  .tech-grid { grid-template-columns: 1fr; }
+  .ben-grid { grid-template-columns: repeat(2,1fr); }
+  .stats-g { grid-template-columns: 1fr; gap: 36px; }
+  .stat-div { display: none; }
+  .tl-wrap { grid-template-columns: 1fr; gap: 36px; }
+  .tl-wrap::before { display: none; }
+  .steps-g { grid-template-columns: repeat(2,1fr); }
+  .rev-grid { columns: 1; }
+  .offer-box { padding: 36px 24px; }
+  .off-new { font-size: 3.2rem; }
+  .sticky-in { flex-wrap: wrap; justify-content: center; }
+  .nav-price { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-hl { font-size: 2.3rem; }
+  .ben-grid { grid-template-columns: 1fr; }
+  .steps-g { grid-template-columns: 1fr; }
+  .cd-n { width: 46px; height: 46px; font-size: 1.4rem; }
+  .cmp-tbl { font-size: 0.78rem; }
+  .cmp-tbl thead th, .cmp-tbl tbody td { padding: 10px 9px; }
+}
+
+/* ── UTIL ── */
+.tc { text-align: center; }
+.acc { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div id="bar">
+  🚚 <strong>Free Shipping Today</strong> &nbsp;·&nbsp; 30-Day Money-Back Guarantee &nbsp;·&nbsp; 🔒 Secure Checkout
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-in">
+    <a href="#" class="logo">Lumiera <em>EyeLift</em></a>
+    <div class="nav-right">
+      <span class="nav-price"><s>79.99€</s><strong>39.99€</strong></span>
+      <a href="#offer" class="nav-btn">Get Yours</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-g">
+
+    <!-- LEFT -->
+    <div>
+      <span class="eyebrow rv">Advanced Eye Care Technology</span>
+      <h1 class="hero-hl rv d1">
+        The 5-Minute Ritual For<br>
+        <em>Brighter,</em> Younger-Looking Eyes
+      </h1>
+      <p class="hero-sub rv d2">
+        Red light therapy and intelligent massage technology designed to visibly refresh tired-looking eyes — from the comfort of your own home.
+      </p>
+      <div class="hero-actions rv d3">
+        <a href="#offer" class="btn btn-gold btn-lg">Get Yours Today &rarr;</a>
+        <a href="#solution" class="btn btn-ghost">See How It Works</a>
+      </div>
+      <div class="hero-badges rv d4">
+        <span class="badge"><span class="bdot"></span>30-Day Guarantee</span>
+        <span class="badge"><span class="bdot"></span>Free Shipping</span>
+        <span class="badge"><span class="bdot"></span>4.8/5 Rating</span>
+        <span class="badge"><span class="bdot"></span>Secure Checkout</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Product Visual -->
+    <div class="hero-vis rv d2">
+      <div class="stage">
+        <div class="stage-glow"></div>
+        <div class="stage-ring r1"></div>
+        <div class="stage-ring r2"></div>
+        <div class="device-wrap">
+          <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;filter:drop-shadow(0 20px 44px rgba(0,0,0,0.16))">
+            <defs>
+              <linearGradient id="bG" x1="0%" y1="0%" x2="100%" y2="120%">
+                <stop offset="0%" stop-color="#EDD898"/>
+                <stop offset="50%" stop-color="#D4B06A"/>
+                <stop offset="100%" stop-color="#A8844A"/>
+              </linearGradient>
+              <linearGradient id="bG2" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#F0E4C0"/>
+                <stop offset="100%" stop-color="#C89848"/>
+              </linearGradient>
+              <linearGradient id="fG" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#242424"/>
+                <stop offset="100%" stop-color="#0e0e0e"/>
+              </linearGradient>
+              <linearGradient id="lG" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF6080"/>
+                <stop offset="100%" stop-color="#FF2055"/>
+              </linearGradient>
+              <radialGradient id="rGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255,60,90,0.28)"/>
+                <stop offset="100%" stop-color="rgba(255,60,90,0)"/>
+              </radialGradient>
+              <filter id="lf">
+                <feGaussianBlur stdDeviation="2.2" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="sf">
+                <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="rgba(0,0,0,0.22)"/>
+              </filter>
+            </defs>
+
+            <!-- Red glow aura -->
+            <ellipse cx="210" cy="155" rx="170" ry="88" fill="url(#rGlow)" opacity="0.7"/>
+
+            <!-- Device outer shell -->
+            <path d="M 58 138 Q 78 58 210 48 Q 342 58 362 138 Q 342 178 278 184 Q 244 191 210 193 Q 176 191 142 184 Q 78 178 58 138 Z"
+                  fill="url(#bG2)" filter="url(#sf)"/>
+
+            <!-- Face plate -->
+            <path d="M 88 136 Q 103 80 210 70 Q 317 80 332 136 Q 317 165 268 171 Q 239 177 210 178 Q 181 177 152 171 Q 103 165 88 136 Z"
+                  fill="url(#fG)"/>
+
+            <!-- Inner accent ring -->
+            <path d="M 108 135 Q 120 88 210 79 Q 300 88 312 135 Q 300 162 262 166 Q 236 171 210 172 Q 184 171 158 166 Q 120 162 108 135 Z"
+                  fill="none" stroke="rgba(212,176,106,0.22)" stroke-width="1.5"/>
+
+            <!-- LED clusters — left -->
+            <circle cx="150" cy="128" r="5.5" fill="url(#lG)" filter="url(#lf)"/>
+            <circle cx="166" cy="116" r="5"   fill="url(#lG)" filter="url(#lf)"/>
+            <circle cx="184" cy="108" r="5"   fill="url(#lG)" filter="url(#lf)"/>
+            <circle cx="152" cy="146" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
+            <circle cx="170" cy="138" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
+
+            <!-- LED clusters — right -->
+            <circle cx="270" cy="128" r="5.5" fill="url(#lG)" filter="url(#lf)"/>
+            <circle cx="254" cy="116" r="5"   fill="url(#lG)" filter="url(#lf)"/>
+            <circle cx="236" cy="108" r="5"   fill="url(#lG)" filter="url(#lf)"/>
+            <circle cx="268" cy="146" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
+            <circle cx="250" cy="138" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
+
+            <!-- Bridge -->
+            <rect x="194" y="130" width="32" height="14" rx="7" fill="rgba(212,176,106,0.12)" stroke="rgba(212,176,106,0.38)" stroke-width="1"/>
+            <circle cx="210" cy="137" r="3" fill="rgba(212,176,106,0.55)"/>
+
+            <!-- Power button -->
+            <circle cx="210" cy="185" r="10" fill="#181818" stroke="rgba(212,176,106,0.38)" stroke-width="1.5"/>
+            <circle cx="210" cy="185" r="6"  fill="rgba(212,176,106,0.4)"/>
+            <circle cx="210" cy="185" r="2.5" fill="#D4B06A"/>
+
+            <!-- Top highlight -->
+            <path d="M 72 130 Q 88 63 210 53 Q 332 63 348 130"
+                  fill="none" stroke="rgba(240,228,200,0.45)" stroke-width="1.5" stroke-linecap="round"/>
+
+            <!-- Side buttons -->
+            <rect x="55"  y="132" width="7" height="18" rx="3.5" fill="url(#bG)"/>
+            <rect x="358" y="132" width="7" height="18" rx="3.5" fill="url(#bG)"/>
+
+            <!-- USB port -->
+            <rect x="205" y="202" width="10" height="6" rx="2" fill="rgba(212,176,106,0.25)" stroke="rgba(212,176,106,0.45)" stroke-width=".8"/>
+          </svg>
+        </div>
+        <div class="dev-shadow"></div>
+        <div class="led-dot" style="top:26%;left:20%;animation-delay:0s"></div>
+        <div class="led-dot" style="top:34%;right:22%;animation-delay:.9s"></div>
+        <div class="led-dot" style="bottom:28%;left:28%;animation-delay:1.8s"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PROBLEM
+══════════════════════════════════════ -->
+<section id="problem" class="sec">
+  <div class="prob-g">
+
+    <div>
+      <span class="eyebrow rv">The Under-Eye Problem</span>
+      <h2 class="d-lg rv d1">Why Do Your Eyes Look Tired Even After Rest?</h2>
+      <div class="divider divider-l" style="margin-top:20px"></div>
+      <p class="lead rv d2" style="margin-top:20px;margin-bottom:0">
+        The under-eye area is one of the first places to reveal stress, fatigue and aging. Daily screen exposure, poor sleep and environmental factors can leave your eyes looking older and less vibrant.
+      </p>
+      <div class="prob-list">
+        <div class="prob-item rv d2">
+          <div class="prob-ico">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#D4B06A" stroke-width="1.5"/>
+              <circle cx="12" cy="12" r="3" stroke="#D4B06A" stroke-width="1.5"/>
+              <path d="M8 18c0-1 .5-2 1.5-2.5" stroke="#D4B06A" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+            </svg>
+          </div>
+          <div class="prob-txt">
+            <h4>Dark Circles &amp; Under-Eye Bags</h4>
+            <p>Poor circulation and fluid retention make eyes appear permanently tired.</p>
+          </div>
+        </div>
+        <div class="prob-item rv d3">
+          <div class="prob-ico">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <rect x="2" y="3" width="20" height="14" rx="2" stroke="#D4B06A" stroke-width="1.5"/>
+              <path d="M8 21h8M12 17v4" stroke="#D4B06A" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="prob-txt">
+            <h4>Screen &amp; Digital Fatigue</h4>
+            <p>Hours of screen exposure strains the delicate muscles around your eyes.</p>
+          </div>
+        </div>
+        <div class="prob-item rv d4">
+          <div class="prob-ico">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#D4B06A" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="#D4B06A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>
+            </svg>
+          </div>
+          <div class="prob-txt">
+            <h4>Fine Lines &amp; Loss of Firmness</h4>
+            <p>Collagen loss makes fine lines around the eyes more visible over time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv d2">
+      <div class="ba-card">
+        <p class="eyebrow tc" style="margin-bottom:18px">The Visible Difference</p>
+        <div class="ba-row">
+          <div class="ba-col">
+            <div class="ba-face before">
+              <svg viewBox="0 0 110 148" fill="none" style="width:85%">
+                <ellipse cx="55" cy="72" rx="40" ry="50" fill="#D0C8C0"/>
+                <ellipse cx="55" cy="58" rx="38" ry="36" fill="#DDD6CE"/>
+                <ellipse cx="38" cy="70" rx="13" ry="7" fill="#BEB6AE" opacity=".8"/>
+                <ellipse cx="72" cy="70" rx="13" ry="7" fill="#BEB6AE" opacity=".8"/>
+                <ellipse cx="38" cy="64" rx="11" ry="7.5" fill="#9A9290" opacity=".45"/>
+                <ellipse cx="72" cy="64" rx="11" ry="7.5" fill="#9A9290" opacity=".45"/>
+                <ellipse cx="38" cy="62" rx="9.5" ry="6" fill="#2A221E"/>
+                <ellipse cx="72" cy="62" rx="9.5" ry="6" fill="#2A221E"/>
+                <ellipse cx="38" cy="60" rx="9.5" ry="2.5" fill="#2A221E"/>
+                <ellipse cx="72" cy="60" rx="9.5" ry="2.5" fill="#2A221E"/>
+                <path d="M26 69 Q32 67 38 70" stroke="#8A8280" stroke-width=".7" stroke-linecap="round" opacity=".55"/>
+                <path d="M72 70 Q78 67 84 69" stroke="#8A8280" stroke-width=".7" stroke-linecap="round" opacity=".55"/>
+                <path d="M40 84 Q55 87 70 84" stroke="#C4B8B0" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="ba-lbl">Before</p>
+            <p class="ba-res">Tired appearance</p>
+          </div>
+          <div class="ba-col">
+            <div class="ba-face after">
+              <svg viewBox="0 0 110 148" fill="none" style="width:85%">
+                <ellipse cx="55" cy="72" rx="40" ry="50" fill="#E8DDD0"/>
+                <ellipse cx="55" cy="58" rx="38" ry="36" fill="#F2E8DC"/>
+                <ellipse cx="38" cy="70" rx="11" ry="4" fill="#DDD4C4" opacity=".35"/>
+                <ellipse cx="72" cy="70" rx="11" ry="4" fill="#DDD4C4" opacity=".35"/>
+                <ellipse cx="38" cy="62" rx="10.5" ry="8.5" fill="#2A221E"/>
+                <ellipse cx="72" cy="62" rx="10.5" ry="8.5" fill="#2A221E"/>
+                <circle cx="41"  cy="59" r="2.5" fill="white" opacity=".82"/>
+                <circle cx="75"  cy="59" r="2.5" fill="white" opacity=".82"/>
+                <ellipse cx="28" cy="80" rx="11" ry="5" fill="rgba(212,176,106,0.14)"/>
+                <ellipse cx="82" cy="80" rx="11" ry="5" fill="rgba(212,176,106,0.14)"/>
+                <path d="M40 86 Q55 91 70 86" stroke="#C8AE90" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="ba-lbl">After</p>
+            <p class="ba-res">Refreshed glow</p>
+          </div>
+        </div>
+        <p style="font-size:.69rem;color:var(--sub);text-align:center;margin-top:16px;font-style:italic">*Illustrative. Individual results may vary.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SOLUTION
+══════════════════════════════════════ -->
+<section id="solution" class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">The Technology</span>
+      <h2 class="d-lg rv d1">Advanced Eye Care Technology <em style="font-style:italic;color:var(--accent)">In The Palm Of Your Hand</em></h2>
+      <p class="lead rv d2">Three synergistic technologies working in unison to support a more refreshed and youthful-looking eye area.</p>
+    </div>
+    <div class="tech-grid">
+
+      <div class="tech-card rv d1">
+        <div class="tech-ico">
+          <svg width="26" height="26" fill="none" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="5.5" stroke="#FF3C5A" stroke-width="1.5"/>
+            <circle cx="16" cy="16" r="2" fill="#FF3C5A"/>
+            <path d="M16 4v4M16 24v4M4 16h4M24 16h4" stroke="#FF3C5A" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M7.8 7.8l2.6 2.6M21.6 21.6l2.6 2.6M7.8 24.2l2.6-2.6M21.6 10.4l2.6-2.6" stroke="rgba(255,60,90,.45)" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Red Light Therapy</h3>
+        <p>Clinically-studied wavelengths deliver targeted light energy to support a healthier and more radiant-looking eye area — no UV exposure.</p>
+        <span class="tech-tag">630–660nm Wavelength</span>
+      </div>
+
+      <div class="tech-card rv d2">
+        <div class="tech-ico">
+          <svg width="26" height="26" fill="none" viewBox="0 0 32 32">
+            <ellipse cx="16" cy="16" rx="11" ry="5.5" stroke="rgba(212,176,106,.4)" stroke-width="1.4"/>
+            <ellipse cx="16" cy="16" rx="7" ry="3.5" stroke="rgba(212,176,106,.65)" stroke-width="1.4"/>
+            <circle cx="16" cy="16" r="2.5" fill="#D4B06A" opacity=".8"/>
+            <path d="M5 12.5c0-1.2.6-2.4 1.6-3.3" stroke="#D4B06A" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M27 12.5c0-1.2-.6-2.4-1.6-3.3" stroke="#D4B06A" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Micro-Vibration Massage</h3>
+        <p>Precisely calibrated vibrations provide a relaxing massage experience designed to ease tension and support circulation around the delicate eye area.</p>
+        <span class="tech-tag">6,000 vibrations/min</span>
+      </div>
+
+      <div class="tech-card rv d3">
+        <div class="tech-ico">
+          <svg width="26" height="26" fill="none" viewBox="0 0 32 32">
+            <path d="M6 16 Q6 8 16 8 Q26 8 26 16" stroke="#D4B06A" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6 16 Q6 24 16 24 Q26 24 26 16" stroke="rgba(212,176,106,.4)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="2.5" fill="#D4B06A" opacity=".6"/>
+            <path d="M9 12 Q9 8 16 8" stroke="rgba(212,176,106,.55)" stroke-width="1" stroke-linecap="round"/>
+            <path d="M23 12 Q23 8 16 8" stroke="rgba(212,176,106,.55)" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Ergonomic 3D Design</h3>
+        <p>The anatomically contoured form follows the natural curvature of the face, ensuring comfortable, precise contact with delicate skin.</p>
+        <span class="tech-tag">Hypoallergenic Materials</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     BENEFITS
+══════════════════════════════════════ -->
+<section id="benefits" class="sec" style="background:var(--bg-white)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Why You'll Love It</span>
+      <h2 class="d-lg rv d1">Visible Benefits <em style="font-style:italic;color:var(--accent)">You'll Love</em></h2>
+    </div>
+    <div class="ben-grid">
+      <div class="ben-card rv d1">
+        <div class="ben-n">01</div>
+        <h4>Brighter-Looking Eyes</h4>
+        <p>Supports a more luminous and awake appearance around the eye area each morning.</p>
+      </div>
+      <div class="ben-card rv d2">
+        <div class="ben-n">02</div>
+        <h4>More Refreshed Appearance</h4>
+        <p>Look well-rested, even after a long night or a particularly demanding day.</p>
+      </div>
+      <div class="ben-card rv d3">
+        <div class="ben-n">03</div>
+        <h4>Supports Skincare Absorption</h4>
+        <p>The massage action helps eye serums and creams absorb more effectively into skin.</p>
+      </div>
+      <div class="ben-card rv d1">
+        <div class="ben-n">04</div>
+        <h4>Comfortable Daily Routine</h4>
+        <p>Just 5 minutes a day — seamlessly fits any morning or evening skincare ritual.</p>
+      </div>
+      <div class="ben-card rv d2">
+        <div class="ben-n">05</div>
+        <h4>Portable &amp; Rechargeable</h4>
+        <p>Compact USB-C rechargeable design you can take to the office, gym or on holiday.</p>
+      </div>
+      <div class="ben-card rv d3">
+        <div class="ben-n">06</div>
+        <h4>Spa-Like Experience at Home</h4>
+        <p>Professional-quality eye treatment without appointments, travel or expense.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     STATS
+══════════════════════════════════════ -->
+<section id="stats">
+  <div class="wrap">
+    <div class="stats-g">
+      <div class="stat-cell rv d1">
+        <div class="stat-n" data-target="5000" data-suffix="+">0</div>
+        <div class="stat-l">Happy Customers</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-cell rv d2">
+        <div class="stat-n">4.8<span style="font-size:1.8rem;font-weight:300">/5</span></div>
+        <div class="stat-l">Average Rating</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-cell rv d3">
+        <div class="stat-n" data-target="96" data-suffix="%">0</div>
+        <div class="stat-l">Would Recommend</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     TIMELINE
+══════════════════════════════════════ -->
+<section id="timeline" class="sec">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Your Journey</span>
+      <h2 class="d-lg rv d1">See The <em style="font-style:italic;color:var(--accent)">Difference</em></h2>
+      <p class="lead rv d2">With consistent daily use as part of your skincare routine. Individual results may vary.</p>
+    </div>
+    <div class="tl-wrap">
+      <div class="tl-item rv d1">
+        <div class="tl-dot">1</div>
+        <p class="tl-period">Week 1</p>
+        <p class="tl-result">More Refreshed Appearance</p>
+        <p class="tl-body">Skin around the eyes feels relaxed and visibly more comfortable after each session.</p>
+      </div>
+      <div class="tl-item rv d2">
+        <div class="tl-dot">2</div>
+        <p class="tl-period">Week 2</p>
+        <p class="tl-result">Brighter-Looking Eye Area</p>
+        <p class="tl-body">A more luminous look with continued visible reduction in signs of fatigue.</p>
+      </div>
+      <div class="tl-item rv d3">
+        <div class="tl-dot">4</div>
+        <p class="tl-period">Week 4</p>
+        <p class="tl-result">More Confident Appearance</p>
+        <p class="tl-body">Eyes that reflect how vibrant you feel inside — the full ritual effect in place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     HOW TO USE
+══════════════════════════════════════ -->
+<section id="steps" class="sec">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Effortless Routine</span>
+      <h2 class="d-lg rv d1">How To <em style="font-style:italic;color:var(--accent)">Use</em></h2>
+    </div>
+    <div class="steps-g">
+      <div class="step rv d1">
+        <div class="step-n">1</div>
+        <h4>Apply Eye Serum</h4>
+        <p>Start with your favourite eye serum or cream applied gently to the under-eye area.</p>
+      </div>
+      <div class="step rv d2">
+        <div class="step-n">2</div>
+        <h4>Power On</h4>
+        <p>Press and hold for 2 seconds to activate the device and select your preferred intensity mode.</p>
+      </div>
+      <div class="step rv d3">
+        <div class="step-n">3</div>
+        <h4>Glide Gently</h4>
+        <p>Move in gentle circular motions along the orbital bone beneath each eye.</p>
+      </div>
+      <div class="step rv d4">
+        <div class="step-n">4</div>
+        <h4>Enjoy 5 Minutes</h4>
+        <p>Relax and let the technology work. The device auto-shuts off after your 5-minute session.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     COMPARISON
+══════════════════════════════════════ -->
+<section id="compare" class="sec" style="background:var(--bg-white)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">The Smart Choice</span>
+      <h2 class="d-lg rv d1">Why Customers <em style="font-style:italic;color:var(--accent)">Choose</em> Lumiera EyeLift</h2>
+    </div>
+    <div class="tbl-wrap rv d2">
+      <table class="cmp-tbl">
+        <thead>
+          <tr>
+            <th style="text-align:left;background:#0c0c0c">Feature</th>
+            <th class="col-l">✦ Lumiera EyeLift</th>
+            <th>Eye Creams</th>
+            <th>Clinic Treatments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>At-home convenience</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>Technology-assisted routine</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+            <td><span class="ck">✓</span></td>
+          </tr>
+          <tr>
+            <td>Reusable — one-time purchase</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>No appointments needed</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>Travel-friendly</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>Price</td>
+            <td><strong style="color:var(--accent-dk)">39.99€</strong></td>
+            <td style="color:var(--sub)">15–60€/mo</td>
+            <td style="color:var(--sub)">200–800€+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     REVIEWS
+══════════════════════════════════════ -->
+<section id="reviews" class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="sh">
+      <div class="rev-bar rv">★★★★★ <span>4.8 out of 5</span></div>
+      <span class="eyebrow rv">Customer Stories</span>
+      <h2 class="d-lg rv d1">Loved By <em style="font-style:italic;color:var(--accent)">Thousands</em></h2>
+      <p class="lead rv d2">Real reviews from verified customers. Unsponsored and unedited.</p>
+    </div>
+    <div class="rev-grid">
+
+      <div class="rev-card rv">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#F0E6D3;color:#8B6A3E">S</div>
+          <div><p class="rev-nm">Sophie M.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"Finally something that actually works"</p>
+        <p class="rev-body">I've tried every eye cream out there. After 2 weeks using this every morning, my husband noticed my eyes looked more awake. Worth every penny.</p>
+        <p class="rev-date">March 2025</p>
+      </div>
+
+      <div class="rev-card rv d1">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#E8D5C4;color:#7A5235">A</div>
+          <div><p class="rev-nm">Amelia R.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"My morning routine game-changer"</p>
+        <p class="rev-body">As a nurse working long shifts, my under-eye bags were embarrassing. This has become my non-negotiable morning ritual. My colleagues keep asking what I'm doing differently!</p>
+        <p class="rev-date">February 2025</p>
+      </div>
+
+      <div class="rev-card rv d2">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#D4E8D5;color:#2E6E35">L</div>
+          <div><p class="rev-nm">Laura K.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★☆</div>
+        <p class="rev-title">"Genuinely surprised"</p>
+        <p class="rev-body">I was skeptical — I've been burned by beauty gadgets before. But this feels premium and I can see real difference in puffiness after just 10 days.</p>
+        <p class="rev-date">January 2025</p>
+      </div>
+
+      <div class="rev-card rv d3">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#D8D0E8;color:#5B4080">M</div>
+          <div><p class="rev-nm">Martina G.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"Like a mini spa every morning"</p>
+        <p class="rev-body">The vibration feels so relaxing — I actually look forward to using it. My dark circles are noticeably lighter and my eyes look more open. Super happy.</p>
+        <p class="rev-date">April 2025</p>
+      </div>
+
+      <div class="rev-card rv d1">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#E8E0D0;color:#7A6840">C</div>
+          <div><p class="rev-nm">Claire B.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"Better than my €200 eye cream"</p>
+        <p class="rev-body">I've been obsessed with expensive eye creams for years. This device has given me better visible results than any product I've tried. My serums absorb so much better too.</p>
+        <p class="rev-date">March 2025</p>
+      </div>
+
+      <div class="rev-card rv d2">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#D0E4E8;color:#2E5E70">E</div>
+          <div><p class="rev-nm">Elena V.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"New mum saving grace"</p>
+        <p class="rev-body">Sleep deprivation with a newborn had my under eyes looking awful. 5 minutes in the morning and I look like I actually slept. Would 100% recommend to other new mums.</p>
+        <p class="rev-date">May 2025</p>
+      </div>
+
+      <div class="rev-card rv d3">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#E8D8D0;color:#7A3E2E">R</div>
+          <div><p class="rev-nm">Rachel T.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★☆</div>
+        <p class="rev-title">"Solid product, great value"</p>
+        <p class="rev-body">The build quality is really impressive — feels much more expensive than the price. Results are gradual but real. Fine lines look softer and the area looks brighter overall.</p>
+        <p class="rev-date">February 2025</p>
+      </div>
+
+      <div class="rev-card rv d1">
+        <div class="rev-hd">
+          <div class="rev-av" style="background:#F0E0D8;color:#8B4E3E">P</div>
+          <div><p class="rev-nm">Priya N.</p><p class="rev-vf">✓ Verified Purchase</p></div>
+        </div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"I gifted one to my mum too"</p>
+        <p class="rev-body">Bought for myself, loved it so much I immediately ordered one for my mum. She's 58 and says it's the best skincare purchase she's ever made. The 30-day guarantee made it risk-free.</p>
+        <p class="rev-date">April 2025</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     OFFER
+══════════════════════════════════════ -->
+<section id="offer" class="sec">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Limited-Time Offer</span>
+      <h2 class="d-lg rv d1">Claim Your <em style="font-style:italic;color:var(--accent)">50% Discount</em></h2>
+    </div>
+    <div class="offer-box rv d2">
+      <div class="off-badge">✦ Launch Offer — 50% Off</div>
+      <div class="off-prices">
+        <span class="off-old">79.99€</span>
+        <span class="off-new"><sup>€</sup>39<span style="font-size:2rem">.99</span></span>
+      </div>
+      <p class="off-save">You save 40.00€ — Free Shipping Included</p>
+
+      <div class="cd-wrap">
+        <p class="cd-lbl">Offer expires in</p>
+        <div class="cd">
+          <div class="cd-u"><div class="cd-n" id="cdH">00</div><p class="cd-ul">Hours</p></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-u"><div class="cd-n" id="cdM">00</div><p class="cd-ul">Minutes</p></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-u"><div class="cd-n" id="cdS">00</div><p class="cd-ul">Seconds</p></div>
+        </div>
+      </div>
+
+      <div class="stk">
+        <em>⚠ Only 23 units left</em>
+        <div class="stk-bar"><div class="stk-fill"></div></div>
+        <span>Selling fast</span>
+      </div>
+
+      <div class="off-cta">
+        <a href="#" class="btn btn-gold btn-lg btn-full">Claim Your Discount &rarr;</a>
+      </div>
+
+      <div class="off-sec">
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Secure Checkout
+        </div>
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/></svg>
+          30-Day Guarantee
+        </div>
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M15 7l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Free Shipping
+        </div>
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 8V6a5 5 0 0110 0v2" stroke="currentColor" stroke-width="1.5"/></svg>
+          Encrypted Payment
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FAQ
+══════════════════════════════════════ -->
+<section id="faq" class="sec" style="background:var(--bg-white)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Support</span>
+      <h2 class="d-lg rv d1">Frequently Asked <em style="font-style:italic;color:var(--accent)">Questions</em></h2>
+    </div>
+    <div class="faq-list">
+
+      <div class="faq-item rv">
+        <button class="faq-q">How often should I use it?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">We recommend once daily for 5 minutes, morning or evening as part of your regular skincare routine. For best results, use consistently for at least 4 weeks.</div></div>
+      </div>
+
+      <div class="faq-item rv d1">
+        <button class="faq-q">Is it suitable for sensitive skin?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Yes. Lumiera EyeLift uses gentle, hypoallergenic materials and non-invasive light therapy. If you have a diagnosed skin condition or are under dermatological treatment, please consult your healthcare provider first.</div></div>
+      </div>
+
+      <div class="faq-item rv d2">
+        <button class="faq-q">How long does the battery last?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">A full charge provides approximately 3–4 weeks of daily use (one 5-minute session per day). It charges via USB-C in approximately 90 minutes.</div></div>
+      </div>
+
+      <div class="faq-item rv d3">
+        <button class="faq-q">Can I use it with my skincare products?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Absolutely — and we encourage it. Apply your preferred eye serum or cream before using the device. The micro-vibration massage helps enhance absorption, making your existing products work more effectively.</div></div>
+      </div>
+
+      <div class="faq-item rv">
+        <button class="faq-q">How long is shipping?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Standard shipping takes 5–8 business days. Express shipping (2–3 business days) is available at checkout. All orders are dispatched within 1–2 business days with full tracking.</div></div>
+      </div>
+
+      <div class="faq-item rv d1">
+        <button class="faq-q">What if I don't love it?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">We offer a full 30-day money-back guarantee. If you're not completely satisfied for any reason, contact our support team within 30 days of delivery for a hassle-free refund — no questions asked.</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     GUARANTEE
+══════════════════════════════════════ -->
+<section id="guarantee" style="background:var(--bg);padding:72px 24px">
+  <div class="guar-wrap rv">
+    <div class="guar-ico">
+      <svg width="34" height="34" fill="none" viewBox="0 0 48 48">
+        <path d="M24 4L8 12v12c0 11.1 6.72 20.48 16 24 9.28-3.52 16-12.9 16-24V12L24 4z" stroke="#D4B06A" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M17 24l5 5 9-10" stroke="#D4B06A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="eyebrow">Risk Free</span>
+    <h2 class="d-md" style="margin-bottom:14px">30-Day Risk-Free Guarantee</h2>
+    <p>We're so confident you'll love Lumiera EyeLift that we offer a complete 30-day money-back guarantee. Try it at home, use it every day, and if you're not satisfied with the visible results — contact us within 30 days for a full, no-hassle refund.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FINAL CTA
+══════════════════════════════════════ -->
+<section id="final">
+  <div class="final-in">
+    <span class="eyebrow rv">Start Today</span>
+    <h2 class="rv d1">Wake Up Looking <em>More Refreshed</em> Every Day</h2>
+    <p class="rv d2">Join thousands of women who have made Lumiera EyeLift their non-negotiable 5-minute ritual.</p>
+    <div class="rv d3">
+      <a href="#offer" class="btn btn-gold btn-lg">Get Lumiera EyeLift &rarr;</a>
+    </div>
+    <p style="margin-top:18px;font-size:.78rem;color:rgba(255,255,255,.28)" class="rv d4">
+      30-Day Guarantee &nbsp;·&nbsp; Free Shipping &nbsp;·&nbsp; Secure Checkout
+    </p>
+  </div>
+</section>
+
+<!-- STICKY CTA -->
+<div id="sticky">
+  <div class="sticky-in">
+    <div class="sticky-prod">
+      <div class="sticky-ico">
+        <svg width="20" height="20" fill="none" viewBox="0 0 32 32">
+          <circle cx="16" cy="16" r="5" stroke="#D4B06A" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="2" fill="#D4B06A"/>
+          <path d="M16 4v4M16 24v4M4 16h4M24 16h4" stroke="#D4B06A" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="sticky-nm">Lumiera EyeLift</p>
+        <div class="sticky-pr">
+          <span class="sticky-new">€39.99</span>
+          <span class="sticky-old">€79.99</span>
+        </div>
+      </div>
+    </div>
+    <a href="#offer" class="btn btn-gold" style="padding:13px 26px;font-size:.875rem">Claim Discount &rarr;</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-in">
+    <p class="foot-logo">Lumiera <em>EyeLift</em></p>
+    <div class="foot-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Contact</a>
+      <a href="#">Returns</a>
+    </div>
+    <p class="foot-disc">*These statements have not been evaluated by a medical authority. This product is not intended to diagnose, treat, cure, or prevent any disease. Individual results may vary. Testimonials represent the personal experiences of individual customers.</p>
+    <p class="foot-copy">© 2025 Lumiera Beauty Tech. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+/* SCROLL REVEAL */
+const rvObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rvObs.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+
+/* NAV SCROLL */
+const mainNav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  mainNav.classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+
+/* STICKY CTA */
+const stickyEl = document.getElementById('sticky');
+const heroEl   = document.getElementById('hero');
+new IntersectionObserver(entries => {
+  stickyEl.classList.toggle('on', !entries[0].isIntersecting);
+}, { threshold: 0.15 }).observe(heroEl);
+
+/* FAQ */
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item   = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+/* COUNTDOWN — persisted per session */
+(function() {
+  const KEY = 'lm_expiry_v1';
+  let expiry = parseInt(localStorage.getItem(KEY) || '0');
+  if (!expiry || expiry < Date.now()) {
+    expiry = Date.now() + (2 * 3600 + 37 * 60 + 14) * 1000;
+    localStorage.setItem(KEY, expiry);
+  }
+  const hEl = document.getElementById('cdH');
+  const mEl = document.getElementById('cdM');
+  const sEl = document.getElementById('cdS');
+  function tick() {
+    const rem = Math.max(0, expiry - Date.now());
+    const h = Math.floor(rem / 3600000);
+    const m = Math.floor((rem % 3600000) / 60000);
+    const s = Math.floor((rem % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    hEl.textContent = pad(h);
+    mEl.textContent = pad(m);
+    sEl.textContent = pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* COUNTER ANIMATION */
+(function() {
+  const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el  = e.target;
+      const end = parseInt(el.dataset.target);
+      const sfx = el.dataset.suffix || '';
+      const t0  = Date.now();
+      const dur = 1800;
+      (function run() {
+        const p = Math.min((Date.now() - t0) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(end * ease).toLocaleString() + sfx;
+        if (p < 1) requestAnimationFrame(run);
+      })();
+      counterObs.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el));
+})();
+</script>
+</body>
+</html>
