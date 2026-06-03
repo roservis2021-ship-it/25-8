@@ -200,52 +200,26 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(58,157,191,0.1); }
 .stage {
   position: relative;
   width: 100%;
-  max-width: 500px;
-  aspect-ratio: 1;
+  max-width: 560px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.stage-glow {
-  position: absolute;
-  width: 68%; height: 68%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(91,186,213,0.2) 0%, transparent 70%);
-  animation: gPulse 4.5s ease-in-out infinite;
-}
-@keyframes gPulse { 0%,100%{transform:scale(1);opacity:.55} 50%{transform:scale(1.18);opacity:1} }
-.stage-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(91,186,213,0.2);
-}
-.stage-ring.r1 { width:80%;height:80%;animation:spin 22s linear infinite; }
-.stage-ring.r2 { width:90%;height:90%;animation:spin 34s linear infinite reverse; }
-.stage-ring.r1::after {
-  content:'';position:absolute;top:-3px;left:50%;transform:translateX(-50%);
-  width:6px;height:6px;border-radius:50%;background:var(--accent);
-  box-shadow:0 0 8px rgba(91,186,213,0.7);
-}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.stage-glow { display: none; }
+.stage-ring  { display: none; }
 .device-wrap {
-  position: relative; z-index: 2; width: 66%;
-  animation: dFloat 6.5s ease-in-out infinite;
+  position: relative; z-index: 2; width: 100%;
+  animation: dFloat 8s ease-in-out infinite;
 }
-@keyframes dFloat{0%,100%{transform:translateY(0px) rotate(-1.5deg)}50%{transform:translateY(-20px) rotate(1.5deg)}}
-.dev-shadow {
-  position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%);
-  width: 54%; height: 14px;
-  background: radial-gradient(ellipse, rgba(58,157,191,0.18) 0%, transparent 70%);
-  animation: sPulse 6.5s ease-in-out infinite; z-index: 1;
+.hero-photo {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 72px rgba(58,157,191,0.18), 0 4px 18px rgba(0,0,0,0.06);
 }
-@keyframes sPulse{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.5}50%{transform:translateX(-50%) scaleX(.72);opacity:.22}}
-.led-dot {
-  position: absolute; width: 5px; height: 5px; border-radius: 50%;
-  background: #FF3B5C;
-  box-shadow: 0 0 8px #FF3B5C, 0 0 20px rgba(255,59,92,0.35);
-  animation: ledBlink 2.8s ease-in-out infinite;
-}
-@keyframes ledBlink{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.6)}}
+@keyframes dFloat{0%,100%{transform:translateY(0px)}50%{transform:translateY(-10px)}}
+.dev-shadow { display: none; }
+.led-dot    { display: none; }
 
 /* ── PROBLEMA ── */
 #problem { background: var(--bg-white); }
@@ -641,61 +615,7 @@ footer { background:#0F1923;color:rgba(255,255,255,.35);padding:40px 24px; }
         <div class="stage-ring r1"></div>
         <div class="stage-ring r2"></div>
         <div class="device-wrap">
-          <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;filter:drop-shadow(0 20px 44px rgba(58,157,191,0.22))">
-            <defs>
-              <linearGradient id="bG" x1="0%" y1="0%" x2="100%" y2="120%">
-                <stop offset="0%" stop-color="#A8DCF4"/>
-                <stop offset="50%" stop-color="#5BBAD5"/>
-                <stop offset="100%" stop-color="#3A9DBF"/>
-              </linearGradient>
-              <linearGradient id="bG2" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#D8F0FC"/>
-                <stop offset="100%" stop-color="#5BBAD5"/>
-              </linearGradient>
-              <linearGradient id="fG" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#1A3A4A"/>
-                <stop offset="100%" stop-color="#0F2030"/>
-              </linearGradient>
-              <linearGradient id="lG" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#FF6080"/>
-                <stop offset="100%" stop-color="#FF2055"/>
-              </linearGradient>
-              <radialGradient id="rGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(91,186,213,0.3)"/>
-                <stop offset="100%" stop-color="rgba(91,186,213,0)"/>
-              </radialGradient>
-              <filter id="lf">
-                <feGaussianBlur stdDeviation="2.2" result="b"/>
-                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-              <filter id="sf">
-                <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="rgba(58,157,191,0.25)"/>
-              </filter>
-            </defs>
-            <ellipse cx="210" cy="155" rx="170" ry="88" fill="url(#rGlow)" opacity="0.8"/>
-            <path d="M 58 138 Q 78 58 210 48 Q 342 58 362 138 Q 342 178 278 184 Q 244 191 210 193 Q 176 191 142 184 Q 78 178 58 138 Z" fill="url(#bG2)" filter="url(#sf)"/>
-            <path d="M 88 136 Q 103 80 210 70 Q 317 80 332 136 Q 317 165 268 171 Q 239 177 210 178 Q 181 177 152 171 Q 103 165 88 136 Z" fill="url(#fG)"/>
-            <path d="M 108 135 Q 120 88 210 79 Q 300 88 312 135 Q 300 162 262 166 Q 236 171 210 172 Q 184 171 158 166 Q 120 162 108 135 Z" fill="none" stroke="rgba(91,186,213,0.25)" stroke-width="1.5"/>
-            <circle cx="150" cy="128" r="5.5" fill="url(#lG)" filter="url(#lf)"/>
-            <circle cx="166" cy="116" r="5"   fill="url(#lG)" filter="url(#lf)"/>
-            <circle cx="184" cy="108" r="5"   fill="url(#lG)" filter="url(#lf)"/>
-            <circle cx="152" cy="146" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
-            <circle cx="170" cy="138" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
-            <circle cx="270" cy="128" r="5.5" fill="url(#lG)" filter="url(#lf)"/>
-            <circle cx="254" cy="116" r="5"   fill="url(#lG)" filter="url(#lf)"/>
-            <circle cx="236" cy="108" r="5"   fill="url(#lG)" filter="url(#lf)"/>
-            <circle cx="268" cy="146" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
-            <circle cx="250" cy="138" r="4.2" fill="url(#lG)" filter="url(#lf)" opacity=".72"/>
-            <rect x="194" y="130" width="32" height="14" rx="7" fill="rgba(91,186,213,0.15)" stroke="rgba(91,186,213,0.4)" stroke-width="1"/>
-            <circle cx="210" cy="137" r="3" fill="rgba(91,186,213,0.6)"/>
-            <circle cx="210" cy="185" r="10" fill="#182838" stroke="rgba(91,186,213,0.4)" stroke-width="1.5"/>
-            <circle cx="210" cy="185" r="6"  fill="rgba(91,186,213,0.4)"/>
-            <circle cx="210" cy="185" r="2.5" fill="#5BBAD5"/>
-            <path d="M 72 130 Q 88 63 210 53 Q 332 63 348 130" fill="none" stroke="rgba(200,236,252,0.5)" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="55"  y="132" width="7" height="18" rx="3.5" fill="url(#bG)"/>
-            <rect x="358" y="132" width="7" height="18" rx="3.5" fill="url(#bG)"/>
-            <rect x="205" y="202" width="10" height="6" rx="2" fill="rgba(91,186,213,0.25)" stroke="rgba(91,186,213,0.45)" stroke-width=".8"/>
-          </svg>
+          <img src="https://cdn.shopify.com/s/files/1/1020/6881/4159/files/0270EBDA-6707-48E8-850C-7D5E87795793.png?v=1780528547" alt="Lumiera EyeLift — Masajeador 3D con Terapia de Luz Roja" class="hero-photo"/>
         </div>
         <div class="dev-shadow"></div>
         <div class="led-dot" style="top:26%;left:20%;animation-delay:0s"></div>
