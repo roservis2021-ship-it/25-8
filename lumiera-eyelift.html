@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumiera EyeLift — El Ritual de 5 Minutos Para Ojos Más Jóvenes</title>
+<meta name="description" content="Terapia de luz roja y masaje inteligente para reducir visiblemente bolsas, ojeras y signos de cansancio desde casa. Garantía 30 días."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:          #F4F9FD;
+  --bg-white:    #FFFFFF;
+  --accent:      #5BBAD5;
+  --accent-dk:   #3A9DBF;
+  --accent-lt:   #B8E4F4;
+  --accent-pale: #E8F6FC;
+  --text:        #0F1923;
+  --text-mid:    #2C3E4F;
+  --sub:         #5A6A7A;
+  --border:      rgba(91,186,213,0.12);
+  --border-c:    #CBE8F5;
+  --radius:      18px;
+  --radius-sm:   10px;
+  --radius-lg:   28px;
+  --shadow:      0 4px 28px rgba(58,157,191,0.08);
+  --shadow-lg:   0 12px 60px rgba(58,157,191,0.13);
+  --font-d:      'Cormorant Garamond', Georgia, serif;
+  --font-b:      'DM Sans', system-ui, sans-serif;
+  --mw:          1160px;
+  --sp:          96px 24px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-b);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; border: none; outline: none; background: none; font-family: var(--font-b); }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+.wrap { max-width: var(--mw); margin: 0 auto; padding: 0 24px; }
+.sec  { padding: var(--sp); }
+
+/* ── TIPO ── */
+.d-lg {
+  font-family: var(--font-d);
+  font-size: clamp(2.1rem, 3.8vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.d-md {
+  font-family: var(--font-d);
+  font-size: clamp(1.7rem, 2.8vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.2;
+}
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-dk);
+  display: block;
+  margin-bottom: 14px;
+}
+.lead { font-size: 1.0625rem; color: var(--sub); line-height: 1.72; }
+.divider { width: 42px; height: 1.5px; background: var(--accent); border-radius: 1px; margin: 20px auto 0; }
+.divider-l { margin-left: 0; }
+.sh { text-align: center; max-width: 660px; margin: 0 auto 60px; }
+.sh p.lead { margin-top: 14px; }
+
+/* ── BOTONES ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-b);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 16px 34px;
+  border-radius: 100px;
+  transition: all 0.22s ease;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-height: 48px;
+}
+.btn-blue {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dk) 100%);
+  color: #fff;
+}
+.btn-blue:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(58,157,191,0.38); }
+.btn-dark { background: var(--text); color: #fff; }
+.btn-dark:hover { background: #1e3040; transform: translateY(-1px); }
+.btn-ghost { border: 1.5px solid var(--border-c); color: var(--text); }
+.btn-ghost:hover { border-color: var(--accent); background: var(--accent-pale); }
+.btn-lg { padding: 20px 44px; font-size: 1rem; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ── BARRA ANUNCIO ── */
+#bar {
+  background: linear-gradient(90deg, var(--accent-dk) 0%, var(--accent) 100%);
+  color: rgba(255,255,255,0.92);
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 0.79rem;
+  letter-spacing: 0.04em;
+  position: relative;
+  z-index: 200;
+  line-height: 1.5;
+}
+#bar strong { color: #fff; font-weight: 600; }
+#bar .bar-sep { margin: 0 8px; opacity: 0.5; }
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 190;
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border-c);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 2px 20px rgba(58,157,191,0.1); }
+.nav-in {
+  max-width: var(--mw);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo { font-family: var(--font-d); font-size: 1.2rem; font-weight: 500; letter-spacing: 0.04em; }
+.logo em { font-style: italic; color: var(--accent); }
+.nav-right { display: flex; align-items: center; gap: 18px; }
+.nav-price { font-size: 0.85rem; color: var(--sub); }
+.nav-price s { color: #bbb; }
+.nav-price strong { color: var(--text); font-weight: 600; margin-left: 4px; }
+.nav-btn {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dk) 100%);
+  color: #fff;
+  padding: 9px 22px;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.nav-btn:hover { opacity: 0.88; }
+
+/* ── HERO ── */
+#hero {
+  display: flex;
+  align-items: center;
+  padding: 56px 24px 72px;
+  background: linear-gradient(160deg, #FFFFFF 0%, #EAF5FC 100%);
+}
+.hero-g {
+  max-width: var(--mw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+  width: 100%;
+}
+.hero-hl {
+  font-family: var(--font-d);
+  font-size: clamp(2.6rem, 4.4vw, 4.1rem);
+  font-weight: 400;
+  line-height: 1.07;
+  letter-spacing: -0.025em;
+  margin-bottom: 22px;
+}
+.hero-hl em { font-style: italic; color: var(--accent); }
+.hero-sub { font-size: 1.05rem; line-height: 1.72; color: var(--sub); max-width: 440px; margin-bottom: 38px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-bottom: 36px; }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 14px; }
+.badge { display: flex; align-items: center; gap: 6px; font-size: 0.79rem; color: var(--sub); }
+.bdot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+/* Escenario producto */
+.hero-vis { display: flex; justify-content: center; align-items: center; }
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.stage-glow { display: none; }
+.stage-ring  { display: none; }
+.device-wrap {
+  position: relative; z-index: 2; width: 100%;
+  animation: dFloat 8s ease-in-out infinite;
+}
+.hero-photo {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 72px rgba(58,157,191,0.18), 0 4px 18px rgba(0,0,0,0.06);
+}
+@keyframes dFloat{0%,100%{transform:translateY(0px)}50%{transform:translateY(-10px)}}
+.dev-shadow { display: none; }
+.led-dot    { display: none; }
+
+/* ── PROBLEMA ── */
+#problem { background: var(--bg-white); }
+.prob-g {
+  max-width: var(--mw); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 68px; align-items: center;
+}
+.prob-list { margin-top: 30px; display: flex; flex-direction: column; gap: 13px; }
+.prob-item {
+  display: flex; align-items: flex-start; gap: 13px;
+  padding: 15px 18px;
+  background: var(--bg);
+  border: 1px solid var(--border-c);
+  border-radius: var(--radius-sm);
+  transition: border-color .2s;
+}
+.prob-item:hover { border-color: var(--accent); }
+.prob-ico {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: var(--accent-pale);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.prob-txt h4 { font-size: 0.88rem; font-weight: 500; margin-bottom: 2px; }
+.prob-txt p  { font-size: 0.8rem; color: var(--sub); }
+.ba-card { background: var(--bg); border: 1px solid var(--border-c); border-radius: var(--radius-lg); padding: 28px; }
+.ba-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ba-col { text-align: center; }
+.ba-face { border-radius: var(--radius); aspect-ratio: 3/4; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+.ba-face.before { background: linear-gradient(155deg,#E0E8EE 0%,#C8D4DC 100%); }
+.ba-face.after  { background: linear-gradient(155deg,#EAF4FB 0%,#C8E4F4 100%); }
+.ba-lbl { font-size: 0.72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); font-weight: 500; }
+.ba-res { font-size: 0.82rem; color: var(--text); margin-top: 3px; }
+
+/* ── SOLUCIÓN ── */
+#solution { background: var(--bg); }
+.tech-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; max-width: var(--mw); margin: 0 auto; }
+.tech-card {
+  background: var(--bg-white);
+  border: 1px solid var(--border-c);
+  border-radius: var(--radius-lg);
+  padding: 38px 30px;
+  transition: all .28s ease;
+}
+.tech-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
+.tech-ico {
+  width: 54px; height: 54px; border-radius: 13px;
+  background: var(--accent-pale);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 22px;
+}
+.tech-card h3 { font-family: var(--font-d); font-size: 1.45rem; font-weight: 500; margin-bottom: 11px; }
+.tech-card p  { font-size: 0.92rem; color: var(--sub); line-height: 1.65; }
+.tech-tag { display: inline-block; margin-top: 14px; font-size: 0.78rem; font-weight: 500; color: var(--accent-dk); letter-spacing: 0.04em; }
+
+/* ── BENEFICIOS ── */
+#benefits { background: var(--bg-white); }
+.ben-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; max-width: var(--mw); margin: 0 auto; }
+.ben-card {
+  background: var(--bg);
+  border: 1px solid var(--border-c);
+  border-radius: var(--radius);
+  padding: 30px 26px;
+  transition: all .25s ease;
+}
+.ben-card:hover { border-color: var(--accent); box-shadow: 0 4px 22px rgba(91,186,213,0.12); }
+.ben-n { font-family: var(--font-d); font-size: 1.9rem; font-weight: 300; color: var(--accent); opacity: .55; margin-bottom: 10px; line-height: 1; }
+.ben-card h4 { font-size: 1.02rem; font-weight: 500; margin-bottom: 7px; }
+.ben-card p  { font-size: 0.855rem; color: var(--sub); line-height: 1.62; }
+
+/* ── ESTADÍSTICAS ── */
+#stats { background: var(--text); padding: 72px 24px; }
+.stats-g {
+  max-width: 860px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1px 1fr 1px 1fr;
+  gap: 0; text-align: center; align-items: center;
+}
+.stat-div { background: rgba(255,255,255,0.1); align-self: stretch; }
+.stat-n { font-family: var(--font-d); font-size: clamp(3rem,5.5vw,4.8rem); font-weight: 300; color: var(--accent-lt); line-height: 1; margin-bottom: 9px; }
+.stat-l { font-size: 0.78rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+.stat-cell { padding: 0 32px; }
+
+/* ── TIMELINE ── */
+#timeline { background: var(--bg); }
+.tl-wrap {
+  max-width: 840px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3,1fr);
+  position: relative;
+}
+.tl-wrap::before {
+  content:''; position:absolute;
+  top:35px; left:16.6%; right:16.6%;
+  height:1px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-dk));
+}
+.tl-item { text-align: center; padding: 0 18px; }
+.tl-dot {
+  width:70px;height:70px;border-radius:50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dk) 100%);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 22px;position:relative;z-index:2;
+  font-family:var(--font-d);font-size:1.2rem;font-weight:300;color:#fff;
+  box-shadow:0 0 0 8px rgba(91,186,213,0.12);
+}
+.tl-period { font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-dk);font-weight:500;margin-bottom:7px; }
+.tl-result { font-family:var(--font-d);font-size:1.28rem;font-weight:400;color:var(--text);line-height:1.28; }
+.tl-body   { font-size:.845rem;color:var(--sub);margin-top:7px;line-height:1.6; }
+
+/* ── PASOS ── */
+#steps { background: var(--bg-white); }
+.steps-g { display:grid;grid-template-columns:repeat(4,1fr);gap:28px;max-width:var(--mw);margin:0 auto; }
+.step { text-align: center; }
+.step-n {
+  width:50px;height:50px;border-radius:50%;
+  border:1.5px solid var(--border-c);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;
+  font-family:var(--font-d);font-size:1.2rem;font-weight:400;color:var(--accent);
+  transition:all .25s;
+}
+.step:hover .step-n { background:var(--accent);color:#fff;border-color:var(--accent); }
+.step h4 { font-size:.94rem;font-weight:500;margin-bottom:7px; }
+.step p   { font-size:.855rem;color:var(--sub);line-height:1.62; }
+
+/* ── COMPARATIVA ── */
+#compare { background: var(--bg); }
+.tbl-wrap {
+  max-width:840px;margin:0 auto;
+  border-radius:var(--radius-lg);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border:1px solid var(--border-c);
+  box-shadow:var(--shadow);
+}
+.cmp-tbl { width:100%;min-width:520px;border-collapse:collapse; }
+.cmp-tbl thead th {
+  padding:19px 22px;font-size:.84rem;font-weight:500;
+  letter-spacing:.04em;text-align:center;
+  background:var(--text);color:rgba(255,255,255,.7);
+}
+.cmp-tbl thead th:first-child { text-align:left;background:#0c1820; }
+.cmp-tbl thead th.col-l { background:var(--accent);color:#fff; }
+.cmp-tbl tbody tr { border-bottom:1px solid var(--border-c);background:var(--bg-white); }
+.cmp-tbl tbody tr:last-child { border-bottom:none; }
+.cmp-tbl tbody tr:hover { background:var(--accent-pale); }
+.cmp-tbl tbody td { padding:16px 22px;font-size:.88rem;text-align:center;color:var(--text-mid); }
+.cmp-tbl tbody td:first-child { text-align:left;font-weight:500;color:var(--text); }
+.ck { color:#22C55E;font-size:1.1rem; }
+.cx { color:#C8D8E4;font-size:1rem; }
+
+/* ── RESEÑAS ── */
+#reviews { background: var(--bg-white); }
+.rev-bar { display:flex;align-items:center;justify-content:center;gap:7px;color:var(--accent);font-size:1.1rem;margin-bottom:14px; }
+.rev-bar span { font-size:.95rem;color:var(--text);font-weight:500;font-family:var(--font-b); }
+.rev-grid { max-width:var(--mw);margin:0 auto;columns:4;column-gap:18px; }
+.rev-card {
+  background:var(--bg);border:1px solid var(--border-c);
+  border-radius:var(--radius);padding:22px;margin-bottom:18px;
+  break-inside:avoid;transition:all .25s ease;
+}
+.rev-card:hover { border-color:var(--accent);box-shadow:0 4px 20px rgba(91,186,213,0.1); }
+.rev-hd { display:flex;align-items:center;gap:11px;margin-bottom:12px; }
+.rev-av { width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:500;flex-shrink:0; }
+.rev-nm { font-size:.845rem;font-weight:500; }
+.rev-vf { font-size:.72rem;color:#22C55E;margin-top:1px; }
+.rev-stars { color:var(--accent);font-size:.78rem;letter-spacing:1px;margin-bottom:9px; }
+.rev-title { font-size:.875rem;font-weight:600;margin-bottom:7px; }
+.rev-body  { font-size:.845rem;color:var(--sub);line-height:1.65; }
+.rev-date  { font-size:.72rem;color:#A8C8DC;margin-top:10px; }
+
+/* ── OFERTA ── */
+#offer { background: var(--bg); }
+.offer-box {
+  max-width:660px;margin:0 auto;
+  background:var(--bg-white);
+  border:1px solid var(--border-c);
+  border-radius:var(--radius-lg);
+  padding:52px 52px;text-align:center;
+  box-shadow:var(--shadow-lg);
+}
+.off-badge {
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--accent-pale);
+  border:1px solid rgba(91,186,213,0.3);
+  border-radius:100px;padding:6px 18px;
+  font-size:.77rem;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--accent-dk);margin-bottom:26px;
+}
+.off-prices { display:flex;align-items:baseline;justify-content:center;gap:14px;margin-bottom:6px; }
+.off-old { font-family:var(--font-d);font-size:1.45rem;font-weight:300;color:#BBB;text-decoration:line-through; }
+.off-new { font-family:var(--font-d);font-size:4rem;font-weight:300;line-height:1;color:var(--text); }
+.off-new sup { font-size:2rem; }
+.off-save { font-size:.855rem;color:#22C55E;font-weight:500;margin-bottom:30px; }
+.cd-wrap { margin-bottom:28px; }
+.cd-lbl { font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:11px; }
+.cd { display:flex;justify-content:center;align-items:center;gap:7px; }
+.cd-u { text-align:center; }
+.cd-n {
+  width:56px;height:56px;
+  background:var(--text);color:#fff;
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);font-size:1.7rem;font-weight:300;
+}
+.cd-ul { font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-top:5px; }
+.cd-sep { font-family:var(--font-d);font-size:1.7rem;color:var(--sub);margin-bottom:18px; }
+.stk { display:flex;align-items:center;justify-content:center;gap:9px;font-size:.845rem;color:var(--sub);margin-bottom:28px; }
+.stk-bar { width:108px;height:3.5px;background:#D8EEF6;border-radius:2px;overflow:hidden; }
+.stk-fill { height:100%;width:22%;background:linear-gradient(90deg,var(--accent),var(--accent-dk));border-radius:2px; }
+.stk em { color:#E53935;font-style:normal;font-weight:500; }
+.off-cta { margin-bottom:22px; }
+.off-sec { display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:16px; }
+.sec-item { display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--sub); }
+
+/* ── FAQ ── */
+#faq { background: var(--bg-white); }
+.faq-list { max-width:700px;margin:0 auto; }
+.faq-item { border-bottom:1px solid var(--border-c); }
+.faq-q {
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:22px 0;font-size:1.03rem;font-weight:500;color:var(--text);
+  text-align:left;transition:color .2s;gap:16px;
+}
+.faq-q:hover { color:var(--accent-dk); }
+.faq-ico {
+  width:26px;height:26px;border-radius:50%;
+  border:1.5px solid var(--border-c);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:1.15rem;color:var(--sub);line-height:1;
+  transition:all .28s ease;
+}
+.faq-item.open .faq-ico { background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(45deg); }
+.faq-a { max-height:0;overflow:hidden;transition:max-height .38s ease; }
+.faq-item.open .faq-a { max-height:250px; }
+.faq-a-in { padding-bottom:22px;font-size:.925rem;color:var(--sub);line-height:1.72; }
+
+/* ── GARANTÍA ── */
+#guarantee { background:var(--bg);padding:72px 24px; }
+.guar-wrap { max-width:640px;margin:0 auto;text-align:center; }
+.guar-ico {
+  width:76px;height:76px;border-radius:50%;
+  background:var(--accent-pale);
+  border:1.5px solid rgba(91,186,213,0.3);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+}
+.guar-wrap h2 { margin-bottom:14px; }
+.guar-wrap p  { color:var(--sub);font-size:1.03rem;line-height:1.72;max-width:500px;margin:0 auto; }
+
+/* ── CTA FINAL ── */
+#final {
+  background: linear-gradient(135deg, var(--accent-dk) 0%, #2A7E9A 100%);
+  color:#fff;padding:96px 24px;text-align:center;
+}
+.final-in { max-width:600px;margin:0 auto; }
+#final .eyebrow { color:rgba(255,255,255,0.7);letter-spacing:.18em; }
+#final h2 { font-family:var(--font-d);font-size:clamp(2.3rem,3.8vw,3.4rem);font-weight:300;line-height:1.1;margin-bottom:18px; }
+#final h2 em { color:var(--accent-lt);font-style:italic; }
+#final p { color:rgba(255,255,255,.65);font-size:1.03rem;margin-bottom:38px; }
+.btn-white { background:#fff;color:var(--accent-dk);font-weight:600; }
+.btn-white:hover { transform:translateY(-1px);box-shadow:0 8px 28px rgba(0,0,0,0.18); }
+
+/* ── STICKY ── */
+#sticky {
+  position:fixed;bottom:0;left:0;right:0;z-index:980;
+  background:rgba(15,25,35,0.97);backdrop-filter:blur(16px);
+  padding:14px 24px;
+  padding-bottom:calc(14px + env(safe-area-inset-bottom));
+  transform:translateY(100%);
+  transition:transform .38s cubic-bezier(.16,1,.3,1);
+  border-top:1px solid rgba(91,186,213,0.15);
+}
+#sticky.on { transform:translateY(0); }
+.sticky-in { max-width:var(--mw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px; }
+.sticky-prod { display:flex;align-items:center;gap:13px; }
+.sticky-ico { width:42px;height:42px;border-radius:9px;background:rgba(91,186,213,0.15);border:1px solid rgba(91,186,213,0.3);display:flex;align-items:center;justify-content:center; }
+.sticky-nm { font-size:.845rem;font-weight:500;color:#fff; }
+.sticky-pr { display:flex;align-items:baseline;gap:7px; }
+.sticky-new { font-family:var(--font-d);font-size:1.45rem;font-weight:300;color:var(--accent-lt); }
+.sticky-old { font-size:.82rem;color:rgba(255,255,255,.35);text-decoration:line-through; }
+
+/* ── FOOTER ── */
+footer { background:#0F1923;color:rgba(255,255,255,.35);padding:40px 24px; }
+.foot-in { max-width:var(--mw);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center; }
+.foot-logo { font-family:var(--font-d);font-size:1.1rem;color:rgba(255,255,255,.6); }
+.foot-logo em { font-style:italic;color:rgba(91,186,213,.7); }
+.foot-links { display:flex;gap:22px;font-size:.79rem; }
+.foot-links a:hover { color:rgba(255,255,255,.6); }
+.foot-disc { font-size:.69rem;max-width:580px;line-height:1.65; }
+.foot-copy { font-size:.72rem; }
+
+/* ── REVEAL (visible por defecto) ── */
+.rv { opacity:1;transform:none; }
+.rv.in { opacity:1;transform:none; }
+.d1,.d2,.d3,.d4,.d5 {}
+
+/* ── RESPONSIVE ── */
+@media (max-width:1024px) { .rev-grid { columns:3; } }
+@media (max-width:860px) {
+  .tech-grid { grid-template-columns:1fr; }
+  .rev-grid { columns:2; }
+  .steps-g { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:768px) {
+  :root { --sp:60px 20px; }
+  .nav-price { display:none; }
+  #hero { padding:36px 20px 52px; }
+  .hero-g { grid-template-columns:1fr;gap:32px;text-align:center; }
+  .hero-sub { max-width:100%;margin-bottom:28px; }
+  .hero-actions { justify-content:center;gap:10px; }
+  .hero-badges { justify-content:center; }
+  .hero-vis { order:-1; }
+  .stage { max-width:260px;margin:0 auto; }
+  .prob-g { grid-template-columns:1fr;gap:36px; }
+  .tech-grid { grid-template-columns:1fr; }
+  .ben-grid { grid-template-columns:repeat(2,1fr); }
+  .stats-g { grid-template-columns:1fr;gap:28px; }
+  .stat-div { display:none; }
+  .stat-n { font-size:3.4rem; }
+  .tl-wrap { grid-template-columns:1fr;gap:32px; }
+  .tl-wrap::before { display:none; }
+  .steps-g { grid-template-columns:repeat(2,1fr); }
+  .rev-grid { columns:1; }
+  .offer-box { padding:32px 20px; }
+  .off-new { font-size:3rem; }
+  .off-prices { gap:10px; }
+  .sticky-in { gap:10px; }
+}
+@media (max-width:480px) {
+  :root { --sp:48px 16px; }
+  .hero-hl { font-size:2.2rem; }
+  .btn-lg { padding:16px 28px;font-size:.9rem; }
+  #bar { font-size:.72rem;padding:9px 12px; }
+  .ben-grid { grid-template-columns:1fr; }
+  .steps-g { grid-template-columns:1fr; }
+  .tl-dot { width:56px;height:56px;font-size:1rem; }
+  .cd-n { width:48px;height:48px;font-size:1.4rem; }
+  .cd-sep { font-size:1.4rem; }
+  .cmp-tbl { font-size:.78rem; }
+  .cmp-tbl thead th,.cmp-tbl tbody td { padding:10px 9px; }
+  .faq-q { font-size:.94rem; }
+  .sticky-nm { font-size:.8rem; }
+  .sticky-new { font-size:1.2rem; }
+}
+
+/* ── UTIL ── */
+.tc { text-align:center; }
+.acc { color:var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- BARRA DE ANUNCIO -->
+<div id="bar">
+  🚚 <strong>Envío Gratis</strong><span class="bar-sep">·</span>Garantía 30 Días<span class="bar-sep">·</span>🔒 Pago Seguro
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-in">
+    <a href="#" class="logo">Lumiera <em>EyeLift</em></a>
+    <div class="nav-right">
+      <span class="nav-price"><s>79,99€</s><strong>39,99€</strong></span>
+      <a href="#offer" class="nav-btn">Consíguelo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════ HERO ══════ -->
+<section id="hero">
+  <div class="hero-g">
+    <div>
+      <span class="eyebrow rv">Tecnología Avanzada Para el Contorno de Ojos</span>
+      <h1 class="hero-hl rv d1">
+        El Ritual de 5 Minutos Para<br>
+        Unos Ojos <em>Más Luminosos</em> y Jóvenes
+      </h1>
+      <p class="hero-sub rv d2">
+        Terapia de luz roja y masaje inteligente diseñados para reducir visiblemente el cansancio y las ojeras — desde la comodidad de tu hogar.
+      </p>
+      <div class="hero-actions rv d3">
+        <a href="#offer" class="btn btn-blue btn-lg">Consíguelo Ahora &rarr;</a>
+        <a href="#solution" class="btn btn-ghost">Cómo Funciona</a>
+      </div>
+      <div class="hero-badges rv d4">
+        <span class="badge"><span class="bdot"></span>Garantía 30 Días</span>
+        <span class="badge"><span class="bdot"></span>Envío Gratis</span>
+        <span class="badge"><span class="bdot"></span>4,8/5 Valoración</span>
+        <span class="badge"><span class="bdot"></span>Pago Seguro</span>
+      </div>
+    </div>
+    <div class="hero-vis rv d2">
+      <div class="stage">
+        <div class="stage-glow"></div>
+        <div class="stage-ring r1"></div>
+        <div class="stage-ring r2"></div>
+        <div class="device-wrap">
+          <img src="https://cdn.shopify.com/s/files/1/1020/6881/4159/files/0270EBDA-6707-48E8-850C-7D5E87795793.png?v=1780528547" alt="Lumiera EyeLift — Masajeador 3D con Terapia de Luz Roja" class="hero-photo"/>
+        </div>
+        <div class="dev-shadow"></div>
+        <div class="led-dot" style="top:26%;left:20%;animation-delay:0s"></div>
+        <div class="led-dot" style="top:34%;right:22%;animation-delay:.9s"></div>
+        <div class="led-dot" style="bottom:28%;left:28%;animation-delay:1.8s"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ PROBLEMA ══════ -->
+<section id="problem" class="sec">
+  <div class="prob-g">
+    <div>
+      <span class="eyebrow rv">El Problema del Contorno de Ojos</span>
+      <h2 class="d-lg rv d1">¿Por Qué Tus Ojos Se Ven Cansados Aunque Hayas Descansado?</h2>
+      <div class="divider divider-l" style="margin-top:20px"></div>
+      <p class="lead rv d2" style="margin-top:20px;margin-bottom:0">
+        El contorno de ojos es una de las primeras zonas en revelar el estrés, la fatiga y el envejecimiento. La exposición a pantallas, el poco descanso y los factores ambientales pueden hacer que tus ojos luzcan más apagados y cansados.
+      </p>
+      <div class="prob-list">
+        <div class="prob-item rv d2">
+          <div class="prob-ico">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="#5BBAD5" stroke-width="1.5"/>
+              <circle cx="12" cy="12" r="3" stroke="#5BBAD5" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="prob-txt">
+            <h4>Ojeras y Bolsas Bajo los Ojos</h4>
+            <p>La mala circulación y la retención de líquidos hacen que los ojos parezcan permanentemente cansados.</p>
+          </div>
+        </div>
+        <div class="prob-item rv d3">
+          <div class="prob-ico">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <rect x="2" y="3" width="20" height="14" rx="2" stroke="#5BBAD5" stroke-width="1.5"/>
+              <path d="M8 21h8M12 17v4" stroke="#5BBAD5" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="prob-txt">
+            <h4>Fatiga Digital y Cansancio Visual</h4>
+            <p>Las horas frente a pantallas tensan los músculos delicados alrededor de los ojos.</p>
+          </div>
+        </div>
+        <div class="prob-item rv d4">
+          <div class="prob-ico">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#5BBAD5" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="#5BBAD5" stroke-width="1.5" stroke-linecap="round" opacity=".5"/>
+            </svg>
+          </div>
+          <div class="prob-txt">
+            <h4>Líneas de Expresión y Pérdida de Firmeza</h4>
+            <p>La pérdida de colágeno hace que las líneas finas sean más visibles con el tiempo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rv d2">
+      <div class="ba-card">
+        <p class="eyebrow tc" style="margin-bottom:18px">La Diferencia Visible</p>
+        <div class="ba-row">
+          <div class="ba-col">
+            <div class="ba-face before">
+              <svg viewBox="0 0 110 148" fill="none" style="width:85%">
+                <ellipse cx="55" cy="72" rx="40" ry="50" fill="#C8D4DC"/>
+                <ellipse cx="55" cy="58" rx="38" ry="36" fill="#D4DDE4"/>
+                <ellipse cx="38" cy="70" rx="13" ry="7" fill="#B8C4CC" opacity=".8"/>
+                <ellipse cx="72" cy="70" rx="13" ry="7" fill="#B8C4CC" opacity=".8"/>
+                <ellipse cx="38" cy="64" rx="11" ry="7.5" fill="#8A9AA8" opacity=".45"/>
+                <ellipse cx="72" cy="64" rx="11" ry="7.5" fill="#8A9AA8" opacity=".45"/>
+                <ellipse cx="38" cy="62" rx="9.5" ry="6" fill="#1A2A38"/>
+                <ellipse cx="72" cy="62" rx="9.5" ry="6" fill="#1A2A38"/>
+                <ellipse cx="38" cy="60" rx="9.5" ry="2.5" fill="#1A2A38"/>
+                <ellipse cx="72" cy="60" rx="9.5" ry="2.5" fill="#1A2A38"/>
+                <path d="M26 69 Q32 67 38 70" stroke="#8A9AA8" stroke-width=".7" stroke-linecap="round" opacity=".55"/>
+                <path d="M72 70 Q78 67 84 69" stroke="#8A9AA8" stroke-width=".7" stroke-linecap="round" opacity=".55"/>
+                <path d="M40 84 Q55 87 70 84" stroke="#A8B8C4" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="ba-lbl">Antes</p>
+            <p class="ba-res">Aspecto cansado</p>
+          </div>
+          <div class="ba-col">
+            <div class="ba-face after">
+              <svg viewBox="0 0 110 148" fill="none" style="width:85%">
+                <ellipse cx="55" cy="72" rx="40" ry="50" fill="#C8E4F4"/>
+                <ellipse cx="55" cy="58" rx="38" ry="36" fill="#DCF0FC"/>
+                <ellipse cx="38" cy="70" rx="11" ry="4" fill="#A8D4EC" opacity=".35"/>
+                <ellipse cx="72" cy="70" rx="11" ry="4" fill="#A8D4EC" opacity=".35"/>
+                <ellipse cx="38" cy="62" rx="10.5" ry="8.5" fill="#1A2A38"/>
+                <ellipse cx="72" cy="62" rx="10.5" ry="8.5" fill="#1A2A38"/>
+                <circle cx="41"  cy="59" r="2.5" fill="white" opacity=".85"/>
+                <circle cx="75"  cy="59" r="2.5" fill="white" opacity=".85"/>
+                <ellipse cx="28" cy="80" rx="11" ry="5" fill="rgba(91,186,213,0.15)"/>
+                <ellipse cx="82" cy="80" rx="11" ry="5" fill="rgba(91,186,213,0.15)"/>
+                <path d="M40 86 Q55 91 70 86" stroke="#5BBAD5" stroke-width="1" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="ba-lbl">Después</p>
+            <p class="ba-res">Mirada luminosa</p>
+          </div>
+        </div>
+        <p style="font-size:.69rem;color:var(--sub);text-align:center;margin-top:16px;font-style:italic">*Ilustrativo. Los resultados individuales pueden variar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ SOLUCIÓN ══════ -->
+<section id="solution" class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">La Tecnología</span>
+      <h2 class="d-lg rv d1">Tecnología Avanzada Para el Contorno de Ojos <em style="font-style:italic;color:var(--accent)">En La Palma de Tu Mano</em></h2>
+      <p class="lead rv d2">Tres tecnologías sinérgicas que trabajan juntas para apoyar una apariencia más fresca y juvenil alrededor de los ojos.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card rv d1">
+        <div class="tech-ico">
+          <svg width="26" height="26" fill="none" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="5.5" stroke="#FF3C5A" stroke-width="1.5"/>
+            <circle cx="16" cy="16" r="2" fill="#FF3C5A"/>
+            <path d="M16 4v4M16 24v4M4 16h4M24 16h4" stroke="#FF3C5A" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M7.8 7.8l2.6 2.6M21.6 21.6l2.6 2.6M7.8 24.2l2.6-2.6M21.6 10.4l2.6-2.6" stroke="rgba(255,60,90,.45)" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Terapia de Luz Roja</h3>
+        <p>Longitudes de onda estudiadas clínicamente que aportan energía lumínica para apoyar un contorno de ojos con aspecto más saludable y radiante, sin exposición UV.</p>
+        <span class="tech-tag">Longitud de onda 630–660nm</span>
+      </div>
+      <div class="tech-card rv d2">
+        <div class="tech-ico">
+          <svg width="26" height="26" fill="none" viewBox="0 0 32 32">
+            <ellipse cx="16" cy="16" rx="11" ry="5.5" stroke="rgba(91,186,213,.4)" stroke-width="1.4"/>
+            <ellipse cx="16" cy="16" rx="7" ry="3.5" stroke="rgba(91,186,213,.65)" stroke-width="1.4"/>
+            <circle cx="16" cy="16" r="2.5" fill="#5BBAD5" opacity=".8"/>
+            <path d="M5 12.5c0-1.2.6-2.4 1.6-3.3" stroke="#5BBAD5" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M27 12.5c0-1.2-.6-2.4-1.6-3.3" stroke="#5BBAD5" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Masaje por Microvibración</h3>
+        <p>Vibraciones calibradas con precisión para proporcionar una experiencia de masaje relajante que alivia la tensión y apoya la circulación en la delicada zona ocular.</p>
+        <span class="tech-tag">6.000 vibraciones/min</span>
+      </div>
+      <div class="tech-card rv d3">
+        <div class="tech-ico">
+          <svg width="26" height="26" fill="none" viewBox="0 0 32 32">
+            <path d="M6 16 Q6 8 16 8 Q26 8 26 16" stroke="#5BBAD5" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6 16 Q6 24 16 24 Q26 24 26 16" stroke="rgba(91,186,213,.4)" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="2.5" fill="#5BBAD5" opacity=".6"/>
+          </svg>
+        </div>
+        <h3>Diseño Ergonómico 3D</h3>
+        <p>La forma anatómica contorneada sigue la curvatura natural del rostro, garantizando un contacto cómodo y preciso con la delicada piel del contorno ocular.</p>
+        <span class="tech-tag">Materiales Hipoalergénicos</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ BENEFICIOS ══════ -->
+<section id="benefits" class="sec" style="background:var(--bg-white)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Por Qué Te Encantará</span>
+      <h2 class="d-lg rv d1">Beneficios Visibles <em style="font-style:italic;color:var(--accent)">Que Amarás</em></h2>
+    </div>
+    <div class="ben-grid">
+      <div class="ben-card rv d1">
+        <div class="ben-n">01</div>
+        <h4>Ojos de Aspecto más Luminoso</h4>
+        <p>Apoya una apariencia más luminosa y despierta alrededor de la zona ocular cada mañana.</p>
+      </div>
+      <div class="ben-card rv d2">
+        <div class="ben-n">02</div>
+        <h4>Apariencia más Descansada</h4>
+        <p>Luce descansada, incluso después de una noche larga o un día especialmente exigente.</p>
+      </div>
+      <div class="ben-card rv d3">
+        <div class="ben-n">03</div>
+        <h4>Potencia Tu Rutina de Skincare</h4>
+        <p>El masaje ayuda a que tus sérums y cremas de contorno se absorban de forma más efectiva.</p>
+      </div>
+      <div class="ben-card rv d1">
+        <div class="ben-n">04</div>
+        <h4>Rutina Diaria Cómoda</h4>
+        <p>Solo 5 minutos al día — se integra perfectamente en cualquier rutina de belleza.</p>
+      </div>
+      <div class="ben-card rv d2">
+        <div class="ben-n">05</div>
+        <h4>Portátil y Recargable</h4>
+        <p>Diseño compacto con carga USB-C que puedes llevar a la oficina, al gimnasio o de viaje.</p>
+      </div>
+      <div class="ben-card rv d3">
+        <div class="ben-n">06</div>
+        <h4>Experiencia de Spa en Casa</h4>
+        <p>Tratamiento ocular de calidad profesional sin citas, desplazamientos ni grandes gastos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ ESTADÍSTICAS ══════ -->
+<section id="stats">
+  <div class="wrap">
+    <div class="stats-g">
+      <div class="stat-cell rv d1">
+        <div class="stat-n" data-target="5000" data-suffix="+">0</div>
+        <div class="stat-l">Clientas Satisfechas</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-cell rv d2">
+        <div class="stat-n">4,8<span style="font-size:1.8rem;font-weight:300">/5</span></div>
+        <div class="stat-l">Valoración Media</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat-cell rv d3">
+        <div class="stat-n" data-target="96" data-suffix="%">0</div>
+        <div class="stat-l">Lo Recomendarían</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ TIMELINE ══════ -->
+<section id="timeline" class="sec">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Tu Transformación</span>
+      <h2 class="d-lg rv d1">Nota la <em style="font-style:italic;color:var(--accent)">Diferencia</em></h2>
+      <p class="lead rv d2">Con uso diario constante como parte de tu rutina de skincare. Los resultados individuales pueden variar.</p>
+    </div>
+    <div class="tl-wrap">
+      <div class="tl-item rv d1">
+        <div class="tl-dot">1</div>
+        <p class="tl-period">Semana 1</p>
+        <p class="tl-result">Apariencia más Descansada</p>
+        <p class="tl-body">La piel alrededor de los ojos se siente relajada y visiblemente más cómoda tras cada sesión.</p>
+      </div>
+      <div class="tl-item rv d2">
+        <div class="tl-dot">2</div>
+        <p class="tl-period">Semana 2</p>
+        <p class="tl-result">Contorno de Ojos más Luminoso</p>
+        <p class="tl-body">Una mirada más luminosa con reducción visible continua de los signos de fatiga.</p>
+      </div>
+      <div class="tl-item rv d3">
+        <div class="tl-dot">4</div>
+        <p class="tl-period">Semana 4</p>
+        <p class="tl-result">Apariencia más Segura y Confiada</p>
+        <p class="tl-body">Unos ojos que reflejan lo vibrante que te sientes por dentro — el efecto ritual completo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ PASOS ══════ -->
+<section id="steps" class="sec">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Rutina Sin Esfuerzo</span>
+      <h2 class="d-lg rv d1">Cómo <em style="font-style:italic;color:var(--accent)">Usarlo</em></h2>
+    </div>
+    <div class="steps-g">
+      <div class="step rv d1">
+        <div class="step-n">1</div>
+        <h4>Aplica tu Sérum</h4>
+        <p>Empieza con tu sérum o crema contorno favorita aplicada suavemente en el área.</p>
+      </div>
+      <div class="step rv d2">
+        <div class="step-n">2</div>
+        <h4>Enciéndelo</h4>
+        <p>Mantén pulsado 2 segundos para activar el dispositivo y seleccionar la intensidad.</p>
+      </div>
+      <div class="step rv d3">
+        <div class="step-n">3</div>
+        <h4>Desliza con Suavidad</h4>
+        <p>Realiza movimientos circulares suaves siguiendo el hueso orbital bajo cada ojo.</p>
+      </div>
+      <div class="step rv d4">
+        <div class="step-n">4</div>
+        <h4>Disfruta 5 Minutos</h4>
+        <p>Relájate y deja que la tecnología haga su trabajo. Se apaga automáticamente al terminar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ COMPARATIVA ══════ -->
+<section id="compare" class="sec" style="background:var(--bg-white)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">La Elección Inteligente</span>
+      <h2 class="d-lg rv d1">Por Qué las Clientas <em style="font-style:italic;color:var(--accent)">Eligen</em> Lumiera EyeLift</h2>
+    </div>
+    <div class="tbl-wrap rv d2">
+      <table class="cmp-tbl">
+        <thead>
+          <tr>
+            <th style="text-align:left;background:#0c1820">Característica</th>
+            <th class="col-l">✦ Lumiera EyeLift</th>
+            <th>Cremas Contorno</th>
+            <th>Tratamientos Clínica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Comodidad en casa</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>Rutina asistida por tecnología</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+            <td><span class="ck">✓</span></td>
+          </tr>
+          <tr>
+            <td>Reutilizable — compra única</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>Sin citas previas</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>Apta para viajar</td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="ck">✓</span></td>
+            <td><span class="cx">✕</span></td>
+          </tr>
+          <tr>
+            <td>Precio</td>
+            <td><strong style="color:var(--accent-dk)">39,99€</strong></td>
+            <td style="color:var(--sub)">15–60€/mes</td>
+            <td style="color:var(--sub)">200–800€+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ RESEÑAS ══════ -->
+<section id="reviews" class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="sh">
+      <div class="rev-bar rv">★★★★★ <span>4,8 de 5</span></div>
+      <span class="eyebrow rv">Testimonios Reales</span>
+      <h2 class="d-lg rv d1">Amado Por <em style="font-style:italic;color:var(--accent)">Miles</em></h2>
+      <p class="lead rv d2">Reseñas reales de clientas verificadas. Sin patrocinio ni edición.</p>
+    </div>
+    <div class="rev-grid">
+      <div class="rev-card rv">
+        <div class="rev-hd"><div class="rev-av" style="background:#E0F0F8;color:#3A8CB0">S</div><div><p class="rev-nm">Sofía M.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"Por fin algo que de verdad funciona"</p>
+        <p class="rev-body">He probado todas las cremas del mercado y nada se acercaba. Después de 2 semanas usándolo cada mañana, mi marido notó que mis ojos lucían más despiertos. Merece cada céntimo.</p>
+        <p class="rev-date">Marzo 2025</p>
+      </div>
+      <div class="rev-card rv d1">
+        <div class="rev-hd"><div class="rev-av" style="background:#E8D5C4;color:#7A5235">A</div><div><p class="rev-nm">Amelia R.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"El cambio de juego de mi rutina matutina"</p>
+        <p class="rev-body">Como enfermera con turnos largos, mis ojeras eran un problema. Se ha convertido en mi ritual matutino indispensable. ¡Mis compañeras no paran de preguntarme qué estoy haciendo diferente!</p>
+        <p class="rev-date">Febrero 2025</p>
+      </div>
+      <div class="rev-card rv d2">
+        <div class="rev-hd"><div class="rev-av" style="background:#D4E8D5;color:#2E6E35">L</div><div><p class="rev-nm">Laura K.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★☆</div>
+        <p class="rev-title">"Genuinamente sorprendida"</p>
+        <p class="rev-body">Era escéptica, ya me habían decepcionado otros gadgets de belleza. Pero este es diferente. La calidad se siente premium y veo diferencia real en la hinchazón tras solo 10 días.</p>
+        <p class="rev-date">Enero 2025</p>
+      </div>
+      <div class="rev-card rv d3">
+        <div class="rev-hd"><div class="rev-av" style="background:#D8D0E8;color:#5B4080">M</div><div><p class="rev-nm">Martina G.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"Como un mini spa cada mañana"</p>
+        <p class="rev-body">La vibración es tan relajante que realmente me apetece usarlo. Mis ojeras están notablemente más claras y mis ojos lucen más abiertos. Super contenta.</p>
+        <p class="rev-date">Abril 2025</p>
+      </div>
+      <div class="rev-card rv d1">
+        <div class="rev-hd"><div class="rev-av" style="background:#C8E8F4;color:#2E6E90">C</div><div><p class="rev-nm">Clara B.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"Mejor que mi crema de 200€"</p>
+        <p class="rev-body">He estado obsesionada con cremas de contorno caras durante años. Este dispositivo me ha dado mejores resultados visibles que cualquier producto que haya probado. Los sérums se absorben mucho mejor.</p>
+        <p class="rev-date">Marzo 2025</p>
+      </div>
+      <div class="rev-card rv d2">
+        <div class="rev-hd"><div class="rev-av" style="background:#D0E4E8;color:#2E5E70">E</div><div><p class="rev-nm">Elena V.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"Un salvavidas para mamás recientes"</p>
+        <p class="rev-body">La falta de sueño con un recién nacido tenía mis ojeras terribles. 5 minutos por la mañana y parezco haber dormido de verdad. Se lo recomendaría 100% a otras mamás.</p>
+        <p class="rev-date">Mayo 2025</p>
+      </div>
+      <div class="rev-card rv d3">
+        <div class="rev-hd"><div class="rev-av" style="background:#E8D8D0;color:#7A3E2E">R</div><div><p class="rev-nm">Raquel T.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★☆</div>
+        <p class="rev-title">"Producto sólido, gran relación calidad-precio"</p>
+        <p class="rev-body">La calidad de construcción es realmente impresionante, se siente mucho más caro de lo que cuesta. Los resultados son graduales pero reales. Las líneas finas lucen más suaves.</p>
+        <p class="rev-date">Febrero 2025</p>
+      </div>
+      <div class="rev-card rv d1">
+        <div class="rev-hd"><div class="rev-av" style="background:#F0E0D8;color:#8B4E3E">P</div><div><p class="rev-nm">Patricia N.</p><p class="rev-vf">✓ Compra Verificada</p></div></div>
+        <div class="rev-stars">★★★★★</div>
+        <p class="rev-title">"También le regalé uno a mi madre"</p>
+        <p class="rev-body">Lo compré para mí, me encantó tanto que inmediatamente pedí uno para mi madre. Tiene 58 años y dice que es la mejor compra de skincare que ha hecho. La garantía de 30 días me dio tranquilidad.</p>
+        <p class="rev-date">Abril 2025</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ OFERTA ══════ -->
+<section id="offer" class="sec">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Oferta por Tiempo Limitado</span>
+      <h2 class="d-lg rv d1">Reclama Tu <em style="font-style:italic;color:var(--accent)">50% de Descuento</em></h2>
+    </div>
+    <div class="offer-box rv d2">
+      <div class="off-badge">✦ Oferta de Lanzamiento — 50% Dto.</div>
+      <div class="off-prices">
+        <span class="off-old">79,99€</span>
+        <span class="off-new"><sup>€</sup>39<span style="font-size:2rem">,99</span></span>
+      </div>
+      <p class="off-save">Ahorras 40,00€ — Envío Gratis Incluido</p>
+      <div class="cd-wrap">
+        <p class="cd-lbl">La oferta expira en</p>
+        <div class="cd">
+          <div class="cd-u"><div class="cd-n" id="cdH">00</div><p class="cd-ul">Horas</p></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-u"><div class="cd-n" id="cdM">00</div><p class="cd-ul">Minutos</p></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-u"><div class="cd-n" id="cdS">00</div><p class="cd-ul">Segundos</p></div>
+        </div>
+      </div>
+      <div class="stk">
+        <em>⚠ Solo quedan 23 unidades</em>
+        <div class="stk-bar"><div class="stk-fill"></div></div>
+        <span>Se agota rápido</span>
+      </div>
+      <div class="off-cta">
+        <a href="#" class="btn btn-blue btn-lg btn-full">Reclamar Descuento &rarr;</a>
+      </div>
+      <div class="off-sec">
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Pago Seguro
+        </div>
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/></svg>
+          Garantía 30 Días
+        </div>
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M15 7l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Envío Gratis
+        </div>
+        <div class="sec-item">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 8V6a5 5 0 0110 0v2" stroke="currentColor" stroke-width="1.5"/></svg>
+          Pago Cifrado
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ FAQ ══════ -->
+<section id="faq" class="sec" style="background:var(--bg-white)">
+  <div class="wrap">
+    <div class="sh">
+      <span class="eyebrow rv">Soporte</span>
+      <h2 class="d-lg rv d1">Preguntas <em style="font-style:italic;color:var(--accent)">Frecuentes</em></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item rv">
+        <button class="faq-q">¿Con qué frecuencia debo usarlo?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Recomendamos usarlo una vez al día durante 5 minutos, por la mañana o por la noche como parte de tu rutina de skincare habitual. Para mejores resultados, úsalo de forma constante durante al menos 4 semanas.</div></div>
+      </div>
+      <div class="faq-item rv d1">
+        <button class="faq-q">¿Es apto para pieles sensibles?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Sí. Lumiera EyeLift está diseñado con materiales suaves e hipoalergénicos y terapia de luz no invasiva. Si tienes una afección cutánea diagnosticada o estás bajo tratamiento dermatológico, consulta a tu médico antes de usarlo.</div></div>
+      </div>
+      <div class="faq-item rv d2">
+        <button class="faq-q">¿Cuánto dura la batería?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Una carga completa proporciona aproximadamente 3–4 semanas de uso diario (una sesión de 5 minutos al día). Se carga por USB-C en aproximadamente 90 minutos.</div></div>
+      </div>
+      <div class="faq-item rv d3">
+        <button class="faq-q">¿Puedo usarlo con mis productos de skincare?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Absolutamente, y te lo recomendamos. Aplica tu sérum o crema contorno preferida antes de usar el dispositivo. El masaje por microvibración potencia la absorción de tus productos existentes.</div></div>
+      </div>
+      <div class="faq-item rv">
+        <button class="faq-q">¿Cuánto tarda el envío?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">El envío estándar tarda 5–8 días laborables. El envío exprés (2–3 días) está disponible en el proceso de compra. Todos los pedidos se envían en 1–2 días laborables con número de seguimiento completo.</div></div>
+      </div>
+      <div class="faq-item rv d1">
+        <button class="faq-q">¿Y si no me convence?<span class="faq-ico">+</span></button>
+        <div class="faq-a"><div class="faq-a-in">Ofrecemos garantía de devolución completa durante 30 días. Si por cualquier motivo no estás completamente satisfecha, contacta con nuestro equipo dentro de los 30 días siguientes a la recepción para un reembolso completo y sin complicaciones.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ GARANTÍA ══════ -->
+<section id="guarantee" style="background:var(--bg);padding:72px 24px">
+  <div class="guar-wrap rv">
+    <div class="guar-ico">
+      <svg width="34" height="34" fill="none" viewBox="0 0 48 48">
+        <path d="M24 4L8 12v12c0 11.1 6.72 20.48 16 24 9.28-3.52 16-12.9 16-24V12L24 4z" stroke="#5BBAD5" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M17 24l5 5 9-10" stroke="#5BBAD5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span class="eyebrow">Sin Riesgo</span>
+    <h2 class="d-md" style="margin-bottom:14px">Garantía de 30 Días Sin Riesgo</h2>
+    <p>Estamos tan seguros de que amarás Lumiera EyeLift que ofrecemos una garantía de devolución completa de 30 días. Pruébalo en casa, úsalo cada día, y si no estás satisfecha con los resultados — contacta con nosotros en 30 días y te devolvemos el dinero sin preguntas.</p>
+  </div>
+</section>
+
+<!-- ══════ CTA FINAL ══════ -->
+<section id="final">
+  <div class="final-in">
+    <span class="eyebrow rv">Empieza Hoy</span>
+    <h2 class="rv d1">Despierta con Ojos <em>más Descansados</em> Cada Día</h2>
+    <p class="rv d2">Únete a miles de mujeres que ya han convertido Lumiera EyeLift en su ritual de 5 minutos indispensable.</p>
+    <div class="rv d3">
+      <a href="#offer" class="btn btn-white btn-lg">Conseguir Lumiera EyeLift &rarr;</a>
+    </div>
+    <p style="margin-top:18px;font-size:.78rem;color:rgba(255,255,255,.4)" class="rv d4">
+      Garantía 30 Días &nbsp;·&nbsp; Envío Gratis &nbsp;·&nbsp; Pago Seguro
+    </p>
+  </div>
+</section>
+
+<!-- STICKY CTA -->
+<div id="sticky">
+  <div class="sticky-in">
+    <div class="sticky-prod">
+      <div class="sticky-ico">
+        <svg width="20" height="20" fill="none" viewBox="0 0 32 32">
+          <circle cx="16" cy="16" r="5" stroke="#5BBAD5" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="2" fill="#5BBAD5"/>
+          <path d="M16 4v4M16 24v4M4 16h4M24 16h4" stroke="#5BBAD5" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <p class="sticky-nm">Lumiera EyeLift</p>
+        <div class="sticky-pr">
+          <span class="sticky-new">€39,99</span>
+          <span class="sticky-old">€79,99</span>
+        </div>
+      </div>
+    </div>
+    <a href="#offer" class="btn btn-blue" style="padding:13px 26px;font-size:.875rem">Reclamar Descuento &rarr;</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-in">
+    <p class="foot-logo">Lumiera <em>EyeLift</em></p>
+    <div class="foot-links">
+      <a href="#">Política de Privacidad</a>
+      <a href="#">Términos de Servicio</a>
+      <a href="#">Contacto</a>
+      <a href="#">Devoluciones</a>
+    </div>
+    <p class="foot-disc">*Estas afirmaciones no han sido evaluadas por ninguna autoridad médica. Este producto no está destinado a diagnosticar, tratar, curar ni prevenir ninguna enfermedad. Los resultados individuales pueden variar. Los testimonios recogidos representan las experiencias personales de clientas individuales.</p>
+    <p class="foot-copy">© 2025 Lumiera Beauty Tech. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<script>
+/* NAV SCROLL */
+const mainNav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  mainNav.classList.toggle('scrolled', window.scrollY > 8);
+}, { passive: true });
+
+/* STICKY CTA */
+const stickyEl = document.getElementById('sticky');
+const heroEl   = document.getElementById('hero');
+new IntersectionObserver(entries => {
+  stickyEl.classList.toggle('on', !entries[0].isIntersecting);
+}, { threshold: 0.15 }).observe(heroEl);
+
+/* FAQ */
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item   = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+/* COUNTDOWN */
+(function() {
+  const KEY = 'lm_expiry_v2';
+  let expiry = parseInt(localStorage.getItem(KEY) || '0');
+  if (!expiry || expiry < Date.now()) {
+    expiry = Date.now() + (2 * 3600 + 37 * 60 + 14) * 1000;
+    localStorage.setItem(KEY, expiry);
+  }
+  const hEl = document.getElementById('cdH');
+  const mEl = document.getElementById('cdM');
+  const sEl = document.getElementById('cdS');
+  function tick() {
+    const rem = Math.max(0, expiry - Date.now());
+    const h = Math.floor(rem / 3600000);
+    const m = Math.floor((rem % 3600000) / 60000);
+    const s = Math.floor((rem % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    hEl.textContent = pad(h);
+    mEl.textContent = pad(m);
+    sEl.textContent = pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* CONTADOR ANIMADO */
+(function() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const end = parseInt(el.dataset.target);
+      const sfx = el.dataset.suffix || '';
+      const t0 = Date.now(), dur = 1800;
+      (function run() {
+        const p = Math.min((Date.now() - t0) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(end * ease).toLocaleString('es-ES') + sfx;
+        if (p < 1) requestAnimationFrame(run);
+      })();
+      obs.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-target]').forEach(el => obs.observe(el));
+})();
+</script>
+</body>
+</html>
