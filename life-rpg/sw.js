@@ -1,5 +1,5 @@
 const CACHE = 'liferpg-v1';
-const ASSETS = ['/', '/index.html', '/app.css', '/app.js', '/manifest.json'];
+const ASSETS = ['./', './index.html', './app.css', './app.js', './manifest.json', './icons/icon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
