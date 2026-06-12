@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Life RPG">
+  <meta name="theme-color" content="#0a0a14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <title>Life RPG</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="char-info">
+          <div class="char-avatar" id="charAvatar">⚔️</div>
+          <div>
+            <div class="char-name" id="charName">Heroe</div>
+            <div class="char-level">Nivel <span id="charLevel">1</span></div>
+          </div>
+        </div>
+        <div class="header-xp">
+          <div class="xp-label">XP <span id="xpCurrent">0</span> / <span id="xpNext">100</span></div>
+          <div class="xp-bar-wrap"><div class="xp-bar" id="xpBar"></div></div>
+        </div>
+        <button class="btn-icon" id="btnConfig" aria-label="Configurar">⚙️</button>
+      </div>
+    </header>
+
+    <!-- TABS -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="stats">Stats</button>
+      <button class="tab" data-tab="habits">Habitos</button>
+      <button class="tab" data-tab="missions">Misiones</button>
+    </nav>
+
+    <!-- PANEL: STATS -->
+    <section class="panel active" id="panel-stats">
+      <div class="stats-grid">
+        <div class="stat-card" data-stat="strength">
+          <div class="stat-icon">💪</div>
+          <div class="stat-body">
+            <div class="stat-name">Fuerza</div>
+            <div class="stat-bar-wrap"><div class="stat-bar strength-bar" id="bar-strength"></div></div>
+            <div class="stat-val"><span id="val-strength">0</span> pts</div>
+          </div>
+        </div>
+        <div class="stat-card" data-stat="mind">
+          <div class="stat-icon">🧠</div>
+          <div class="stat-body">
+            <div class="stat-name">Mente</div>
+            <div class="stat-bar-wrap"><div class="stat-bar mind-bar" id="bar-mind"></div></div>
+            <div class="stat-val"><span id="val-mind">0</span> pts</div>
+          </div>
+        </div>
+        <div class="stat-card" data-stat="discipline">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-body">
+            <div class="stat-name">Disciplina</div>
+            <div class="stat-bar-wrap"><div class="stat-bar discipline-bar" id="bar-discipline"></div></div>
+            <div class="stat-val"><span id="val-discipline">0</span> pts</div>
+          </div>
+        </div>
+        <div class="stat-card" data-stat="health">
+          <div class="stat-icon">❤️</div>
+          <div class="stat-body">
+            <div class="stat-name">Salud</div>
+            <div class="stat-bar-wrap"><div class="stat-bar health-bar" id="bar-health"></div></div>
+            <div class="stat-val"><span id="val-health">0</span> pts</div>
+          </div>
+        </div>
+        <div class="stat-card confidence" data-stat="confidence">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-body">
+            <div class="stat-name">Confianza</div>
+            <div class="stat-bar-wrap"><div class="stat-bar confidence-bar" id="bar-confidence"></div></div>
+            <div class="stat-val"><span id="val-confidence">0</span> pts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RACHA -->
+      <div class="streak-card">
+        <div class="streak-icon">🔥</div>
+        <div class="streak-body">
+          <div class="streak-label">Racha actual</div>
+          <div class="streak-count"><span id="streakCount">0</span> dias</div>
+        </div>
+        <div class="streak-best">Mejor: <span id="streakBest">0</span></div>
+      </div>
+    </section>
+
+    <!-- PANEL: HABITOS -->
+    <section class="panel" id="panel-habits">
+      <div class="panel-header">
+        <h2 class="panel-title">Habitos de hoy</h2>
+        <div class="date-badge" id="dateBadge"></div>
+      </div>
+      <ul class="habit-list" id="habitList"></ul>
+      <button class="btn-add" id="btnAddHabit">+ Nuevo habito</button>
+    </section>
+
+    <!-- PANEL: MISIONES -->
+    <section class="panel" id="panel-missions">
+      <div class="panel-header">
+        <h2 class="panel-title">Misiones activas</h2>
+      </div>
+      <ul class="mission-list" id="missionList"></ul>
+      <button class="btn-add" id="btnAddMission">+ Nueva mision</button>
+    </section>
+
+  </div>
+
+  <!-- MODAL: ADD HABIT -->
+  <div class="modal" id="modalHabit">
+    <div class="modal-box">
+      <h3 class="modal-title">Nuevo Habito</h3>
+      <label class="field-label">Nombre</label>
+      <input class="field-input" id="habitName" placeholder="Ej: Correr 20 minutos" maxlength="40">
+      <label class="field-label">Stat que sube</label>
+      <div class="stat-picker" id="habitStatPicker">
+        <button class="stat-btn active" data-stat="strength">💪 Fuerza</button>
+        <button class="stat-btn" data-stat="mind">🧠 Mente</button>
+        <button class="stat-btn" data-stat="discipline">🎯 Disciplina</button>
+        <button class="stat-btn" data-stat="health">❤️ Salud</button>
+      </div>
+      <label class="field-label">Puntos</label>
+      <div class="points-picker" id="habitPointsPicker">
+        <button class="pts-btn active" data-pts="5">5</button>
+        <button class="pts-btn" data-pts="10">10</button>
+        <button class="pts-btn" data-pts="20">20</button>
+        <button class="pts-btn" data-pts="30">30</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="cancelHabit">Cancelar</button>
+        <button class="btn-confirm" id="confirmHabit">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD MISSION -->
+  <div class="modal" id="modalMission">
+    <div class="modal-box">
+      <h3 class="modal-title">Nueva Mision</h3>
+      <label class="field-label">Titulo</label>
+      <input class="field-input" id="missionTitle" placeholder="Ej: Correr 5km sin parar" maxlength="50">
+      <label class="field-label">Descripcion (opcional)</label>
+      <input class="field-input" id="missionDesc" placeholder="Detalle de la mision" maxlength="80">
+      <label class="field-label">Stat que sube</label>
+      <div class="stat-picker" id="missionStatPicker">
+        <button class="stat-btn active" data-stat="strength">💪 Fuerza</button>
+        <button class="stat-btn" data-stat="mind">🧠 Mente</button>
+        <button class="stat-btn" data-stat="discipline">🎯 Disciplina</button>
+        <button class="stat-btn" data-stat="health">❤️ Salud</button>
+      </div>
+      <label class="field-label">Recompensa XP</label>
+      <div class="points-picker" id="missionXpPicker">
+        <button class="pts-btn active" data-pts="50">50</button>
+        <button class="pts-btn" data-pts="100">100</button>
+        <button class="pts-btn" data-pts="200">200</button>
+        <button class="pts-btn" data-pts="500">500</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="cancelMission">Cancelar</button>
+        <button class="btn-confirm" id="confirmMission">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIG -->
+  <div class="modal" id="modalConfig">
+    <div class="modal-box">
+      <h3 class="modal-title">Tu Personaje</h3>
+      <label class="field-label">Nombre del heroe</label>
+      <input class="field-input" id="inputCharName" placeholder="Tu nombre" maxlength="20">
+      <label class="field-label">Avatar</label>
+      <div class="avatar-picker" id="avatarPicker">
+        <button class="avatar-btn active" data-emoji="⚔️">⚔️</button>
+        <button class="avatar-btn" data-emoji="🧙">🧙</button>
+        <button class="avatar-btn" data-emoji="🦸">🦸</button>
+        <button class="avatar-btn" data-emoji="🥷">🥷</button>
+        <button class="avatar-btn" data-emoji="🦊">🦊</button>
+        <button class="avatar-btn" data-emoji="🐉">🐉</button>
+        <button class="avatar-btn" data-emoji="🌟">🌟</button>
+        <button class="avatar-btn" data-emoji="🔥">🔥</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="cancelConfig">Cancelar</button>
+        <button class="btn-confirm" id="confirmConfig">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- LEVEL UP -->
+  <div class="levelup-overlay" id="levelupOverlay">
+    <div class="levelup-box">
+      <div class="levelup-glow">⬆️</div>
+      <div class="levelup-text">¡SUBISTE DE NIVEL!</div>
+      <div class="levelup-num" id="levelupNum"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
