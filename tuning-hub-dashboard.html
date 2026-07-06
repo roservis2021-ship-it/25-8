@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tuning Hub — Panel de Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --neon-red:#ff1744;
+  --neon-blue:#00d4ff;
+  --neon-purple:#aa00ff;
+  --gold:#ffd740;
+  --green:#00e676;
+  --bg:#080a0e;
+  --bg2:#0d1017;
+  --bg3:#111520;
+  --card:#12161f;
+  --card2:#171c28;
+  --border:rgba(0,212,255,.15);
+  --border-strong:rgba(0,212,255,.35);
+  --text:#e8eaf0;
+  --muted:#8a90a2;
+  --font-display:'Orbitron',sans-serif;
+  --font-body:'Rajdhani',sans-serif;
+  --font-light:'Inter',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  background-image:
+    linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+a{color:inherit;text-decoration:none;}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--neon-red);border-radius:3px;}
+
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(8,10,14,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:16px 24px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.logo{
+  font-family:var(--font-display);
+  font-size:20px;font-weight:900;letter-spacing:1px;
+  background:linear-gradient(90deg,var(--neon-blue),var(--neon-red));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.logo span{color:var(--neon-red);-webkit-text-fill-color:var(--neon-red);}
+.subtitle{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+
+nav.tabs{
+  display:flex;gap:6px;padding:14px 24px 0;flex-wrap:wrap;
+  max-width:1280px;margin:0 auto;
+}
+.tab-btn{
+  font-family:var(--font-body);font-weight:600;font-size:14px;letter-spacing:.5px;
+  padding:10px 18px;border-radius:8px 8px 0 0;
+  background:var(--bg3);color:var(--muted);border:1px solid var(--border);border-bottom:none;
+  cursor:pointer;transition:.2s;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{
+  color:var(--text);background:var(--card);
+  border-color:var(--border-strong);
+  box-shadow:0 -2px 0 var(--neon-red) inset;
+}
+
+main{max-width:1280px;margin:0 auto;padding:24px;}
+.panel{display:none;animation:fadeIn .25s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+}
+.card h2{
+  font-family:var(--font-display);font-size:16px;letter-spacing:1px;
+  color:var(--neon-blue);margin-bottom:16px;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:860px){.grid2{grid-template-columns:1fr;}}
+
+/* Jornada */
+.session-clock{
+  font-family:var(--font-display);font-size:42px;font-weight:700;
+  color:var(--text);text-align:center;letter-spacing:2px;margin:12px 0;
+}
+.session-status{text-align:center;font-size:13px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.session-status.live{color:var(--green);}
+.btn{
+  font-family:var(--font-body);font-weight:700;font-size:14px;letter-spacing:.5px;
+  padding:12px 24px;border-radius:8px;border:1px solid var(--neon-red);
+  background:transparent;color:var(--neon-red);cursor:pointer;transition:.2s;
+  text-transform:uppercase;
+}
+.btn:hover{background:var(--neon-red);color:#fff;box-shadow:0 0 20px rgba(255,23,68,.4);}
+.btn.primary{background:var(--neon-red);color:#fff;}
+.btn.primary:hover{box-shadow:0 0 20px rgba(255,23,68,.5);}
+.btn.stop{border-color:var(--gold);color:var(--gold);}
+.btn.stop:hover{background:var(--gold);color:#000;box-shadow:0 0 20px rgba(255,215,64,.4);}
+.btn.ghost{border-color:var(--border-strong);color:var(--muted);}
+.btn.ghost:hover{background:var(--bg3);color:var(--text);box-shadow:none;}
+.btn.small{padding:6px 12px;font-size:12px;}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;}
+@media(max-width:600px){.stat-row{grid-template-columns:1fr;}}
+.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.stat-box .val{font-family:var(--font-display);font-size:22px;color:var(--neon-blue);}
+.stat-box .lbl{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
+
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border);}
+th{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase;}
+tbody tr:hover{background:rgba(0,212,255,.04);}
+.table-wrap{overflow-x:auto;}
+.empty{color:var(--muted);text-align:center;padding:24px;font-size:13px;}
+
+/* Calendario */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cal-header .month-label{font-family:var(--font-display);font-size:15px;letter-spacing:1px;color:var(--text);}
+.cal-nav{display:flex;gap:8px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.cal-dow{text-align:center;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding-bottom:6px;}
+.cal-day{
+  aspect-ratio:1;border-radius:8px;background:var(--bg3);border:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:13px;color:var(--muted);position:relative;
+}
+.cal-day.empty-day{background:transparent;border:none;}
+.cal-day.today{border-color:var(--neon-blue);}
+.cal-day.worked{background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.4);color:var(--text);}
+.cal-day.worked .dot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-top:2px;}
+.cal-day .hrs{font-size:9px;color:var(--green);margin-top:1px;}
+.cal-legend{display:flex;gap:16px;margin-top:14px;font-size:12px;color:var(--muted);align-items:center;}
+.legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle;}
+
+/* Objetivos */
+.obj-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.obj-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.obj-title{font-weight:700;font-size:16px;}
+.obj-title.done{color:var(--muted);text-decoration:line-through;}
+.badge{font-size:10px;padding:3px 8px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;}
+.badge.pending{background:rgba(255,215,64,.15);color:var(--gold);}
+.badge.progress{background:rgba(0,212,255,.15);color:var(--neon-blue);}
+.badge.done{background:rgba(0,230,118,.15);color:var(--green);}
+.progress-bar{height:6px;border-radius:3px;background:var(--bg);overflow:hidden;margin:10px 0;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--neon-blue),var(--green));transition:.3s;}
+.micro-list{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+.micro-item{display:flex;align-items:center;gap:8px;font-size:14px;padding:4px 0;}
+.micro-item input[type=checkbox]{accent-color:var(--green);width:16px;height:16px;cursor:pointer;}
+.micro-item span.done{color:var(--muted);text-decoration:line-through;}
+.micro-item .del{margin-left:auto;color:var(--muted);cursor:pointer;font-size:12px;}
+.micro-item .del:hover{color:var(--neon-red);}
+.obj-actions{display:flex;gap:8px;}
+.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px 6px;}
+.icon-btn:hover{color:var(--neon-red);}
+.add-row{display:flex;gap:8px;margin-top:10px;}
+
+/* Forms */
+input[type=text],input[type=date],input[type=time],input[type=number],textarea,select{
+  background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);padding:9px 12px;font-family:var(--font-body);font-size:14px;width:100%;
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--neon-blue);}
+textarea{resize:vertical;min-height:60px;}
+label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.field{margin-bottom:12px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.field-row{grid-template-columns:1fr;}}
+
+/* Videos */
+.video-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;}
+.video-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+.video-title{font-weight:700;font-size:16px;color:var(--text);}
+.video-meta{font-size:12px;color:var(--muted);margin-top:3px;}
+.video-meta b{color:var(--neon-blue);}
+.shot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:12px;}
+.shot{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:var(--bg2);}
+.shot img{width:100%;height:90px;object-fit:cover;display:block;}
+.shot .shot-date{font-size:10px;color:var(--muted);padding:4px 6px;text-align:center;}
+.shot .shot-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:1;}
+.upload-shot{
+  border:1px dashed var(--border-strong);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  min-height:110px;color:var(--muted);font-size:11px;cursor:pointer;text-align:center;padding:8px;gap:4px;
+}
+.upload-shot:hover{border-color:var(--neon-blue);color:var(--neon-blue);}
+.notes{font-size:13px;color:var(--muted);margin-top:10px;white-space:pre-wrap;}
+
+/* Modal */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;
+  align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);
+}
+.modal-overlay.active{display:flex;}
+.modal{
+  background:var(--card2);border:1px solid var(--border-strong);border-radius:14px;
+  padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;
+}
+.modal h3{font-family:var(--font-display);font-size:16px;color:var(--neon-blue);margin-bottom:16px;letter-spacing:1px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.toolbar h2{margin-bottom:0;}
+.data-actions{display:flex;gap:8px;}
+footer{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">NeonForge <span>Tuning Hub</span></div>
+    <div class="subtitle">Panel de control del proyecto</div>
+  </div>
+  <div class="data-actions">
+    <button class="btn ghost small" id="btnExport">Exportar datos</button>
+    <button class="btn ghost small" id="btnImport">Importar datos</button>
+    <input type="file" id="fileImport" accept="application/json" style="display:none">
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="jornada">Jornada</button>
+  <button class="tab-btn" data-tab="calendario">Calendario</button>
+  <button class="tab-btn" data-tab="objetivos">Objetivos</button>
+  <button class="tab-btn" data-tab="videos">Vídeos</button>
+</nav>
+
+<main>
+
+  <!-- JORNADA -->
+  <section class="panel active" id="panel-jornada">
+    <div class="card">
+      <h2>Registro de jornada</h2>
+      <div class="session-clock" id="clockDisplay">00:00:00</div>
+      <div class="session-status" id="sessionStatus">Jornada no iniciada</div>
+      <div class="btn-row">
+        <button class="btn primary" id="btnStart">Iniciar jornada</button>
+        <button class="btn stop" id="btnStop" style="display:none;">Finalizar jornada</button>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="val" id="statToday">0h 0m</div><div class="lbl">Hoy</div></div>
+        <div class="stat-box"><div class="val" id="statWeek">0h 0m</div><div class="lbl">Esta semana</div></div>
+        <div class="stat-box"><div class="val" id="statTotal">0h 0m</div><div class="lbl">Total acumulado</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Historial de jornadas</h2>
+      <div class="table-wrap">
+        <table id="sessionTable">
+          <thead><tr><th>Fecha</th><th>Inicio</th><th>Fin</th><th>Duración</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="empty" id="sessionEmpty" style="display:none;">Todavía no hay jornadas registradas.</div>
+    </div>
+  </section>
+
+  <!-- CALENDARIO -->
+  <section class="panel" id="panel-calendario">
+    <div class="card">
+      <div class="cal-header">
+        <div class="cal-nav"><button class="btn ghost small" id="calPrev">&larr;</button></div>
+        <div class="month-label" id="calMonthLabel"></div>
+        <div class="cal-nav"><button class="btn ghost small" id="calNext">&rarr;</button></div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend">
+        <span><span class="legend-dot" style="background:var(--green)"></span>Día trabajado</span>
+        <span><span class="legend-dot" style="background:transparent;border:1px solid var(--neon-blue)"></span>Hoy</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- OBJETIVOS -->
+  <section class="panel" id="panel-objetivos">
+    <div class="card">
+      <div class="toolbar">
+        <h2>Objetivos del proyecto</h2>
+        <button class="btn small" id="btnNewObj">+ Nuevo objetivo</button>
+      </div>
+      <div id="objList"></div>
+      <div class="empty" id="objEmpty" style="display:none;">Aún no hay objetivos. Crea el primero.</div>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="panel" id="panel-videos">
+    <div class="card">
+      <div class="toolbar">
+        <h2>Registro de vídeos</h2>
+        <button class="btn small" id="btnNewVideo">+ Nuevo vídeo</button>
+      </div>
+      <div id="videoList"></div>
+      <div class="empty" id="videoEmpty" style="display:none;">Aún no hay vídeos registrados.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Datos guardados localmente en este navegador · NeonForge Tuning Hub</footer>
+
+<!-- Modal Objetivo -->
+<div class="modal-overlay" id="modalObj">
+  <div class="modal">
+    <h3 id="objModalTitle">Nuevo objetivo</h3>
+    <div class="field">
+      <label>Título del objetivo</label>
+      <input type="text" id="objTitleInput" placeholder="Ej: Alcanzar 1000 suscriptores">
+    </div>
+    <div class="field">
+      <label>Descripción (opcional)</label>
+      <textarea id="objDescInput" placeholder="Detalles del objetivo..."></textarea>
+    </div>
+    <div class="field">
+      <label>Estado</label>
+      <select id="objStatusInput">
+        <option value="pending">Pendiente</option>
+        <option value="progress">En progreso</option>
+        <option value="done">Completado</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="objCancel">Cancelar</button>
+      <button class="btn primary" id="objSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Video -->
+<div class="modal-overlay" id="modalVideo">
+  <div class="modal">
+    <h3 id="videoModalTitle">Nuevo vídeo</h3>
+    <div class="field">
+      <label>Contenido / Coche</label>
+      <input type="text" id="vContent" placeholder="Ej: BMW E46 - Wrap mate negro">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Fecha de subida</label>
+        <input type="date" id="vDate">
+      </div>
+      <div class="field">
+        <label>Franja horaria</label>
+        <input type="time" id="vTime">
+      </div>
+    </div>
+    <div class="field">
+      <label>Notas de resultados / evolución</label>
+      <textarea id="vNotes" placeholder="Vistas, likes, comentarios, aprendizajes..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="vCancel">Cancelar</button>
+      <button class="btn primary" id="vSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Storage helpers ---------- */
+const LS_KEY = "th_dashboard_data_v1";
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return defaultData();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultData(), parsed);
+  }catch(e){ return defaultData(); }
+}
+function defaultData(){
+  return { sessions: [], activeSession: null, objectives: [], videos: [] };
+}
+let data = loadData();
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(data)); }
+
+/* IndexedDB for screenshots (base64 too heavy for localStorage at scale) */
+let idb = null;
+const idbReq = indexedDB.open("th_dashboard_shots", 1);
+idbReq.onupgradeneeded = e => {
+  const db = e.target.result;
+  if(!db.objectStoreNames.contains("shots")) db.createObjectStore("shots", { keyPath:"id" });
+};
+idbReq.onsuccess = e => { idb = e.target.result; renderVideos(); };
+idbReq.onerror = () => { idb = null; };
+
+function idbPut(rec){
+  return new Promise((resolve,reject)=>{
+    if(!idb) return reject("no idb");
+    const tx = idb.transaction("shots","readwrite");
+    tx.objectStore("shots").put(rec);
+    tx.oncomplete = ()=>resolve();
+    tx.onerror = ()=>reject(tx.error);
+  });
+}
+function idbGet(id){
+  return new Promise((resolve,reject)=>{
+    if(!idb) return resolve(null);
+    const tx = idb.transaction("shots","readonly");
+    const rq = tx.objectStore("shots").get(id);
+    rq.onsuccess = ()=>resolve(rq.result ? rq.result.dataUrl : null);
+    rq.onerror = ()=>reject(rq.error);
+  });
+}
+function idbDelete(id){
+  return new Promise((resolve)=>{
+    if(!idb) return resolve();
+    const tx = idb.transaction("shots","readwrite");
+    tx.objectStore("shots").delete(id);
+    tx.oncomplete = ()=>resolve();
+  });
+}
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+    if(btn.dataset.tab === "calendario") renderCalendar();
+  });
+});
+
+/* ---------- Jornada ---------- */
+const clockDisplay = document.getElementById("clockDisplay");
+const sessionStatus = document.getElementById("sessionStatus");
+const btnStart = document.getElementById("btnStart");
+const btnStop = document.getElementById("btnStop");
+let tickTimer = null;
+
+function fmtHM(ms){
+  const totalMin = Math.round(ms/60000);
+  const h = Math.floor(totalMin/60), m = totalMin%60;
+  return h+"h "+m+"m";
+}
+function fmtClock(ms){
+  const s = Math.floor(ms/1000);
+  const hh = String(Math.floor(s/3600)).padStart(2,"0");
+  const mm = String(Math.floor((s%3600)/60)).padStart(2,"0");
+  const ss = String(s%60).padStart(2,"0");
+  return hh+":"+mm+":"+ss;
+}
+function todayStr(d){
+  d = d || new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+function updateSessionUI(){
+  if(data.activeSession){
+    btnStart.style.display = "none";
+    btnStop.style.display = "inline-block";
+    sessionStatus.textContent = "Jornada en curso desde las " + new Date(data.activeSession.start).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    sessionStatus.classList.add("live");
+    if(!tickTimer){
+      tickTimer = setInterval(()=>{
+        clockDisplay.textContent = fmtClock(Date.now() - data.activeSession.start);
+      }, 1000);
+    }
+  } else {
+    btnStart.style.display = "inline-block";
+    btnStop.style.display = "none";
+    sessionStatus.textContent = "Jornada no iniciada";
+    sessionStatus.classList.remove("live");
+    clockDisplay.textContent = "00:00:00";
+    if(tickTimer){ clearInterval(tickTimer); tickTimer = null; }
+  }
+  renderSessionStats();
+  renderSessionTable();
+}
+
+btnStart.addEventListener("click", ()=>{
+  if(data.activeSession) return;
+  data.activeSession = { start: Date.now() };
+  save();
+  updateSessionUI();
+});
+btnStop.addEventListener("click", ()=>{
+  if(!data.activeSession) return;
+  const end = Date.now();
+  const start = data.activeSession.start;
+  data.sessions.push({ id: uid(), day: todayStr(new Date(start)), start, end });
+  data.activeSession = null;
+  save();
+  updateSessionUI();
+  renderCalendar();
+});
+
+function renderSessionStats(){
+  const now = Date.now();
+  const today = todayStr();
+  let todayMs = 0, weekMs = 0, totalMs = 0;
+  const weekStart = startOfWeek(new Date());
+  data.sessions.forEach(s=>{
+    const dur = s.end - s.start;
+    totalMs += dur;
+    if(s.day === today) todayMs += dur;
+    if(new Date(s.start) >= weekStart) weekMs += dur;
+  });
+  if(data.activeSession){
+    const liveDur = now - data.activeSession.start;
+    totalMs += liveDur;
+    if(todayStr(new Date(data.activeSession.start)) === today) todayMs += liveDur;
+    if(new Date(data.activeSession.start) >= weekStart) weekMs += liveDur;
+  }
+  document.getElementById("statToday").textContent = fmtHM(todayMs);
+  document.getElementById("statWeek").textContent = fmtHM(weekMs);
+  document.getElementById("statTotal").textContent = fmtHM(totalMs);
+}
+function startOfWeek(d){
+  const day = (d.getDay()+6)%7; // Monday = 0
+  const r = new Date(d);
+  r.setDate(d.getDate()-day);
+  r.setHours(0,0,0,0);
+  return r;
+}
+
+function renderSessionTable(){
+  const tbody = document.querySelector("#sessionTable tbody");
+  const sorted = [...data.sessions].sort((a,b)=>b.start-a.start);
+  tbody.innerHTML = "";
+  document.getElementById("sessionEmpty").style.display = sorted.length ? "none" : "block";
+  sorted.forEach(s=>{
+    const tr = document.createElement("tr");
+    const dur = s.end - s.start;
+    tr.innerHTML = `
+      <td>${new Date(s.start).toLocaleDateString()}</td>
+      <td>${new Date(s.start).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</td>
+      <td>${new Date(s.end).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</td>
+      <td>${fmtHM(dur)}</td>
+      <td><button class="icon-btn" data-del="${s.id}" title="Eliminar">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll("[data-del]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      data.sessions = data.sessions.filter(s=>s.id !== b.dataset.del);
+      save();
+      updateSessionUI();
+      renderCalendar();
+    });
+  });
+}
+
+/* live stat refresh every 30s even without changing tab */
+setInterval(()=>{ if(document.getElementById("panel-jornada").classList.contains("active")) renderSessionStats(); }, 30000);
+
+/* ---------- Calendario ---------- */
+let calCursor = new Date();
+calCursor.setDate(1);
+
+document.getElementById("calPrev").addEventListener("click", ()=>{
+  calCursor.setMonth(calCursor.getMonth()-1);
+  renderCalendar();
+});
+document.getElementById("calNext").addEventListener("click", ()=>{
+  calCursor.setMonth(calCursor.getMonth()+1);
+  renderCalendar();
+});
+
+function renderCalendar(){
+  const grid = document.getElementById("calGrid");
+  const label = document.getElementById("calMonthLabel");
+  const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  label.textContent = monthNames[calCursor.getMonth()] + " " + calCursor.getFullYear();
+
+  const dayMs = {};
+  data.sessions.forEach(s=>{
+    dayMs[s.day] = (dayMs[s.day]||0) + (s.end - s.start);
+  });
+  if(data.activeSession){
+    const d = todayStr(new Date(data.activeSession.start));
+    dayMs[d] = (dayMs[d]||0) + (Date.now() - data.activeSession.start);
+  }
+
+  grid.innerHTML = "";
+  ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(dow=>{
+    const el = document.createElement("div");
+    el.className = "cal-dow";
+    el.textContent = dow;
+    grid.appendChild(el);
+  });
+
+  const year = calCursor.getFullYear(), month = calCursor.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const startOffset = (firstDay.getDay()+6)%7; // Monday-first
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const todayKey = todayStr();
+
+  for(let i=0;i<startOffset;i++){
+    const el = document.createElement("div");
+    el.className = "cal-day empty-day";
+    grid.appendChild(el);
+  }
+  for(let day=1; day<=daysInMonth; day++){
+    const key = year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0");
+    const el = document.createElement("div");
+    el.className = "cal-day";
+    if(key === todayKey) el.classList.add("today");
+    if(dayMs[key]) el.classList.add("worked");
+    let inner = `<div>${day}</div>`;
+    if(dayMs[key]){
+      inner += `<div class="hrs">${fmtHM(dayMs[key])}</div>`;
+    }
+    el.innerHTML = inner;
+    grid.appendChild(el);
+  }
+}
+
+/* ---------- Objetivos ---------- */
+const modalObj = document.getElementById("modalObj");
+let editingObjId = null;
+
+document.getElementById("btnNewObj").addEventListener("click", ()=>{
+  editingObjId = null;
+  document.getElementById("objModalTitle").textContent = "Nuevo objetivo";
+  document.getElementById("objTitleInput").value = "";
+  document.getElementById("objDescInput").value = "";
+  document.getElementById("objStatusInput").value = "pending";
+  modalObj.classList.add("active");
+});
+document.getElementById("objCancel").addEventListener("click", ()=> modalObj.classList.remove("active"));
+document.getElementById("objSave").addEventListener("click", ()=>{
+  const title = document.getElementById("objTitleInput").value.trim();
+  if(!title) return;
+  const desc = document.getElementById("objDescInput").value.trim();
+  const status = document.getElementById("objStatusInput").value;
+  if(editingObjId){
+    const obj = data.objectives.find(o=>o.id===editingObjId);
+    obj.title = title; obj.desc = desc; obj.status = status;
+  } else {
+    data.objectives.push({ id: uid(), title, desc, status, micros: [] });
+  }
+  save();
+  modalObj.classList.remove("active");
+  renderObjectives();
+});
+
+function statusLabel(s){
+  return s==="done" ? "Completado" : s==="progress" ? "En progreso" : "Pendiente";
+}
+
+function renderObjectives(){
+  const list = document.getElementById("objList");
+  list.innerHTML = "";
+  document.getElementById("objEmpty").style.display = data.objectives.length ? "none" : "block";
+
+  data.objectives.forEach(obj=>{
+    const total = obj.micros.length;
+    const doneCount = obj.micros.filter(m=>m.done).length;
+    const pct = total ? Math.round(doneCount/total*100) : (obj.status==="done" ? 100 : 0);
+
+    const el = document.createElement("div");
+    el.className = "obj-item";
+    el.innerHTML = `
+      <div class="obj-top">
+        <div class="obj-title ${obj.status==='done'?'done':''}">${escapeHtml(obj.title)}</div>
+        <div class="obj-actions">
+          <span class="badge ${obj.status}">${statusLabel(obj.status)}</span>
+          <button class="icon-btn" data-edit="${obj.id}" title="Editar">✎</button>
+          <button class="icon-btn" data-del="${obj.id}" title="Eliminar">✕</button>
+        </div>
+      </div>
+      ${obj.desc ? `<div class="notes">${escapeHtml(obj.desc)}</div>` : ""}
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="micro-list" data-micro-list="${obj.id}"></div>
+      <div class="add-row">
+        <input type="text" placeholder="Añadir micro-objetivo..." data-micro-input="${obj.id}">
+        <button class="btn small" data-micro-add="${obj.id}">Añadir</button>
+      </div>
+    `;
+    list.appendChild(el);
+
+    const microList = el.querySelector(`[data-micro-list="${obj.id}"]`);
+    obj.micros.forEach(m=>{
+      const mi = document.createElement("div");
+      mi.className = "micro-item";
+      mi.innerHTML = `
+        <input type="checkbox" ${m.done?"checked":""} data-micro-check="${m.id}">
+        <span class="${m.done?'done':''}">${escapeHtml(m.text)}</span>
+        <span class="del" data-micro-del="${m.id}">✕</span>
+      `;
+      microList.appendChild(mi);
+    });
+  });
+
+  list.querySelectorAll("[data-edit]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const obj = data.objectives.find(o=>o.id===b.dataset.edit);
+      editingObjId = obj.id;
+      document.getElementById("objModalTitle").textContent = "Editar objetivo";
+      document.getElementById("objTitleInput").value = obj.title;
+      document.getElementById("objDescInput").value = obj.desc||"";
+      document.getElementById("objStatusInput").value = obj.status;
+      modalObj.classList.add("active");
+    });
+  });
+  list.querySelectorAll("[data-del]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      data.objectives = data.objectives.filter(o=>o.id!==b.dataset.del);
+      save();
+      renderObjectives();
+    });
+  });
+  list.querySelectorAll("[data-micro-add]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const objId = b.dataset.microAdd;
+      const input = list.querySelector(`[data-micro-input="${objId}"]`);
+      const text = input.value.trim();
+      if(!text) return;
+      const obj = data.objectives.find(o=>o.id===objId);
+      obj.micros.push({ id: uid(), text, done:false });
+      input.value = "";
+      save();
+      renderObjectives();
+    });
+  });
+  list.querySelectorAll("[data-micro-input]").forEach(inp=>{
+    inp.addEventListener("keydown", e=>{
+      if(e.key==="Enter"){ e.preventDefault(); list.querySelector(`[data-micro-add="${inp.dataset.microInput}"]`).click(); }
+    });
+  });
+  list.querySelectorAll("[data-micro-check]").forEach(cb=>{
+    cb.addEventListener("change", ()=>{
+      for(const obj of data.objectives){
+        const m = obj.micros.find(mm=>mm.id===cb.dataset.microCheck);
+        if(m){ m.done = cb.checked; break; }
+      }
+      save();
+      renderObjectives();
+    });
+  });
+  list.querySelectorAll("[data-micro-del]").forEach(x=>{
+    x.addEventListener("click", ()=>{
+      for(const obj of data.objectives){
+        const before = obj.micros.length;
+        obj.micros = obj.micros.filter(mm=>mm.id!==x.dataset.microDel);
+        if(obj.micros.length!==before) break;
+      }
+      save();
+      renderObjectives();
+    });
+  });
+}
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+/* ---------- Videos ---------- */
+const modalVideo = document.getElementById("modalVideo");
+let editingVideoId = null;
+
+document.getElementById("btnNewVideo").addEventListener("click", ()=>{
+  editingVideoId = null;
+  document.getElementById("videoModalTitle").textContent = "Nuevo vídeo";
+  document.getElementById("vContent").value = "";
+  document.getElementById("vDate").value = todayStr();
+  document.getElementById("vTime").value = new Date().toTimeString().slice(0,5);
+  document.getElementById("vNotes").value = "";
+  modalVideo.classList.add("active");
+});
+document.getElementById("vCancel").addEventListener("click", ()=> modalVideo.classList.remove("active"));
+document.getElementById("vSave").addEventListener("click", ()=>{
+  const content = document.getElementById("vContent").value.trim();
+  if(!content) return;
+  const vdate = document.getElementById("vDate").value;
+  const vtime = document.getElementById("vTime").value;
+  const notes = document.getElementById("vNotes").value.trim();
+  if(editingVideoId){
+    const v = data.videos.find(v=>v.id===editingVideoId);
+    v.content = content; v.date = vdate; v.time = vtime; v.notes = notes;
+  } else {
+    data.videos.push({ id: uid(), content, date: vdate, time: vtime, notes, shots: [] });
+  }
+  save();
+  modalVideo.classList.remove("active");
+  renderVideos();
+});
+
+function renderVideos(){
+  const list = document.getElementById("videoList");
+  list.innerHTML = "";
+  document.getElementById("videoEmpty").style.display = data.videos.length ? "none" : "block";
+
+  const sorted = [...data.videos].sort((a,b)=> (b.date+b.time).localeCompare(a.date+a.time));
+
+  sorted.forEach(v=>{
+    const el = document.createElement("div");
+    el.className = "video-card";
+    el.innerHTML = `
+      <div class="video-head">
+        <div>
+          <div class="video-title">${escapeHtml(v.content)}</div>
+          <div class="video-meta">Subido: <b>${v.date||"—"}</b> · Franja: <b>${v.time||"—"}</b></div>
+        </div>
+        <div class="obj-actions">
+          <button class="icon-btn" data-vedit="${v.id}" title="Editar">✎</button>
+          <button class="icon-btn" data-vdel="${v.id}" title="Eliminar">✕</button>
+        </div>
+      </div>
+      ${v.notes ? `<div class="notes">${escapeHtml(v.notes)}</div>` : ""}
+      <div class="shot-grid" data-shots="${v.id}">
+        <label class="upload-shot" data-upload="${v.id}">
+          <span>+ Añadir captura</span>
+          <span>Evolución de estadísticas</span>
+          <input type="file" accept="image/*" style="display:none" data-file="${v.id}">
+        </label>
+      </div>
+    `;
+    list.appendChild(el);
+    const shotGrid = el.querySelector(`[data-shots="${v.id}"]`);
+    v.shots.slice().reverse().forEach(shot=>{
+      idbGet(shot.id).then(dataUrl=>{
+        if(!dataUrl) return;
+        const s = document.createElement("div");
+        s.className = "shot";
+        s.innerHTML = `
+          <button class="shot-del" data-shotdel="${shot.id}" data-videoid="${v.id}" title="Eliminar">✕</button>
+          <img src="${dataUrl}" alt="Captura de estadísticas">
+          <div class="shot-date">${shot.date}</div>
+        `;
+        shotGrid.insertBefore(s, shotGrid.firstChild);
+        s.querySelector("[data-shotdel]").addEventListener("click", (e)=>{
+          const shotId = e.currentTarget.dataset.shotdel;
+          const videoId = e.currentTarget.dataset.videoid;
+          const vid = data.videos.find(vv=>vv.id===videoId);
+          vid.shots = vid.shots.filter(sh=>sh.id!==shotId);
+          save();
+          idbDelete(shotId);
+          renderVideos();
+        });
+      });
+    });
+  });
+
+  list.querySelectorAll("[data-vedit]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const v = data.videos.find(vv=>vv.id===b.dataset.vedit);
+      editingVideoId = v.id;
+      document.getElementById("videoModalTitle").textContent = "Editar vídeo";
+      document.getElementById("vContent").value = v.content;
+      document.getElementById("vDate").value = v.date||"";
+      document.getElementById("vTime").value = v.time||"";
+      document.getElementById("vNotes").value = v.notes||"";
+      modalVideo.classList.add("active");
+    });
+  });
+  list.querySelectorAll("[data-vdel]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      const v = data.videos.find(vv=>vv.id===b.dataset.vdel);
+      if(v) v.shots.forEach(sh=>idbDelete(sh.id));
+      data.videos = data.videos.filter(vv=>vv.id!==b.dataset.vdel);
+      save();
+      renderVideos();
+    });
+  });
+  list.querySelectorAll("[data-file]").forEach(inp=>{
+    inp.addEventListener("change", (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const videoId = inp.dataset.file;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        const shotId = uid();
+        idbPut({ id: shotId, dataUrl: reader.result }).then(()=>{
+          const v = data.videos.find(vv=>vv.id===videoId);
+          v.shots.push({ id: shotId, date: new Date().toLocaleDateString() });
+          save();
+          renderVideos();
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+}
+
+/* ---------- Export / Import ---------- */
+document.getElementById("btnExport").addEventListener("click", async ()=>{
+  const shotIds = [];
+  data.videos.forEach(v=>v.shots.forEach(s=>shotIds.push(s.id)));
+  const shots = {};
+  for(const id of shotIds){
+    shots[id] = await idbGet(id);
+  }
+  const payload = { data, shots, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(payload)], { type:"application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tuning-hub-dashboard-backup-"+todayStr()+".json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("btnImport").addEventListener("click", ()=>{
+  document.getElementById("fileImport").click();
+});
+document.getElementById("fileImport").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    try{
+      const payload = JSON.parse(reader.result);
+      if(!confirm("Esto reemplazará los datos actuales del panel. ¿Continuar?")) return;
+      data = Object.assign(defaultData(), payload.data || {});
+      save();
+      if(payload.shots){
+        for(const id in payload.shots){
+          if(payload.shots[id]) await idbPut({ id, dataUrl: payload.shots[id] });
+        }
+      }
+      updateSessionUI();
+      renderCalendar();
+      renderObjectives();
+      renderVideos();
+      alert("Datos importados correctamente.");
+    }catch(err){
+      alert("El archivo no es un respaldo válido.");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+
+/* ---------- Init ---------- */
+updateSessionUI();
+renderCalendar();
+renderObjectives();
+renderVideos();
+
+})();
+</script>
+</body>
+</html>
