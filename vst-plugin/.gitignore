@@ -1,0 +1,5 @@
+build/
+build-*/
+*.vst3
+*.component
+*.aaxplugin
